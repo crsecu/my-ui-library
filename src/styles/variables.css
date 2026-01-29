@@ -1,0 +1,52 @@
+:root {
+  /* COLOR PALETTE */
+  --cyan-1: #f7fbfd;
+  --cyan-2: #eff8fa;
+  --cyan-3: #dff4fa;
+  --cyan-4: #ceedf7;
+  --cyan-5: #bae4f1;
+  --cyan-6: #a4d8e7;
+  --cyan-7: #86c8db;
+  --cyan-8: #54b3cc;
+  --cyan-9: #79dffb;
+  --cyan-10: #6dd4f0;
+  --cyan-11: #00758e;
+  --cyan-12: #0c424f;
+
+  /* SEMANTIC TOKENS */
+  --bg-app: var(--cyan-1);
+  --bg-subtle: var(--cyan-2);
+  --bg-ui: var(--cyan-3);
+  --bg-ui-hover: var(--cyan-4);
+  --bg-ui-active: var(--cyan-5);
+  --border-dim: var(--cyan-6);
+  --border-base: var(--cyan-7);
+  --border-hover: var(--cyan-8);
+  --action-primary: var(--cyan-9);
+  --action-primary-hover: var(--cyan-10);
+  --text-muted: var(--cyan-11);
+  --text-main: var(--cyan-12);
+
+  /* Typography */
+  --font-main: 'Inter', sans-serif;
+  --font-size-body: 1rem;
+
+  --font-size-small: 0.875rem;
+
+  --font-size-h1: 3rem;
+  --font-size-h2: 2.25rem;
+  --font-size-h3: 1.875rem;
+  --font-size-h4: 1.5rem;
+
+  --weight-reg: 400;
+  --weight-med: 500;
+  --weight-bold: 700;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+}
