@@ -1,6 +1,4 @@
-/* TO DO
-1. Add CSS Reset
-*/
-body {
-    background-color: rgb(51, 49, 49);
-}
+@import './styles/fonts.css';
+@import './styles/variables.css';
+@import './styles/reset.css';
+@import './styles/base.css';
