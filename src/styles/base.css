@@ -29,9 +29,8 @@ p {
   text-wrap: pretty;
 }
 
-button {
+button:not(:disabled) {
   cursor: pointer;
-  color: inherit;
 }
 
 /* temporary */

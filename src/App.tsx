@@ -22,7 +22,6 @@ export const App = () => {
 
   return (
     <>
-      <p onClick={handleClick}>Me</p>
       <Button ref={myRef}>Submit</Button>
 
       <Button onFocus={handleFocus} onBlur={handleBlur} variant="secondary">
