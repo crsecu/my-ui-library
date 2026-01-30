@@ -50,8 +50,10 @@ select {
 }
 
 button {
-  background: none;
+  background: transparent;
   border: none;
+  margin: 0;
+  padding: 0;
 }
 
 p,
@@ -63,8 +65,7 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
-
-#root,
+n #root,
 #__next {
   isolation: isolate;
 }

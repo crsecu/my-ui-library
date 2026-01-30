@@ -13,6 +13,21 @@
   --cyan-11: #00758e;
   --cyan-12: #0c424f;
 
+  --cyan-contrast: #05262e;
+
+  --gray-1: #f9fafb;
+  --gray-2: #f6f6f9;
+  --gray-3: #ededf1;
+  --gray-4: #e4e5ea;
+  --gray-5: #dddee3;
+  --gray-6: #d5d6dd;
+  --gray-7: #c9cbd3;
+  --gray-8: #b6b8c3;
+  --gray-9: #888a95;
+  --gray-10: #7d7f8a;
+  --gray-11: #5f6169;
+  --gray-12: #1e1f24;
+
   /* SEMANTIC TOKENS */
   --bg-app: var(--cyan-1);
   --bg-subtle: var(--cyan-2);
@@ -24,8 +39,12 @@
   --border-hover: var(--cyan-8);
   --action-primary: var(--cyan-9);
   --action-primary-hover: var(--cyan-10);
+  --action-primary-text: var(--cyan-contrast);
   --text-muted: var(--cyan-11);
   --text-main: var(--cyan-12);
+
+  /* Focus states */
+  --focus-ring: var(--cyan-8);
 
   /* Typography */
   --font-main: 'Inter', sans-serif;

@@ -1,7 +1,12 @@
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-main);
+  font-size: var(--font-size-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  /* temporary */
+  margin: 20px 40px;
 }
 
 h1,
@@ -26,4 +31,11 @@ p {
 
 button {
   cursor: pointer;
+  color: inherit;
+}
+
+/* temporary */
+#root {
+  display: flex;
+  justify-content: space-around;
 }

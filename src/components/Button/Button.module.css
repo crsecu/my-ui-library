@@ -1,3 +1,48 @@
 .button {
-    background-color: red;
+  padding: 6px 14px;
+  font-size: var(--font-size-small);
+  font-weight: var(--weight-med);
+
+  border-radius: 4px;
+  color: var(--action-primary-text);
+
+  &:hover {
+    background-color: var(--bg-ui);
+  }
+
+  &:active {
+    background-color: var(--bg-ui-active);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.primary {
+  background-color: var(--action-primary);
+
+  &:hover {
+    background-color: var(--action-primary-hover);
+  }
+}
+
+.secondary {
+  background-color: var(--bg-ui-hover);
+  border: 1px solid var(--text-muted);
+
+  &:hover {
+    background-color: var(--bg-ui);
+  }
+
+  &:active {
+    background-color: var(--bg-ui-active);
+    color: var(--text-main);
+  }
+}
+
+.tertiary {
+  border: 1px solid var(--gray-7);
+  color: var(--gray-12);
 }
