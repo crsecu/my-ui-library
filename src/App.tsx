@@ -22,7 +22,9 @@ export const App = () => {
 
   return (
     <>
-      <Button ref={myRef}>Submit</Button>
+      <Button ref={myRef} variant="primary">
+        Submit
+      </Button>
 
       <Button onFocus={handleFocus} onBlur={handleBlur} variant="secondary">
         Submit

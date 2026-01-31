@@ -12,7 +12,7 @@ interface ButtonProps extends ComponentPropsWithRef<'button'> {
   //is ReactNode the correct type for children? ReactElement | 'string' may be better type choice
   children: ReactNode;
   icon?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary'; //optional; if no value passed, button defaults to regular styling
+  variant: 'primary' | 'secondary' | 'tertiary'; //optional; if no value passed, button defaults to regular styling
   //optional; allows for custom styling via className prop
   className?: string;
   isLoading?: boolean;
@@ -31,7 +31,7 @@ export const Button = ({
   children,
   type = 'button',
   icon,
-  variant = 'primary',
+  variant,
   className = '',
   isLoading = false,
   disabled = false,
