@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Button } from './components/Button/Button';
-import { FaPlus } from 'react-icons/fa';
+import { IoIosArrowDropright } from 'react-icons/io';
 
 export const App = () => {
   const myRef = useRef<HTMLButtonElement>(null);
@@ -22,7 +22,7 @@ export const App = () => {
 
   return (
     <>
-      <Button ref={myRef} variant="primary">
+      <Button ref={myRef} variant="primary" icon={<IoIosArrowDropright />}>
         Submit
       </Button>
 

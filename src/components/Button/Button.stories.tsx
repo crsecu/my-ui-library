@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/React';
 import { fn } from 'storybook/test';
 
 import { Button } from './Button';
+import { IoIosArrowDropright } from 'react-icons/io';
 
 export const ActionsData = {
   onClick: fn(),
@@ -27,6 +28,7 @@ export const Primary: Story = {
   args: {
     children: 'Primary',
     variant: 'primary',
+    icon: <IoIosArrowDropright />,
   },
 };
 
