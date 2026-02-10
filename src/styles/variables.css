@@ -1,0 +1,84 @@
+:root {
+  --sky-1: hsl(190, 100%, 99%);
+  --sky-2: hsl(195, 75%, 97%);
+  --sky-3: hsl(195, 88%, 94%);
+  --sky-4: hsl(195, 80%, 90%);
+  --sky-5: hsl(195, 73%, 85%);
+  --sky-6: hsl(197, 65%, 80%);
+  --sky-7: hsl(197, 61%, 72%);
+  --sky-8: hsl(198, 60%, 61%);
+  --sky-9: hsl(193, 98%, 74%); /* Brand Color */
+  --sky-10: hsl(194, 90%, 71%); /* Hover Brand */
+  --sky-11: hsl(196, 100%, 31%);
+  --sky-12: hsl(205, 50%, 23%);
+  --sky-contrast: hsl(210, 12.5%, 12.55%);
+
+  /* PRIMARY (Brand) */
+  --primary-base: var(--sky-9);
+  --primary-hover: var(--sky-10);
+  --primary-contrast: var(--sky-contrast);
+  --primary-active: var(--sky-11);
+
+  /* SECONDARY */
+  --secondary-base: var(--sky-3);
+  --secondary-hover: var(--sky-4);
+  --secondary-contrast: var(--sky-11);
+  --secondary-active: var(--sky-5);
+
+  /* TERTIARY (background-less) */
+  --tertiary-hover: var(--sky-2);
+  --tertiary-contrast: var(--sky-11);
+  --tertiary-active: var(--sky-3);
+
+  /* Backgrounds */
+  --bg-canvas: var(--sky-1);
+  --bg-surface: var(--sky-2);
+  --bg-subtle: var(--sky-3);
+
+  /* Text Colors */
+  --text-main: var(--sky-12);
+  --text-muted: var(--sky-11);
+  --text-placeholder: var(--sky-8);
+
+  /* Typography */
+  --font-main: 'Inter', sans-serif;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem; /* 12px - Captions / Labels */
+  --text-sm: 0.875rem; /* 14px - Secondary text / Small buttons */
+  --text-base: 1rem; /* 16px - Standard body text */
+  --text-md: 1.125rem; /* 18px - Sub-headers / Large body */
+  --text-lg: 1.25rem; /* 20px - H3 / Small Titles */
+  --text-xl: 1.5rem; /* 24px - H2 / Section Titles */
+  --text-xxl: 2rem; /* 32px - H1 / Hero Titles */
+
+  /* Font Weights */
+  --weight-reg: 400;
+  --weight-med: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Line Heights */
+  --lh-tight: 1.2;
+  --lh-base: 1.5;
+  --lh-loose: 1.8;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Borders */
+  --border-subtle: var(--sky-4);
+  --border: var(--sky-6);
+
+  /* Radius */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+}
