@@ -14,7 +14,7 @@
   user-select: none;
   width: max-content;
   max-width: 200px;
-  z-index: 10;
+  z-index: 9999;
   background-color: #222225;
   color: #eeeef0;
 
