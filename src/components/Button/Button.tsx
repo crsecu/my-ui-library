@@ -8,6 +8,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
+import { Loader } from '../Loader/Loader';
 
 interface ButtonProps extends ComponentPropsWithRef<'button'> {
   //is ReactNode the correct type for children? ReactElement | 'string' may be better type choice
@@ -34,7 +35,7 @@ export const Button = ({
   icon,
   variant = 'primary',
   className = '',
-  isLoading = false,
+  isLoading = true,
   disabled = false,
   ref,
   testId,
@@ -59,11 +60,7 @@ export const Button = ({
         {...props}
       >
         <>
-          {isLoading && (
-            <div className="loader" data-testid="loader">
-              Loading...
-            </div>
-          )}
+          {isLoading && <Loader />}
 
           {children}
           {icon}
