@@ -6,6 +6,9 @@ interface TooltipProps {
   content?: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
   align?: 'start' | 'center' | 'end';
+
+  //FOR DEVELOPMENT ONLY: forces the tooltip to stay open regardless of focus state
+  forceOpen?: boolean;
 }
 
 export const Tooltip = ({
@@ -13,8 +16,11 @@ export const Tooltip = ({
   content,
   position = 'top',
   align = 'center',
+  forceOpen = false,
 }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  const shouldShowTooltip = isVisible || forceOpen;
 
   if (!content) return children;
 
@@ -26,7 +32,7 @@ export const Tooltip = ({
       onFocus={() => setIsVisible(true)}
       onBlur={() => setIsVisible(false)}
     >
-      {isVisible && (
+      {shouldShowTooltip && (
         <p className={`${styles.tooltip} ${styles[position]} ${styles[align]}`}>
           {content}
         </p>
