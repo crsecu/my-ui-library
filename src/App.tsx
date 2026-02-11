@@ -21,7 +21,9 @@ export const App = () => {
 
   return (
     <div>
-      <Button ref={myRef}>Submit</Button>
+      <Button ref={myRef} tooltipText="Check this out">
+        Submit
+      </Button>
 
       <Button
         onClick={handleClick}
@@ -31,7 +33,12 @@ export const App = () => {
       >
         Click me
       </Button>
-      <Button variant="tertiary">Submit</Button>
+      <Button
+        variant="tertiary"
+        tooltipText="Voluptatem veritatis repellendus totam accusamus dolorem dicta est deserunt nemo, ex eos laboriosam quas numquam at cupiditate unde officiis quam voluptates assumenda."
+      >
+        Submit
+      </Button>
     </div>
   );
 };
