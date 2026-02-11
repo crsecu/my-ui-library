@@ -20,9 +20,9 @@
   --primary-active: var(--sky-11);
 
   /* SECONDARY */
-  --secondary-base: var(--sky-3);
-  --secondary-hover: var(--sky-4);
-  --secondary-contrast: var(--sky-11);
+  --secondary-base: var(--sky-4);
+  --secondary-hover: var(--sky-5);
+  --secondary-contrast: var(--sky-12);
   --secondary-active: var(--sky-5);
 
   /* TERTIARY (background-less) */

@@ -5,6 +5,17 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--bg-canvas);
   color: var(--text-main);
+
+  /*Temporary*/
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  #root > div {
+    display: flex;
+    gap: 100px;
+  }
+  /*Temporary*/
 }
 
 h1,
@@ -25,6 +36,10 @@ h4 {
 
 p {
   text-wrap: pretty;
+}
+
+button {
+  line-height: normal;
 }
 
 button:not(:disabled) {

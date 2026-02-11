@@ -8,10 +8,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 import styles from './Button.module.css';
 
-interface ButtonProps extends Omit<
-  ComponentPropsWithRef<'button'>,
-  'className'
-> {
+interface ButtonProps extends ComponentPropsWithRef<'button'> {
   //is ReactNode the correct type for children? ReactElement | 'string' may be better type choice
   children: ReactNode;
   icon?: ReactNode;
@@ -25,14 +22,38 @@ interface ButtonProps extends Omit<
   onClick?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  //React doesn't have a built-in onHover event, so this would need to be handled via onMouseEnter and onMouseLeave
   onHover?: () => void;
   tooltipText?: string;
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
   tooltipJustify?: 'start' | 'center' | 'end';
 }
 
-export const Button = ({ children, className = '' }: ButtonProps) => {
+export const Button = ({
+  children,
+  type = 'button',
+  icon,
+  variant = 'primary',
+  className = '',
+  isLoading = false,
+  disabled = false,
+  ...props
+}: ButtonProps) => {
   return (
-    <button className={`${styles.button} ${className}`}>{children}</button>
+    <button
+      type={type}
+      disabled={disabled || isLoading}
+      className={`${styles.button} ${styles[variant]} ${className}`}
+      {...props}
+    >
+      {isLoading ? (
+        'Loading...'
+      ) : (
+        <>
+          {children}
+          {icon}
+        </>
+      )}
+    </button>
   );
 };
