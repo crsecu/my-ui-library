@@ -12,7 +12,7 @@ interface ButtonProps extends ComponentPropsWithRef<'button'> {
   //is ReactNode the correct type for children? ReactElement | 'string' may be better type choice
   children: ReactNode;
   icon?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary'; //optional; if no value passed, button defaults to regular styling
+  variant?: 'primary' | 'secondary' | 'tertiary'; //defaults to primary for now;
   //optional; allows for custom styling via className prop
   className?: string;
   isLoading?: boolean;
@@ -22,8 +22,6 @@ interface ButtonProps extends ComponentPropsWithRef<'button'> {
   onClick?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  //React doesn't have a built-in onHover event, so this would need to be handled via onMouseEnter and onMouseLeave
-  onHover?: () => void;
   tooltipText?: string;
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
   tooltipJustify?: 'start' | 'center' | 'end';
@@ -37,6 +35,8 @@ export const Button = ({
   className = '',
   isLoading = false,
   disabled = false,
+  ref,
+  testId,
   ...props
 }: ButtonProps) => {
   return (
@@ -44,6 +44,8 @@ export const Button = ({
       type={type}
       disabled={disabled || isLoading}
       className={`${styles.button} ${styles[variant]} ${className}`}
+      ref={ref}
+      data-testid={testId}
       {...props}
     >
       {isLoading ? (
