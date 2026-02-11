@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/React';
-
 import { fn } from 'storybook/test';
-
 import { Button } from './Button';
 
 export const ActionsData = {
@@ -25,20 +23,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    children: 'Primary',
+    children: 'Submit',
+    variant: 'primary',
   },
 };
 
 export const Secondary: Story = {
   args: {
-    children: 'Secondary',
+    children: 'Cancel',
     variant: 'secondary',
   },
 };
 
 export const Tertiary: Story = {
   args: {
-    children: 'Tertiary',
+    children: 'Reset',
     variant: 'tertiary',
   },
 };
