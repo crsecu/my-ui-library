@@ -31,6 +31,11 @@ export const Tooltip = ({
       onMouseLeave={() => setIsVisible(false)}
       onFocus={() => setIsVisible(true)}
       onBlur={() => setIsVisible(false)}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          setIsVisible(false);
+        }
+      }}
     >
       {shouldShowTooltip && (
         <p className={`${styles.tooltip} ${styles[position]} ${styles[align]}`}>
