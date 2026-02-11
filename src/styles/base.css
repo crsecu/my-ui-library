@@ -48,4 +48,5 @@ button:not(:disabled) {
 
 button:disabled {
   pointer-events: none;
+  opacity: 40%;
 }
