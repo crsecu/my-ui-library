@@ -49,6 +49,7 @@ export const Button = ({
       content={tooltipText}
       position={tooltipPosition}
       align={tooltipJustify}
+      forceOpen={true}
     >
       <button
         type={type}
