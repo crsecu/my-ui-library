@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { Button } from './Button';
 
 describe('Button component', () => {
@@ -26,9 +26,9 @@ describe('Button component', () => {
       </Button>,
     );
 
-    expect(
-      screen.getByRole('button', { name: 'Loading...' }),
-    ).toBeInTheDocument();
+    const buttonElement = screen.getByRole('button');
+    const loader = within(buttonElement).getByTestId('loader');
+    expect(loader).toBeInTheDocument();
   });
 
   test('button is disabled when isLoading prop is true', () => {

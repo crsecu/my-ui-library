@@ -58,14 +58,16 @@ export const Button = ({
         data-testid={testId}
         {...props}
       >
-        {isLoading ? (
-          'Loading...'
-        ) : (
-          <>
-            {children}
-            {icon}
-          </>
-        )}
+        <>
+          {isLoading && (
+            <div className="loader" data-testid="loader">
+              Loading...
+            </div>
+          )}
+
+          {children}
+          {icon}
+        </>
       </button>
     </Tooltip>
   );
