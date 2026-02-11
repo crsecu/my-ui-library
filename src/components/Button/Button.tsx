@@ -35,7 +35,7 @@ export const Button = ({
   icon,
   variant = 'primary',
   className = '',
-  isLoading = true,
+  isLoading = false,
   disabled = false,
   ref,
   testId,
