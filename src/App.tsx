@@ -21,23 +21,25 @@ export const App = () => {
 
   return (
     <div>
-      <Button ref={myRef} tooltipText="Check this out">
-        Submit
+      <Button className="button1" ref={myRef} tooltipText="Check this out">
+        Button 1
       </Button>
 
       <Button
+        className="button2"
         onClick={handleClick}
         onFocus={handleFocus}
         onBlur={handleBlur}
         variant="secondary"
       >
-        Click me
+        Button 2
       </Button>
       <Button
+        className="button3"
         variant="tertiary"
         tooltipText="Voluptatem veritatis repellendus totam accusamus dolorem dicta est deserunt nemo, ex eos laboriosam quas numquam at cupiditate unde officiis quam voluptates assumenda."
       >
-        Submit
+        Button 3
       </Button>
     </div>
   );
