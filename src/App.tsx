@@ -6,9 +6,6 @@ export const App = () => {
 
   function handleClick() {
     console.log('Button clicked');
-    if (myRef.current === null) return;
-
-    myRef.current.focus();
   }
 
   function handleFocus() {
@@ -21,26 +18,34 @@ export const App = () => {
 
   return (
     <div>
-      <Button className="button1" ref={myRef} tooltipText="Check this out">
+      <Button
+        className="button1"
+        ref={myRef}
+        tooltipText="Check this out"
+        tooltipPosition="left"
+      >
         Button 1
       </Button>
 
-      <Button
+      {/* <Button
         className="button2"
+        variant="tertiary"
+        tooltipText="Voluptatem veritatis repellendus totam accusamus dolorem dicta est deserunt nemo, ex eos laboriosam quas numquam at cupiditate unde officiis quam voluptates assumenda."
+      >
+        Button 2
+      </Button>
+
+      <Button
+        className="button3"
         onClick={handleClick}
         onFocus={handleFocus}
         onBlur={handleBlur}
         variant="secondary"
-      >
-        Button 2
-      </Button>
-      <Button
-        className="button3"
-        variant="tertiary"
-        tooltipText="Voluptatem veritatis repellendus totam accusamus dolorem dicta est deserunt nemo, ex eos laboriosam quas numquam at cupiditate unde officiis quam voluptates assumenda."
+        tooltipText="Hello Hello Hello Everybody"
+        tooltipPosition="right"
       >
         Button 3
-      </Button>
+      </Button> */}
     </div>
   );
 };

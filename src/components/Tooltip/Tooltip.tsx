@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import styles from './Tooltip.module.css';
+type TooltipDimensions = {
+  width: number;
+  height: number;
+};
 
 interface TooltipProps {
-  children: React.ReactNode;
   content?: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
   align?: 'start' | 'center' | 'end';
@@ -12,72 +15,46 @@ interface TooltipProps {
 }
 
 export const Tooltip = ({
-  children,
   content,
   position = 'top',
   align = 'center',
-  forceOpen = false,
+  forceOpen = true,
 }: TooltipProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const tooltipRef = useRef<HTMLParagraphElement>(null);
+  const tooltipDimensions = useRef<TooltipDimensions>(null);
 
-  const shouldShowTooltip = isVisible || forceOpen;
+  // Find Tooltip dimensions
+  useLayoutEffect(() => {
+    if (tooltipRef.current !== null) {
+      const { width, height } = tooltipRef.current.getBoundingClientRect();
 
-  if (!content) return children;
+      tooltipDimensions.current = {
+        width,
+        height,
+      };
+    }
+  }, []);
 
   function handleHover() {
     // Find viewport dimensions
-    const viewportHeight = window.document.documentElement.clientHeight;
-    const viewportWidth = window.document.documentElement.clientWidth;
+    const vh = window.document.documentElement.clientHeight;
+    const vw = window.document.documentElement.clientWidth;
 
-    // Determine the available space between anchor and viewport
-    const anchorEl = document.querySelector('button');
-
-    const {
-      top,
-      left,
-      bottom,
-      right,
-      width: anchorWidth,
-      height: anchorHeight,
-    } = anchorEl?.getBoundingClientRect() ?? {};
-
-    const topSpaceAvailable = top;
-    const leftSpaceAvailable = left;
-    const rightSpaceAvailable =
-      right !== undefined ? viewportWidth - right : undefined;
-    const bottomSpaceAvailable =
-      bottom !== undefined ? viewportHeight - bottom : undefined;
-
-    // Find out Tooltip dimensions
-    console.log(
-      `viewportHeight: ${viewportHeight}, viewportWidth: ${viewportWidth}`,
-      rightSpaceAvailable,
-      bottomSpaceAvailable,
-    );
-
-    setIsVisible(true);
+    console.log('viewport width', vw, 'viewport height', vh);
   }
 
   return (
-    <div
-      className={styles.tooltipWrapper}
+    <p
+      className={`${styles.tooltip} ${styles[position]} ${styles[align]}`}
       onMouseEnter={handleHover}
-      onMouseLeave={() => setIsVisible(false)}
-      onFocus={() => setIsVisible(true)}
-      onBlur={() => setIsVisible(false)}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
-          setIsVisible(false);
+          console.log('close tooltip');
         }
       }}
+      ref={tooltipRef}
     >
-      {shouldShowTooltip && (
-        <p className={`${styles.tooltip} ${styles[position]} ${styles[align]}`}>
-          {content}
-        </p>
-      )}
-
-      {children}
-    </div>
+      {content}
+    </p>
   );
 };

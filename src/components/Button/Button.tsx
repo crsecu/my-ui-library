@@ -41,16 +41,11 @@ export const Button = ({
   tooltipText,
   tooltipPosition,
   tooltipJustify,
-  onFocus,
   ...props
 }: ButtonProps) => {
   return (
-    <Tooltip
-      content={tooltipText}
-      position={tooltipPosition}
-      align={tooltipJustify}
-      // forceOpen={true}
-    >
+    <>
+      {' '}
       <button
         type={type}
         disabled={disabled || isLoading}
@@ -70,6 +65,7 @@ export const Button = ({
           {icon}
         </>
       </button>
-    </Tooltip>
+      {tooltipText && <Tooltip content={tooltipText} />}
+    </>
   );
 };

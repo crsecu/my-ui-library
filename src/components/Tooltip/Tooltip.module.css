@@ -1,12 +1,4 @@
-.tooltipWrapper {
-  display: inline-block;
-  position: relative;
-  width: fit-content;
-}
-
 .tooltip {
-  position: absolute;
-
   font-size: 0.875rem;
   line-height: 1.2;
   padding: 10px;
@@ -23,11 +15,13 @@
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
 
-.tooltip.top {
+/* ********** OLD TOOLTIP POSITIONING STYLES ********** */
+
+/* .tooltip.top {
   bottom: calc(100% + 8px);
 
   &.start {
-    /* default */
+    
   }
 
   &.center {
@@ -44,7 +38,7 @@
   top: calc(100% + 8px);
 
   &.start {
-    /* default */
+   
   }
 
   &.center {
@@ -61,7 +55,7 @@
   left: calc(100% + 8px);
 
   &.start {
-    /* default */
+    
   }
 
   &.center {
@@ -78,7 +72,7 @@
   right: calc(100% + 6px);
 
   &.start {
-    /* default */
+   
   }
 
   &.center {
@@ -89,4 +83,6 @@
   &.end {
     bottom: 0;
   }
-}
+} */
+
+/* ********** OLD TOOLTIP POSITIONING STYLES ********** */
