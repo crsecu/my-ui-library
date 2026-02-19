@@ -5,12 +5,17 @@
 4. Create and configure stories
 */
 
-import type { ComponentPropsWithRef, ReactNode } from 'react';
+import {
+  useRef,
+  useState,
+  type ComponentPropsWithRef,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
 
-interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  //is ReactNode the correct type for children? ReactElement | 'string' may be better type choice
+interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   children: ReactNode;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary'; //defaults to primary for now;
@@ -26,6 +31,7 @@ interface ButtonProps extends ComponentPropsWithRef<'button'> {
   tooltipText?: string;
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
   tooltipJustify?: 'start' | 'center' | 'end';
+  ref?: RefObject<HTMLButtonElement | null>;
 }
 
 export const Button = ({
@@ -43,15 +49,20 @@ export const Button = ({
   tooltipJustify,
   ...props
 }: ButtonProps) => {
+  const internalRef = useRef<HTMLButtonElement>(null);
+  const activeButtonRef = ref ?? internalRef;
+
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
   return (
     <>
-      {' '}
       <button
         type={type}
         disabled={disabled || isLoading}
         className={`${styles.button} ${styles[variant]} ${className}`}
-        ref={ref}
+        ref={activeButtonRef}
         data-testid={testId}
+        onMouseEnter={() => setIsTooltipVisible(true)}
         {...props}
       >
         <>
@@ -65,7 +76,9 @@ export const Button = ({
           {icon}
         </>
       </button>
-      {tooltipText && <Tooltip content={tooltipText} />}
+      {tooltipText && isTooltipVisible && (
+        <Tooltip content={tooltipText} anchorRef={activeButtonRef} />
+      )}
     </>
   );
 };

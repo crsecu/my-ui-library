@@ -1,4 +1,5 @@
 .tooltip {
+  position: absolute;
   font-size: 0.875rem;
   line-height: 1.2;
   padding: 10px;
