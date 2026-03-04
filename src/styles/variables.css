@@ -39,6 +39,7 @@
   --text-main: var(--sky-12);
   --text-muted: var(--sky-11);
   --text-placeholder: var(--sky-8);
+  --text-light: var(--sky-1);
 
   /* Typography */
   --font-main: 'Inter', sans-serif;
