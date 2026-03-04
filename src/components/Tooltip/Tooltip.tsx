@@ -8,7 +8,7 @@ interface TooltipProps {
   content?: string;
   position?: TooltipPositionType;
   align?: TooltipAlignmentType;
-  anchorRef?: RefObject<HTMLElement | null>;
+  anchorRef: RefObject<HTMLElement | null>;
 
   //FOR DEVELOPMENT ONLY: forces the tooltip to stay open regardless of focus state
   forceOpen?: boolean;

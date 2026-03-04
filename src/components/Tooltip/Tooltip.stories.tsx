@@ -4,8 +4,6 @@ import { fn } from 'storybook/test';
 
 import { Tooltip } from './Tooltip';
 
-import { Button } from '../Button/Button';
-
 export const ActionsData = {
   onMouseEnter: fn(),
   onmouseleave: fn(),
@@ -18,7 +16,6 @@ const meta = {
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
   args: {
-    children: <Button variant="tertiary">Learn more</Button>,
     forceOpen: true,
     ...ActionsData,
   },

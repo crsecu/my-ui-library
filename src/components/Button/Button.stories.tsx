@@ -25,6 +25,7 @@ export const Primary: Story = {
   args: {
     children: 'Submit',
     variant: 'primary',
+    tooltipText: 'Hey You',
   },
 };
 
