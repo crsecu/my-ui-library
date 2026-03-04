@@ -5,15 +5,10 @@
 4. Create and configure stories
 */
 
-import {
-  useRef,
-  useState,
-  type ComponentPropsWithRef,
-  type ReactNode,
-  type RefObject,
-} from 'react';
+import { useRef, type ComponentPropsWithRef, type ReactNode, type RefObject } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
+import type { TooltipAlignType, TooltipPositionType } from '../Tooltip/tooltip.types';
 
 interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   children: ReactNode;
@@ -29,8 +24,8 @@ interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   onFocus?: () => void;
   onBlur?: () => void;
   tooltipText?: string;
-  tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
-  tooltipJustify?: 'start' | 'center' | 'end';
+  tooltipPosition?: TooltipPositionType;
+  tooltipJustify?: TooltipAlignType;
   ref?: RefObject<HTMLButtonElement | null>;
 }
 
@@ -45,14 +40,12 @@ export const Button = ({
   ref,
   testId,
   tooltipText,
-  tooltipPosition,
-  tooltipJustify,
+  tooltipPosition = 'top',
+  tooltipJustify = 'center',
   ...props
 }: ButtonProps) => {
   const internalRef = useRef<HTMLButtonElement>(null);
   const activeButtonRef = ref ?? internalRef;
-
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   return (
     <>
@@ -62,7 +55,6 @@ export const Button = ({
         className={`${styles.button} ${styles[variant]} ${className}`}
         ref={activeButtonRef}
         data-testid={testId}
-        onMouseEnter={() => setIsTooltipVisible(true)}
         {...props}
       >
         <>
@@ -76,8 +68,8 @@ export const Button = ({
           {icon}
         </>
       </button>
-      {tooltipText && isTooltipVisible && (
-        <Tooltip content={tooltipText} anchorRef={activeButtonRef} />
+      {tooltipText && (
+        <Tooltip content={tooltipText} anchorRef={activeButtonRef} position={tooltipPosition} align={tooltipJustify} />
       )}
     </>
   );

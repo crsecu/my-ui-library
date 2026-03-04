@@ -1,5 +1,6 @@
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-main);
+
   font-size: var(--text-base);
   line-height: var(--lh-base);
   -webkit-font-smoothing: antialiased;
@@ -9,11 +10,13 @@ body {
 
   /*Temporary*/
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+
   align-items: center;
 
-  #root > div {
+  #root > .app {
     display: flex;
+    flex-direction: column;
     gap: 100px;
   }
   /*Temporary*/

@@ -1,15 +1,17 @@
 .tooltip {
-  position: absolute;
+  position: fixed;
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.875rem;
   line-height: 1.2;
   padding: 10px;
   border-radius: 6px;
   user-select: none;
-  width: max-content;
-  max-width: 200px;
+
   z-index: 9999;
   background-color: #222225;
   color: #eeeef0;
+  min-width: 10px;
+  max-width: 200px;
 
   box-shadow:
     rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
