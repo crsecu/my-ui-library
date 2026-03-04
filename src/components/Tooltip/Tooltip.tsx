@@ -2,12 +2,12 @@ import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 're
 import styles from './Tooltip.module.css';
 import { createPortal } from 'react-dom';
 import { useTooltip } from './Tooltip.hooks';
-import type { TooltipAlignType, TooltipPositionType } from './tooltip.types';
+import type { TooltipAlignmentType, TooltipPositionType } from './tooltip.types';
 
 interface TooltipProps {
   content?: string;
   position?: TooltipPositionType;
-  align?: TooltipAlignType;
+  align?: TooltipAlignmentType;
   anchorRef?: RefObject<HTMLElement | null>;
 
   //FOR DEVELOPMENT ONLY: forces the tooltip to stay open regardless of focus state

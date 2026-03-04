@@ -25,7 +25,7 @@ export const App = () => {
         tooltipText="Voluptatem veritatis repellendus totam accusamus dolorem dicta est deserunt nemo, ex eos laboriosam quas numquam at cupiditate unde officiis quam voluptates assumenda."
         // tooltipText="Voluptatem veritatis"
         tooltipPosition="right"
-        tooltipJustify="center"
+        tooltipAlignment="center"
       >
         Button 1
       </Button>

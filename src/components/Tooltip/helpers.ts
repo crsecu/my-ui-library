@@ -4,7 +4,7 @@ import type {
   LayoutAxisType,
   PositionCoordinatesType,
   PositionIsValidType,
-  TooltipAlignType,
+  TooltipAlignmentType,
   TooltipPositionType,
 } from './tooltip.types';
 
@@ -23,7 +23,7 @@ export const determineTooltipPlacement = (
   vh: number,
   vw: number,
   position: TooltipPositionType = 'top',
-  align: TooltipAlignType = 'center',
+  align: TooltipAlignmentType = 'center',
 ) => {
   const tooltipHeight = tooltipRect.height;
   const tooltipWidth = tooltipRect.width;
@@ -56,7 +56,7 @@ export const determineTooltipPlacement = (
     vw,
   );
 
-  const resolvedAlignment: TooltipAlignType = alignmentIsValid[align]
+  const resolvedAlignment: TooltipAlignmentType = alignmentIsValid[align]
     ? align
     : (rezolveTooltipPlacement(alignmentIsValid) ?? align);
 

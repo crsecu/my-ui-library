@@ -4,11 +4,10 @@
 3. Destructure props one by one as you develop the component
 4. Create and configure stories
 */
-
 import { useRef, type ComponentPropsWithRef, type ReactNode, type RefObject } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
-import type { TooltipAlignType, TooltipPositionType } from '../Tooltip/tooltip.types';
+import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/tooltip.types';
 
 interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   children: ReactNode;
@@ -25,7 +24,7 @@ interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   onBlur?: () => void;
   tooltipText?: string;
   tooltipPosition?: TooltipPositionType;
-  tooltipJustify?: TooltipAlignType;
+  tooltipAlignment?: TooltipAlignmentType;
   ref?: RefObject<HTMLButtonElement | null>;
 }
 
@@ -40,8 +39,8 @@ export const Button = ({
   ref,
   testId,
   tooltipText,
-  tooltipPosition = 'top',
-  tooltipJustify = 'center',
+  tooltipPosition,
+  tooltipAlignment,
   ...props
 }: ButtonProps) => {
   const internalRef = useRef<HTMLButtonElement>(null);
@@ -69,7 +68,12 @@ export const Button = ({
         </>
       </button>
       {tooltipText && (
-        <Tooltip content={tooltipText} anchorRef={activeButtonRef} position={tooltipPosition} align={tooltipJustify} />
+        <Tooltip
+          content={tooltipText}
+          anchorRef={activeButtonRef}
+          position={tooltipPosition}
+          align={tooltipAlignment}
+        />
       )}
     </>
   );

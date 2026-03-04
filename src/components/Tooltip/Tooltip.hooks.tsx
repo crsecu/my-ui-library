@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { determineTooltipPlacement } from './helpers';
-import type { TooltipAlignType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './tooltip.types';
+import type { TooltipAlignmentType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './tooltip.types';
 
 interface TooltipHookProps {
   anchorRef: RefObject<HTMLElement | null> | undefined;
   tooltipRef: RefObject<HTMLParagraphElement | null>;
   selectedPosition?: TooltipPositionType;
-  selectedAlign?: TooltipAlignType;
+  selectedAlign?: TooltipAlignmentType;
 }
 
 const initialTooltipPlacement: TooltipCoords = {
