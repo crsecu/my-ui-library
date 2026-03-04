@@ -7,9 +7,7 @@ describe('Button component', () => {
   test('button renders its children (label)', () => {
     render(<Button variant="primary">Click me</Button>);
 
-    expect(
-      screen.getByRole('button', { name: buttonLabel }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: buttonLabel })).toBeInTheDocument();
   });
 
   test('applies the correct className for secondary variant', () => {

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useRef, type RefObject } from 'react';
 import styles from './Tooltip.module.css';
 import { createPortal } from 'react-dom';
 import { useTooltip } from './Tooltip.hooks';
@@ -14,7 +14,7 @@ interface TooltipProps {
   forceOpen?: boolean;
 }
 
-export const Tooltip = ({ content, position, align, anchorRef, forceOpen = true }: TooltipProps) => {
+export const Tooltip = ({ content, position, align, anchorRef }: TooltipProps) => {
   const tooltipRef = useRef<HTMLParagraphElement>(null);
 
   const { isVisible, tooltipStyles } = useTooltip({

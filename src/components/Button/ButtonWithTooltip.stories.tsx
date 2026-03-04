@@ -1,8 +1,9 @@
+/* eslint-disable storybook/no-redundant-story-name */
 import type { Meta, StoryObj } from '@storybook/React';
 
 import { fn } from 'storybook/test';
 
-import { Tooltip } from './Tooltip';
+import { Button } from './Button';
 
 export const ActionsData = {
   onMouseEnter: fn(),
@@ -12,78 +13,86 @@ export const ActionsData = {
 };
 
 const meta = {
-  component: Tooltip,
+  title: 'Buttons/Button (with tooltip)',
+  component: Button,
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
   args: {
-    forceOpen: true,
+    children: 'Anchor',
     ...ActionsData,
   },
-} satisfies Meta<typeof Tooltip>;
+} satisfies Meta<typeof Button>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 /*
-    Physical placement of the Tooltip relative to the triggering element
+    Position of the Tooltip relative to the anchor
     Options: 'top' | 'bottom' | 'left' | 'right';
     Default: 'top'
 */
 export const DefaultTooltip: Story = {
   name: 'Top Center (default)',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
   },
 };
 export const PositionBottom: Story = {
   name: 'Bottom Center',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'bottom',
+    tooltipPosition: 'bottom',
   },
 };
 export const PositionRight: Story = {
   name: 'Right Center',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'right',
+    tooltipPosition: 'right',
   },
 };
 export const PositionLeft: Story = {
   name: 'Left Center',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'left',
+    tooltipPosition: 'left',
   },
 };
 
 /*
-    Alignment of the Tooltip relative to the selected position
+    Alignment of the Tooltip relative to the anchor
     Options: 'start' | 'center' | 'end'
     Default: 'center'
 */
 
 //Top Positioned Tooltip
 export const TopStart: Story = {
+  // eslint-disable-next-line storybook/no-redundant-story-name
   name: 'Top Start',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    align: 'start',
+    tooltipAlignment: 'start',
   },
 };
 
 export const TopEnd: Story = {
   name: 'Top End',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    align: 'end',
+    tooltipAlignment: 'end',
   },
 };
 
@@ -91,20 +100,22 @@ export const TopEnd: Story = {
 export const BottomStart: Story = {
   name: 'Bottom Start',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'bottom',
-    align: 'start',
+    tooltipPosition: 'bottom',
+    tooltipAlignment: 'start',
   },
 };
 
 export const BottomEnd: Story = {
   name: 'Bottom End',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'bottom',
-    align: 'end',
+    tooltipPosition: 'bottom',
+    tooltipAlignment: 'end',
   },
 };
 
@@ -112,20 +123,22 @@ export const BottomEnd: Story = {
 export const RightStart: Story = {
   name: 'Right Start',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'right',
-    align: 'start',
+    tooltipPosition: 'right',
+    tooltipAlignment: 'start',
   },
 };
 
 export const RightEnd: Story = {
   name: 'Right End',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'right',
-    align: 'end',
+    tooltipPosition: 'right',
+    tooltipAlignment: 'end',
   },
 };
 
@@ -133,19 +146,21 @@ export const RightEnd: Story = {
 export const LeftStart: Story = {
   name: 'Left Start',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'left',
-    align: 'start',
+    tooltipPosition: 'left',
+    tooltipAlignment: 'start',
   },
 };
 
 export const LeftEnd: Story = {
   name: 'Left End',
   args: {
-    content:
+    children: 'Anchor',
+    tooltipText:
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-    position: 'left',
-    align: 'end',
+    tooltipPosition: 'left',
+    tooltipAlignment: 'end',
   },
 };

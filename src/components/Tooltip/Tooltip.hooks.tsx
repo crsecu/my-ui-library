@@ -102,6 +102,7 @@ export const useTooltip = ({
     };
   }, [anchorRef, hideTooltip, onEscKey, showTooltip]);
 
+  //update tooltip placement before DOM is painted
   useLayoutEffect(() => {
     if (!isVisible) return;
 
@@ -109,6 +110,7 @@ export const useTooltip = ({
     updateTooltipPlacement();
   }, [isVisible, updateTooltipPlacement]);
 
+  //attach resize/scroll event listeners only if the tooltip is visible
   useEffect(() => {
     if (!isVisible) return;
 

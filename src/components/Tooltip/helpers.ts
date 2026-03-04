@@ -27,19 +27,20 @@ export const determineTooltipPlacement = (
 ) => {
   const tooltipHeight = tooltipRect.height;
   const tooltipWidth = tooltipRect.width;
+  const tooltipOffset = 6;
 
   const positionIsValid: PositionIsValidType = {
-    top: anchorRect.top - tooltipHeight > 0,
-    bottom: anchorRect.bottom + tooltipHeight < vh,
-    right: anchorRect.right + tooltipWidth < vw,
-    left: anchorRect.left - tooltipWidth > 0,
+    top: anchorRect.top - tooltipHeight - tooltipOffset > 0,
+    bottom: anchorRect.bottom + tooltipHeight + tooltipOffset < vh,
+    right: anchorRect.right + tooltipWidth < vw + tooltipOffset,
+    left: anchorRect.left - tooltipWidth > 0 - tooltipOffset,
   };
 
   const positionCoordinates: PositionCoordinatesType = {
-    top: anchorRect.top - tooltipHeight,
-    bottom: anchorRect.bottom,
-    right: anchorRect.right,
-    left: anchorRect.left - tooltipWidth,
+    top: anchorRect.top - tooltipHeight - tooltipOffset,
+    bottom: anchorRect.bottom + tooltipOffset,
+    right: anchorRect.right + tooltipOffset,
+    left: anchorRect.left - tooltipWidth - tooltipOffset,
   };
 
   const resolvedPosition: TooltipPositionType = positionIsValid[position]

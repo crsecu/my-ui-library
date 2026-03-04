@@ -9,6 +9,7 @@ export const ActionsData = {
 };
 
 const meta = {
+  title: 'Buttons/Button (plain)',
   component: Button,
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
@@ -25,7 +26,6 @@ export const Primary: Story = {
   args: {
     children: 'Submit',
     variant: 'primary',
-    tooltipText: 'Hey You',
   },
 };
 
