@@ -8,11 +8,13 @@ import { useRef, type ComponentPropsWithRef, type ReactNode, type RefObject } fr
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
 import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/tooltip.types';
+import type { ButtonIntent, ButtonVariant } from './button.types';
 
 interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   children: ReactNode;
   icon?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary'; //defaults to primary for now;
+  variant?: ButtonVariant;
+  intent?: ButtonIntent;
   //optional; allows for custom styling via className prop
   className?: string;
   isLoading?: boolean;
@@ -32,7 +34,8 @@ export const Button = ({
   children,
   type = 'button',
   icon,
-  variant = 'primary',
+  variant = 'outlined',
+  intent = 'primary',
   className = '',
   isLoading = false,
   disabled = false,
@@ -51,7 +54,7 @@ export const Button = ({
       <button
         type={type}
         disabled={disabled || isLoading}
-        className={`${styles.button} ${styles[variant]} ${className}`}
+        className={`${styles.button} ${styles[variant]} ${styles[intent]}${className}`}
         ref={activeButtonRef}
         data-testid={testId}
         {...props}

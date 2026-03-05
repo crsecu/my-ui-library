@@ -15,20 +15,8 @@
 
   /* PRIMARY (Brand) */
   --primary-base: var(--sky-9);
-  --primary-hover: var(--sky-10);
+  --primary-text-light: #00a2c7;
   --primary-contrast: var(--sky-contrast);
-  --primary-active: var(--sky-11);
-
-  /* SECONDARY */
-  --secondary-base: var(--sky-4);
-  --secondary-hover: var(--sky-5);
-  --secondary-contrast: var(--sky-12);
-  --secondary-active: var(--sky-5);
-
-  /* TERTIARY (background-less) */
-  --tertiary-hover: var(--sky-2);
-  --tertiary-contrast: var(--sky-11);
-  --tertiary-active: var(--sky-3);
 
   /* Backgrounds */
   --bg-canvas: var(--sky-1);
@@ -39,7 +27,20 @@
   --text-main: var(--sky-12);
   --text-muted: var(--sky-11);
   --text-placeholder: var(--sky-8);
-  --text-light: var(--sky-1);
+  --text-light: white;
+
+  /***** SEMANTIC COLORS *****/
+  --success: #2a7e3b;
+  --success-soft: #daf1db;
+  --danger: #ce2c31;
+  --danger-soft: #ffdbdc;
+  --warning: #ffc53d;
+  --warning-soft: #fff7c2;
+  --warning-darker: #ab6400;
+  --warning-text: #d19631;
+  --neutral: #9a9c9b;
+  --neutral-soft: #deeaec;
+  --neutral-darker: #82827c;
 
   /* Typography */
   --font-main: 'Inter', sans-serif;

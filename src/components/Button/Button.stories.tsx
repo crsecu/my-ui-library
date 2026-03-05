@@ -9,11 +9,12 @@ export const ActionsData = {
 };
 
 const meta = {
-  title: 'Buttons/Button (plain)',
+  title: 'Buttons/Button',
   component: Button,
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
   args: {
+    children: 'Button',
     ...ActionsData,
   },
 } satisfies Meta<typeof Button>;
@@ -22,23 +23,56 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const Solid: Story = {
   args: {
-    children: 'Submit',
-    variant: 'primary',
+    variant: 'solid',
   },
 };
 
-export const Secondary: Story = {
+export const Outlined: Story = {
   args: {
-    children: 'Cancel',
-    variant: 'secondary',
+    variant: 'outlined',
   },
 };
 
-export const Tertiary: Story = {
+export const Soft: Story = {
   args: {
-    children: 'Reset',
-    variant: 'tertiary',
+    variant: 'soft',
+  },
+};
+export const Surface: Story = {
+  args: {
+    variant: 'surface',
+  },
+};
+export const Text: Story = {
+  args: {
+    variant: 'text',
+  },
+};
+
+export const SolidSuccess: Story = {
+  args: {
+    variant: 'solid',
+    intent: 'success',
+  },
+};
+export const OutlinedSuccess: Story = {
+  args: {
+    variant: 'outlined',
+    intent: 'success',
+  },
+};
+
+export const SolidDanger: Story = {
+  args: {
+    variant: 'solid',
+    intent: 'danger',
+  },
+};
+export const OutlinedDanger: Story = {
+  args: {
+    variant: 'outlined',
+    intent: 'danger',
   },
 };
