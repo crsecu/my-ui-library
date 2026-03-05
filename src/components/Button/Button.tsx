@@ -9,6 +9,7 @@ import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
 import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/tooltip.types';
 import type { ButtonIntent, ButtonVariant } from './button.types';
+import { Loader } from '../Loader/Loader';
 
 interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   children: ReactNode;
@@ -60,11 +61,7 @@ export const Button = ({
         {...props}
       >
         <>
-          {isLoading && (
-            <div className="loader" data-testid="loader">
-              Loading...
-            </div>
-          )}
+          {isLoading && <Loader />}
 
           {children}
           {icon}
