@@ -6,7 +6,7 @@ interface StoryGalleryProps {
   title?: string;
 }
 
-/* This componeny displays multiple Storybook stories side by side */
+/* This component displays multiple Storybook stories side by side */
 export const StoryGallery = ({ children, title }: StoryGalleryProps) => {
   return (
     <div className={styles.storyGallery}>

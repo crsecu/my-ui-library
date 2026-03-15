@@ -1,9 +1,3 @@
-/* TO DO
-1. Create Button component
-2. Create interface ButtonProps and type all props
-3. Destructure props one by one as you develop the component
-4. Create and configure stories
-*/
 import { useRef, type ComponentPropsWithRef, type ReactNode, type RefObject } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
@@ -21,10 +15,6 @@ interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
   isLoading?: boolean;
   disabled?: boolean;
   testId?: string;
-  //event handlers; should these be optional?
-  onClick?: () => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
   tooltipText?: string;
   tooltipPosition?: TooltipPositionType;
   tooltipAlignment?: TooltipAlignmentType;
@@ -35,7 +25,7 @@ export const Button = ({
   children,
   type = 'button',
   icon,
-  variant = 'outlined',
+  variant = 'solid',
   intent = 'primary',
   className = '',
   isLoading = false,

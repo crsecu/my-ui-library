@@ -9,9 +9,6 @@ interface TooltipProps {
   position?: TooltipPositionType;
   align?: TooltipAlignmentType;
   anchorRef: RefObject<HTMLElement | null>;
-
-  //FOR DEVELOPMENT ONLY: forces the tooltip to stay open regardless of focus state
-  forceOpen?: boolean;
 }
 
 export const Tooltip = ({ content, position, align, anchorRef }: TooltipProps) => {

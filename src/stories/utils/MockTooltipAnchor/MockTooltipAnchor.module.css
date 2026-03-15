@@ -1,0 +1,10 @@
+.mockTooltipAnchor {
+    outline: 1px solid var(--neutral-soft);
+    padding: 10px 16px;
+    color: var(--neutral-darker);
+    font-size: 0.785rem;
+
+    &:hover {
+        background-color: var(--neutral-soft);
+    }
+}
