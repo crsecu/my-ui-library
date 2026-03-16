@@ -5,7 +5,7 @@ import { useTooltip } from './Tooltip.hooks';
 import type { TooltipAlignmentType, TooltipPositionType } from './tooltip.types';
 
 interface TooltipProps {
-  content?: string;
+  content: string;
   position?: TooltipPositionType;
   align?: TooltipAlignmentType;
   anchorRef: RefObject<HTMLElement | null>;
