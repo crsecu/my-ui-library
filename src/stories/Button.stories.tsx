@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/React';
 import { fn } from 'storybook/test';
-import { Button } from './Button';
+import { Button } from '../components/Button/Button.tsx';
 
 export const ActionsData = {
   onClick: fn(),
