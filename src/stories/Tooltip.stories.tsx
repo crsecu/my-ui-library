@@ -66,7 +66,6 @@ export const TopStart: Story = {
   name: 'Top Start',
   args: {
     tooltipAlignment: 'start',
-    forceTooltipOpen: true,
   },
 };
 

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Button } from './components/Button/Button';
-import { StoryGallery } from './components/StoryGallery/StoryGallery';
+import { StoryGallery } from './stories/utils/StoryGallery/StoryGallery';
 
 export const App = () => {
   const myRef = useRef<HTMLButtonElement>(null);

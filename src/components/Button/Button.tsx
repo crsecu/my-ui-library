@@ -1,11 +1,11 @@
-import { useRef, type ComponentPropsWithRef, type ReactNode, type RefObject } from 'react';
+import { useRef,  type ReactNode, type RefObject, type ButtonHTMLAttributes } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
 import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/tooltip.types';
 import type { ButtonIntent, ButtonVariant } from './button.types';
 import { Loader } from '../Loader/Loader';
 
-interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'ref'> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   icon?: ReactNode;
   variant?: ButtonVariant;
