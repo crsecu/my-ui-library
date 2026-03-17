@@ -7,7 +7,7 @@ export const App = () => {
 
   return (
     <StoryGallery>
-      <Button variant="solid" intent="primary" ref={myRef}>
+      <Button variant="solid" intent="primary" ref={myRef} tooltipText="Hello">
         Button
       </Button>
       <Button variant="solid" intent="success">

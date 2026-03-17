@@ -16,7 +16,4 @@ export type TooltipCoords = {
 export type UseTooltipReturn = {
   isVisible: boolean;
   tooltipStyles: TooltipCoords;
-  showTooltip: () => void;
-  hideTooltip: () => void;
-  onEscKey: (event: KeyboardEvent) => void;
 };

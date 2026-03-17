@@ -13,7 +13,14 @@ const initialTooltipPlacement: TooltipCoords = {
   top: undefined,
   left: undefined,
 };
-
+/**
+ * A custom hook that manages the visibility, and positioning logic for a tooltip component.
+ * @param anchorRef - The reference to the UI element that triggers the tooltip.
+ * @param tooltipRef - The reference to the tooltip element itself, used to measure its dimensions.
+ * @param selectedPosition - The preferred side for positioning (e.g., 'top', 'bottom').
+ * @param selectedAlign - The preferred edge alignment (e.g., 'start', 'center').
+ * @returns An object containing visibility state, and calculated CSS styles (top/left coordinates)
+ */
 export const useTooltip = ({
   anchorRef,
   tooltipRef,
@@ -135,8 +142,5 @@ export const useTooltip = ({
   return {
     isVisible,
     tooltipStyles: tooltipPlacement,
-    showTooltip,
-    hideTooltip,
-    onEscKey,
   };
 };
