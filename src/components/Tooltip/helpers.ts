@@ -8,15 +8,20 @@ import type {
   TooltipPositionType,
 } from './tooltip.types';
 
-//determine fallback placement if desired position/aligment doesn't fit on viewport
-const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType>(placementIsValid: T) => {
-  const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
 
-  return placementOptions.find((placement) => placementIsValid[placement]);
-  //what should happen if .find doesn't find a match?
-};
-
-//determines if tooltip fits in the selected position
+/**
+ * The primary engine for tooltip positioning.
+ * Validates if the preferred position and alignment fit within the current viewport boundaries.
+ * If not, it then calculates the optimal x/y coordinates for a tooltip relative to its anchor, ensuring the tooltip stays
+ * within the viewport boundaries.
+ * @param tooltipRect - The size and position of the tooltip element.
+ * @param anchorRect - The size and position of the anchor (the element the tooltip is attached to).
+ * @param vh -Total height of the visible screen.
+ * @param vw - Total width of the visible screen.
+ * @param position - The preferred side (top, bottom, left, right).
+ * @param align - The preferred alignment on the opposite axis (start, center, end).
+ * @returns An object containing the final `top` and `left` pixel coordinates.
+ */
 export const determineTooltipPlacement = (
   tooltipRect: DOMRect,
   anchorRect: DOMRect,
@@ -70,7 +75,34 @@ export const determineTooltipPlacement = (
   };
 };
 
-//Alignment Data
+/**
+ * Utility function that selects the first available placement that fits within the viewport.
+ * It's used as a fallback to determine Tooltip placement if there is not enough space for the preferred spot.
+ * @param placementIsValid - A map of placement keys (e.g., 'top', 'start') to booleans indicating if Tooltip fits at
+ * that placement
+ * @returns The first key that is `true`, or `undefined` is no valid placement is found.
+ */
+const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType>(placementIsValid: T) => {
+  const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
+
+  return placementOptions.find((placement) => placementIsValid[placement]);
+  //what should happen if .find doesn't find a match?
+};
+
+
+
+/**
+ * Calculates whether a tooltip can align to the start, center, or end of its anchor based on
+ * the current available space on the "secondary" axis.
+ * @param anchorRect - The size and position of the anchor (the element the tooltip is attached to).
+ * @param tooltipRect - The size and position of the tooltip element.
+ * @param primaryAxis - The axis of the main position ('y' for top/bottom, 'x' for left/right).
+ * @param viewportHeight - Total height of the visible screen.
+ * @param viewportWidth - Total width of the visible screen.
+ * @returns {AlignmentData} An object containing:
+ * - alignmentCoordinates: The specific pixel values for each alignment option.
+ * - alignmentIsValid: Booleans indicating if each option fits in the viewport.
+ */
 const generateAlignmentData = (
   anchorRect: DOMRect,
   tooltipRect: DOMRect,
