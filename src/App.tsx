@@ -24,7 +24,7 @@ export const App = () => {
       <Button variant="solid" intent="danger">
         Button
       </Button>
-      <Button variant="solid" intent="warning" >
+      <Button variant="solid" intent="warning">
         Button
       </Button>
     </StoryGallery>

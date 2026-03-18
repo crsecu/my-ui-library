@@ -10,7 +10,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: ReactNode;
   variant?: ButtonVariant;
   intent?: ButtonIntent;
-  //optional; allows for custom styling via className prop
   className?: string;
   isLoading?: boolean;
   disabled?: boolean;
