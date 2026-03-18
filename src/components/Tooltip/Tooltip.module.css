@@ -11,7 +11,8 @@
   background-color: #242527;
   color: var(--text-light);
   min-width: 10px;
-  max-width: 200px;
+  width: max-content;
+  max-width: 350px;
 
   box-shadow:
     rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,

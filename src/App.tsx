@@ -7,10 +7,15 @@ export const App = () => {
 
   return (
     <StoryGallery>
-      <Button variant="solid" intent="primary" ref={myRef} tooltipText="Hello">
+      <Button
+        variant="solid"
+        intent="primary"
+        ref={myRef}
+        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+      >
         Button
       </Button>
-      <Button variant="solid" intent="success">
+      <Button variant="solid" intent="success" tooltipText="Hello World">
         Button
       </Button>
       <Button variant="solid" intent="neutral">
@@ -19,7 +24,7 @@ export const App = () => {
       <Button variant="solid" intent="danger">
         Button
       </Button>
-      <Button variant="solid" intent="warning">
+      <Button variant="solid" intent="warning" >
         Button
       </Button>
     </StoryGallery>

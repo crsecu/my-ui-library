@@ -62,6 +62,8 @@ export const determineTooltipPlacement = (
     vw,
   );
 
+  console.log( 'positionCoords ', positionCoordinates, 'positionIsValid ', positionIsValid, 'alignmentIsValid', alignmentIsValid,  'alignmentCoords ', alignmentCoordinates, vh)
+
   const resolvedAlignment: TooltipAlignmentType = alignmentIsValid[align]
     ? align
     : (rezolveTooltipPlacement(alignmentIsValid) ?? align);
@@ -117,18 +119,19 @@ const generateAlignmentData = (
   const anchorMiddle = anchorRect[axisDimension] / 2;
   const tooltipMiddle = tooltipRect[axisDimension] / 2;
 
+  const alignmentIsValid = {
+    start: anchorRect[anchorStart] + tooltipRect[axisDimension] < viewportDimension,
+    center:
+      anchorRect[anchorStart] + anchorMiddle - tooltipMiddle > 0 && tooltipRect[axisDimension] <= viewportDimension,
+    end: anchorRect[anchorEnd] - tooltipRect[axisDimension] > 0,
+  };
+
   const alignmentCoordinates = {
     start: anchorRect[anchorStart],
     center: anchorRect[anchorStart] + anchorMiddle - tooltipMiddle,
     end: anchorRect[anchorEnd] - tooltipRect[axisDimension],
   };
 
-  const alignmentIsValid = {
-    start: anchorRect[anchorStart] + tooltipRect[axisDimension] < viewportDimension,
-    center:
-      anchorRect[anchorStart] + anchorMiddle - tooltipMiddle > 0 && tooltipRect[axisDimension] <= viewportDimension,
-    end: anchorRect[anchorEnd] + tooltipRect[axisDimension] > 0,
-  };
 
   return { alignmentCoordinates, alignmentIsValid };
 };
