@@ -95,14 +95,14 @@ export const useTooltip = ({
     const anchor = anchorRef.current;
 
     anchor.addEventListener('mouseenter', showTooltip);
-    anchor.addEventListener('mouseleave', hideTooltip);
+    // anchor.addEventListener('mouseleave', hideTooltip);
     anchor.addEventListener('focus', showTooltip);
     anchor.addEventListener('blur', hideTooltip);
     anchor.addEventListener('keydown', onEscKey);
 
     return () => {
       anchor.removeEventListener('mouseenter', showTooltip);
-      anchor.removeEventListener('mouseleave', hideTooltip);
+      // anchor.removeEventListener('mouseleave', hideTooltip);
       anchor.removeEventListener('focus', showTooltip);
       anchor.removeEventListener('blur', hideTooltip);
       anchor.removeEventListener('keydown', onEscKey);
