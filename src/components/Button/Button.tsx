@@ -67,7 +67,7 @@ export const Button = ({
         {...props}
       >
         <>
-          {isLoading && <Loader />}
+          {isLoading && <Loader testId="miniLoader"/>}
 
           {children}
           {icon}

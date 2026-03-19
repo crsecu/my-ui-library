@@ -21,7 +21,7 @@ describe('Button component', () => {
     render(<Button isLoading={true}>{buttonLabel}</Button>);
 
     const buttonElement = screen.getByRole('button');
-    const loader = within(buttonElement).getByTestId('loader');
+    const loader = within(buttonElement).getByTestId('miniLoader');
     expect(loader).toBeInTheDocument();
   });
 
