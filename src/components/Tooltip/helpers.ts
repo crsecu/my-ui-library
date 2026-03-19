@@ -1,4 +1,5 @@
 import type {
+  AlignmentCoordinatesType,
   AlignmentData,
   AlignmentIsValidType,
   LayoutAxisType,
@@ -37,7 +38,7 @@ export const determineTooltipPlacement = (
   const positionIsValid: PositionIsValidType = {
     top: anchorRect.top - tooltipHeight - tooltipOffset > 0,
     bottom: anchorRect.bottom + tooltipHeight + tooltipOffset < vh,
-    right: anchorRect.right + tooltipWidth < vw + tooltipOffset,
+    right: anchorRect.right + tooltipWidth + tooltipOffset < vw,
     left: anchorRect.left - tooltipWidth > 0 - tooltipOffset,
   };
 
@@ -50,7 +51,7 @@ export const determineTooltipPlacement = (
 
   const resolvedPosition: TooltipPositionType = positionIsValid[position]
     ? position
-    : (rezolveTooltipPlacement(positionIsValid) ?? position);
+    : (rezolveTooltipPlacement(positionIsValid, positionCoordinates) ?? position);
 
   const primaryAxis = resolvedPosition === 'top' || resolvedPosition === 'bottom' ? 'y' : 'x';
 
@@ -62,14 +63,24 @@ export const determineTooltipPlacement = (
     vw,
   );
 
-  console.log( 'positionCoords ', positionCoordinates, 'positionIsValid ', positionIsValid, 'alignmentIsValid', alignmentIsValid,  'alignmentCoords ', alignmentCoordinates, vh)
-
-  const resolvedAlignment: TooltipAlignmentType = alignmentIsValid[align]
-    ? align
-    : (rezolveTooltipPlacement(alignmentIsValid) ?? align);
+  console.log(
+    'positionCoords ',
+    positionCoordinates,
+    'positionIsValid ',
+    positionIsValid,
+    'alignmentIsValid',
+    alignmentIsValid,
+    'alignmentCoords ',
+    alignmentCoordinates,
+    vh,
+  );
 
   const cssPropertyPrimary = primaryAxis === 'y' ? 'top' : 'left';
   const cssPropertySecondary = cssPropertyPrimary === 'top' ? 'left' : 'top';
+
+  const resolvedAlignment= alignmentIsValid[align]
+    ? align
+    : rezolveTooltipPlacement(alignmentIsValid, alignmentCoordinates);
 
   return {
     [cssPropertyPrimary]: positionCoordinates[resolvedPosition],
@@ -82,16 +93,32 @@ export const determineTooltipPlacement = (
  * It's used as a fallback to determine Tooltip placement if there is not enough space for the preferred spot.
  * @param placementIsValid - A map of placement keys (e.g., 'top', 'start') to booleans indicating if Tooltip fits at
  * that placement
- * @returns The first key that is `true`, or `undefined` is no valid placement is found.
+ * @param placementCoordinates - A map of placement keys (e.g., 'top', 'start') to numeric pixel values
+ * @returns The first key that is `true`; if none is true (Tooltip does not fully fit on viewport), it returns the placement
+ * with most available space
  */
-const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType>(placementIsValid: T) => {
+const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType, U extends PositionCoordinatesType | AlignmentCoordinatesType>(
+  placementIsValid: T,
+  placementCoordinates: U
+): keyof T => {
   const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
+  const result = placementOptions.find((placement) => placementIsValid[placement]);
 
-  return placementOptions.find((placement) => placementIsValid[placement]);
-  //what should happen if .find doesn't find a match?
+  if(!result) {
+    let validAlignment = '';
+
+    for (const placement in placementCoordinates) {
+      const pixelCoords = + placementCoordinates[placement];
+      if (pixelCoords < 0) break;
+
+      validAlignment = placement;
+    }
+
+    return validAlignment as keyof T;
+  }
+
+  return result;
 };
-
-
 
 /**
  * Calculates whether a tooltip can align to the start, center, or end of its anchor based on
@@ -131,7 +158,6 @@ const generateAlignmentData = (
     center: anchorRect[anchorStart] + anchorMiddle - tooltipMiddle,
     end: anchorRect[anchorEnd] - tooltipRect[axisDimension],
   };
-
 
   return { alignmentCoordinates, alignmentIsValid };
 };
