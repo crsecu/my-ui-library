@@ -3,7 +3,7 @@ import { determineTooltipPlacement } from './helpers';
 import type { TooltipAlignmentType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './tooltip.types';
 
 interface TooltipHookProps {
-  anchorRef: RefObject<HTMLElement | null> | undefined;
+  anchorRef: RefObject<HTMLElement | null>;
   tooltipRef: RefObject<HTMLParagraphElement | null>;
   selectedPosition?: TooltipPositionType;
   selectedAlign?: TooltipAlignmentType;
@@ -14,7 +14,7 @@ const initialTooltipPlacement: TooltipCoords = {
   left: undefined,
 };
 /**
- * A custom hook that manages the visibility, and positioning logic for a tooltip component.
+ * A custom hook that manages visibility and positioning for Tooltip component.
  * @param anchorRef - The reference to the UI element that triggers the tooltip.
  * @param tooltipRef - The reference to the tooltip element itself, used to measure its dimensions.
  * @param selectedPosition - The preferred side for positioning (e.g., 'top', 'bottom').
@@ -95,14 +95,14 @@ export const useTooltip = ({
     const anchor = anchorRef.current;
 
     anchor.addEventListener('mouseenter', showTooltip);
-    // anchor.addEventListener('mouseleave', hideTooltip);
+    anchor.addEventListener('mouseleave', hideTooltip);
     anchor.addEventListener('focus', showTooltip);
     anchor.addEventListener('blur', hideTooltip);
     anchor.addEventListener('keydown', onEscKey);
 
     return () => {
       anchor.removeEventListener('mouseenter', showTooltip);
-      // anchor.removeEventListener('mouseleave', hideTooltip);
+      anchor.removeEventListener('mouseleave', hideTooltip);
       anchor.removeEventListener('focus', showTooltip);
       anchor.removeEventListener('blur', hideTooltip);
       anchor.removeEventListener('keydown', onEscKey);

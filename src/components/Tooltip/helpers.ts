@@ -13,7 +13,7 @@ import type {
 /**
  * The primary engine for tooltip positioning.
  * Validates if the preferred position and alignment fit within the current viewport boundaries.
- * If not, it then calculates the optimal x/y coordinates for a tooltip relative to its anchor, ensuring the tooltip stays
+ * If not, it then calculates the optimal x/y coordinates for the tooltip relative to its anchor, ensuring the tooltip stays
  * within the viewport boundaries.
  * @param tooltipRect - The size and position of the tooltip element.
  * @param anchorRect - The size and position of the anchor (the element the tooltip is attached to).
@@ -51,7 +51,7 @@ export const determineTooltipPlacement = (
 
   const resolvedPosition: TooltipPositionType = positionIsValid[position]
     ? position
-    : (rezolveTooltipPlacement(positionIsValid, positionCoordinates) ?? position);
+    : rezolveTooltipPlacement(positionIsValid, positionCoordinates);
 
   const primaryAxis = resolvedPosition === 'top' || resolvedPosition === 'bottom' ? 'y' : 'x';
 
@@ -102,22 +102,29 @@ const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsVali
   placementCoordinates: U
 ): keyof T => {
   const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
-  const result = placementOptions.find((placement) => placementIsValid[placement]);
+  const suitablePlacement = placementOptions.find((placement) => placementIsValid[placement]);
 
-  if(!result) {
-    let validAlignment = '';
+  //if no suitable placement (tooltip fits fully) exists, use the placement
+  //with most space as a fallback
+  if(!suitablePlacement) {
+    let maxSpace = 0;
+    let fallbackPlacement = '';
+
 
     for (const placement in placementCoordinates) {
-      const pixelCoords = + placementCoordinates[placement];
+      const pixelCoords = +placementCoordinates[placement];
       if (pixelCoords < 0) break;
 
-      validAlignment = placement;
+      if(pixelCoords > maxSpace) {
+        maxSpace = pixelCoords;
+        fallbackPlacement = placement;
+      }
     }
 
-    return validAlignment as keyof T;
+    return fallbackPlacement as keyof T;
   }
 
-  return result;
+  return suitablePlacement;
 };
 
 /**
