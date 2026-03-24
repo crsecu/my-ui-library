@@ -11,7 +11,8 @@ export const App = () => {
         variant="solid"
         intent="primary"
         ref={myRef}
-        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+        tooltipAlignment="end"
       >
         Button
       </Button>

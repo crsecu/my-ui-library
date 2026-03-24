@@ -104,18 +104,17 @@ const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsVali
   const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
   const suitablePlacement = placementOptions.find((placement) => placementIsValid[placement]);
 
-  //if no suitable placement (tooltip fits fully) exists, use the placement
+  //if no suitable placement (tooltip does not fit fully) exists, use the placement
   //with most space as a fallback
-  if(!suitablePlacement) {
+  if (!suitablePlacement) {
     let maxSpace = 0;
     let fallbackPlacement = '';
-
 
     for (const placement in placementCoordinates) {
       const pixelCoords = +placementCoordinates[placement];
       if (pixelCoords < 0) break;
 
-      if(pixelCoords > maxSpace) {
+      if (pixelCoords > maxSpace) {
         maxSpace = pixelCoords;
         fallbackPlacement = placement;
       }
