@@ -51,7 +51,7 @@ export const determineTooltipPlacement = (
 
   const resolvedPosition: TooltipPositionType = positionIsValid[position]
     ? position
-    : rezolveTooltipPlacement(positionIsValid, positionCoordinates);
+    : resolveTooltipPlacement(positionIsValid, positionCoordinates);
 
   const primaryAxis = resolvedPosition === 'top' || resolvedPosition === 'bottom' ? 'y' : 'x';
 
@@ -80,7 +80,7 @@ export const determineTooltipPlacement = (
 
   const resolvedAlignment= alignmentIsValid[align]
     ? align
-    : rezolveTooltipPlacement(alignmentIsValid, alignmentCoordinates);
+    : resolveTooltipPlacement(alignmentIsValid, alignmentCoordinates);
 
   return {
     [cssPropertyPrimary]: positionCoordinates[resolvedPosition],
@@ -97,7 +97,7 @@ export const determineTooltipPlacement = (
  * @returns The first key that is `true`; if none is true (Tooltip does not fully fit on viewport), it returns the placement
  * with most available space
  */
-const rezolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType, U extends PositionCoordinatesType | AlignmentCoordinatesType>(
+export const resolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType, U extends PositionCoordinatesType | AlignmentCoordinatesType>(
   placementIsValid: T,
   placementCoordinates: U
 ): keyof T => {
