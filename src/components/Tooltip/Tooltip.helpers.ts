@@ -7,7 +7,7 @@ import type {
   PositionIsValidType,
   TooltipAlignmentType,
   TooltipPositionType,
-} from './tooltip.types';
+} from './Tooltip.types.ts';
 
 
 /**

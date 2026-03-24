@@ -2,7 +2,7 @@ import { useRef, type RefObject } from 'react';
 import styles from './Tooltip.module.css';
 import { createPortal } from 'react-dom';
 import { useTooltip } from './Tooltip.hooks';
-import type { TooltipAlignmentType, TooltipPositionType } from './tooltip.types';
+import type { TooltipAlignmentType, TooltipPositionType } from './Tooltip.types.ts';
 
 interface TooltipProps {
   content: string;

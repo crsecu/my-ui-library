@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
-import { determineTooltipPlacement } from './helpers';
-import type { TooltipAlignmentType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './tooltip.types';
+import { determineTooltipPlacement } from './Tooltip.helpers.ts';
+import type { TooltipAlignmentType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './Tooltip.types.ts';
 
 interface TooltipHookProps {
   anchorRef: RefObject<HTMLElement | null>;
