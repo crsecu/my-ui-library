@@ -1,46 +1,67 @@
 import type {
   AlignmentCoordinatesType,
-  AlignmentData,
   AlignmentIsValidType,
-  LayoutAxisType,
+  AvailableSpaceAroundAnchor,
   PositionCoordinatesType,
   PositionIsValidType,
   TooltipAlignmentType,
   TooltipPositionType,
 } from './Tooltip.types.ts';
 
-
 /**
  * The primary engine for tooltip positioning.
- * Validates if the preferred position and alignment fit within the current viewport boundaries.
- * If not, it then calculates the optimal x/y coordinates for the tooltip relative to its anchor, ensuring the tooltip stays
- * within the viewport boundaries.
+ * It coordinates the calculation of where the tooltip should appear. It first determines the
+ * position (relative to anchor: top, bottom, left, right) and then determines the alignment on that side
+ * (start, center, end). It then maps these values to actual pixel coordinates.
  * @param tooltipRect - The size and position of the tooltip element.
  * @param anchorRect - The size and position of the anchor (the element the tooltip is attached to).
  * @param vh -Total height of the visible screen.
  * @param vw - Total width of the visible screen.
- * @param position - The preferred side (top, bottom, left, right).
- * @param align - The preferred alignment on the opposite axis (start, center, end).
- * @returns An object containing the final `top` and `left` pixel coordinates.
+ * @param preferredPosition - The preferred side (top, bottom, left, right).
+ * @param preferredAlignment - The preferred alignment on the opposite axis (start, center, end).
+ * @returns An object containing the final `top` and `left` pixel coordinates for CSS positioning.
  */
 export const determineTooltipPlacement = (
   tooltipRect: DOMRect,
   anchorRect: DOMRect,
   vh: number,
   vw: number,
-  position: TooltipPositionType = 'top',
-  align: TooltipAlignmentType = 'center',
+  preferredPosition: TooltipPositionType = 'top',
+  preferredAlignment: TooltipAlignmentType = 'center',
 ) => {
-  const tooltipHeight = tooltipRect.height;
-  const tooltipWidth = tooltipRect.width;
+  const { height: tooltipHeight, width: tooltipWidth } = tooltipRect;
+
+  //the gap in pixels between the anchor and the tooltip
   const tooltipOffset = 6;
 
-  const positionIsValid: PositionIsValidType = {
-    top: anchorRect.top - tooltipHeight - tooltipOffset > 0,
-    bottom: anchorRect.bottom + tooltipHeight + tooltipOffset < vh,
-    right: anchorRect.right + tooltipWidth + tooltipOffset < vw,
-    left: anchorRect.left - tooltipWidth > 0 - tooltipOffset,
+  const availableSpaceAroundAnchor: AvailableSpaceAroundAnchor = {
+    top: anchorRect.top,
+    bottom: vh - anchorRect.bottom,
+    right: vw - anchorRect.right,
+    left: anchorRect.left,
   };
+
+  const resolvedPosition: TooltipPositionType = determinePosition(
+    preferredPosition,
+    availableSpaceAroundAnchor,
+    tooltipHeight,
+    tooltipWidth,
+    tooltipOffset,
+  );
+
+  //this refers to tooltip position relative to the anchor
+  //evaluates to true if the tooltip is placed above or below anchor, and to false if placed to the left or right of anchor
+  const isPositionedVertically = resolvedPosition === 'top' || resolvedPosition === 'bottom';
+
+  const resolvedAlignment = determineAlignment(
+    preferredAlignment,
+    isPositionedVertically,
+    availableSpaceAroundAnchor,
+    tooltipHeight,
+    tooltipWidth,
+    anchorRect.height,
+    anchorRect.width,
+  );
 
   const positionCoordinates: PositionCoordinatesType = {
     top: anchorRect.top - tooltipHeight - tooltipOffset,
@@ -49,38 +70,10 @@ export const determineTooltipPlacement = (
     left: anchorRect.left - tooltipWidth - tooltipOffset,
   };
 
-  const resolvedPosition: TooltipPositionType = positionIsValid[position]
-    ? position
-    : resolveTooltipPlacement(positionIsValid, positionCoordinates);
+  const alignmentCoordinates = generateAlignmentCoordinates(isPositionedVertically, anchorRect, tooltipRect);
 
-  const primaryAxis = resolvedPosition === 'top' || resolvedPosition === 'bottom' ? 'y' : 'x';
-
-  const { alignmentIsValid, alignmentCoordinates } = generateAlignmentData(
-    anchorRect,
-    tooltipRect,
-    primaryAxis,
-    vh,
-    vw,
-  );
-
-  console.log(
-    'positionCoords ',
-    positionCoordinates,
-    'positionIsValid ',
-    positionIsValid,
-    'alignmentIsValid',
-    alignmentIsValid,
-    'alignmentCoords ',
-    alignmentCoordinates,
-    vh,
-  );
-
-  const cssPropertyPrimary = primaryAxis === 'y' ? 'top' : 'left';
+  const cssPropertyPrimary = isPositionedVertically ? 'top' : 'left';
   const cssPropertySecondary = cssPropertyPrimary === 'top' ? 'left' : 'top';
-
-  const resolvedAlignment= alignmentIsValid[align]
-    ? align
-    : resolveTooltipPlacement(alignmentIsValid, alignmentCoordinates);
 
   return {
     [cssPropertyPrimary]: positionCoordinates[resolvedPosition],
@@ -93,77 +86,153 @@ export const determineTooltipPlacement = (
  * It's used as a fallback to determine Tooltip placement if there is not enough space for the preferred spot.
  * @param placementIsValid - A map of placement keys (e.g., 'top', 'start') to booleans indicating if Tooltip fits at
  * that placement
- * @param placementCoordinates - A map of placement keys (e.g., 'top', 'start') to numeric pixel values
- * @returns The first key that is `true`; if none is true (Tooltip does not fully fit on viewport), it returns the placement
- * with most available space
+ * @returns The first key that is `true`; if none is true (Tooltip does not fully fit on viewport), it returns undefined
  */
-export const resolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType, U extends PositionCoordinatesType | AlignmentCoordinatesType>(
+export const resolveTooltipPlacement = <
+  T extends PositionIsValidType | AlignmentIsValidType,
+>(
   placementIsValid: T,
-  placementCoordinates: U
-): keyof T => {
+): keyof T | undefined => {
   const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
-  const suitablePlacement = placementOptions.find((placement) => placementIsValid[placement]);
 
-  //if no suitable placement (tooltip does not fit fully) exists, use the placement
-  //with most space as a fallback
-  if (!suitablePlacement) {
-    let maxSpace = 0;
-    let fallbackPlacement = '';
-
-    for (const placement in placementCoordinates) {
-      const pixelCoords = +placementCoordinates[placement];
-      if (pixelCoords < 0) break;
-
-      if (pixelCoords > maxSpace) {
-        maxSpace = pixelCoords;
-        fallbackPlacement = placement;
-      }
-    }
-
-    return fallbackPlacement as keyof T;
-  }
-
-  return suitablePlacement;
+  return placementOptions.find((placement) => placementIsValid[placement]);
 };
 
 /**
- * Calculates whether a tooltip can align to the start, center, or end of its anchor based on
- * the current available space on the "secondary" axis.
+ * Calculates the exact pixel coordinates for start, center, and end alignments.
+ * @param isTooltipPositionedVertically - True if tooltip is placed top/bottom; false if left/right.
  * @param anchorRect - The size and position of the anchor (the element the tooltip is attached to).
  * @param tooltipRect - The size and position of the tooltip element.
- * @param primaryAxis - The axis of the main position ('y' for top/bottom, 'x' for left/right).
- * @param viewportHeight - Total height of the visible screen.
- * @param viewportWidth - Total width of the visible screen.
- * @returns {AlignmentData} An object containing:
- * - alignmentCoordinates: The specific pixel values for each alignment option.
- * - alignmentIsValid: Booleans indicating if each option fits in the viewport.
+ * @returns An object containing the specific pixel values for each alignment option.
  */
-const generateAlignmentData = (
+const generateAlignmentCoordinates = (
+  isTooltipPositionedVertically: boolean,
   anchorRect: DOMRect,
   tooltipRect: DOMRect,
-  primaryAxis: LayoutAxisType,
-  viewportHeight: number,
-  viewportWidth: number,
-): AlignmentData => {
-  const anchorStart = primaryAxis === 'y' ? 'left' : 'top';
-  const anchorEnd = primaryAxis === 'y' ? 'right' : 'bottom';
-  const axisDimension = primaryAxis === 'y' ? 'width' : 'height';
-  const viewportDimension = primaryAxis === 'y' ? viewportWidth : viewportHeight;
+): AlignmentCoordinatesType => {
+  const anchorStart = isTooltipPositionedVertically ? 'left' : 'top';
+  const anchorEnd = isTooltipPositionedVertically ? 'right' : 'bottom';
+  const axisDimension = isTooltipPositionedVertically ? 'width' : 'height';
   const anchorMiddle = anchorRect[axisDimension] / 2;
   const tooltipMiddle = tooltipRect[axisDimension] / 2;
 
-  const alignmentIsValid = {
-    start: anchorRect[anchorStart] + tooltipRect[axisDimension] < viewportDimension,
-    center:
-      anchorRect[anchorStart] + anchorMiddle - tooltipMiddle > 0 && tooltipRect[axisDimension] <= viewportDimension,
-    end: anchorRect[anchorEnd] - tooltipRect[axisDimension] > 0,
-  };
-
-  const alignmentCoordinates = {
+  return {
     start: anchorRect[anchorStart],
     center: anchorRect[anchorStart] + anchorMiddle - tooltipMiddle,
     end: anchorRect[anchorEnd] - tooltipRect[axisDimension],
   };
+};
 
-  return { alignmentCoordinates, alignmentIsValid };
+/**
+ * Determines which side of the anchor the tooltip should appear on.
+ * Logic:
+ * 1. Checks if the `preferredPosition` fits.
+ * 2. If not, finds the first alternative side that fits.
+ * 3. If nothing fits, it chooses the side with the most available pixels.
+ * @param preferredPosition - The preferred position (top, bottom, left, or right).
+ * @param availableSpaceAroundAnchor - Map of available space (pixels) between the anchor and the viewport edges.
+ * @param tooltipHeight - Height of the tooltip.
+ * @param tooltipWidth - Width of the tooltip.
+ * @param tooltipOffset - The gap between the anchor and tooltip.
+ * @returns A string (top, bottom, left, or right) representing the validated position for the tooltip.
+ */
+export const determinePosition = (
+  preferredPosition: TooltipPositionType,
+  availableSpaceAroundAnchor: AvailableSpaceAroundAnchor,
+  tooltipHeight: number,
+  tooltipWidth: number,
+  tooltipOffset: number
+) => {
+  const positionIsValid: PositionIsValidType = {
+    top: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.top,
+    bottom: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.bottom,
+    right: tooltipWidth + tooltipOffset <= availableSpaceAroundAnchor.right,
+    left: tooltipWidth + tooltipOffset <= availableSpaceAroundAnchor.left,
+  };
+
+  //return the preferred position if it fits within the viewport
+  if (positionIsValid[preferredPosition]) return preferredPosition;
+
+  //otherwise, check all other sides and return the first one that fits.
+  const positionOptions = Object.keys(positionIsValid) as (keyof PositionIsValidType)[];
+  const validPosition = positionOptions.find((position) => positionIsValid[position]);
+
+  //if the tooltip is too large to fit fully on any side, return the side with most available space
+  if (!validPosition) {
+    let maxSpace = 0;
+
+    //initializing fallbackPosition as first item in PositionOptions to quiet TS
+    let fallbackPosition = positionOptions[0];
+
+    for (const position of positionOptions) {
+      const availableSpace = availableSpaceAroundAnchor[position];
+
+      if (availableSpace > maxSpace) {
+        maxSpace = availableSpace;
+        fallbackPosition = position;
+      }
+    }
+
+    return fallbackPosition;
+  }
+
+  return validPosition;
+};
+
+
+/**
+ * Determines where to align the tooltip relative to the anchor edge.
+ * @param preferredAlignment - The preferred alignment (start, center, or end).
+ * @param isTooltipPositionedVertically - True if tooltip is placed top/bottom; false if left/right.
+ * @param availableSpaceAroundAnchor - Map of available space (pixels) between the anchor and the viewport edges.
+ * @param tooltipHeight - Height of the tooltip.
+ * @param tooltipWidth - Width of the tooltip.
+ * @param anchorHeight - Height of the anchor element.
+ * @param anchorWidth - Width of the anchor element.
+ * @returns A string (start, center, end) representing the validated alignment for the tooltip.
+ */
+export const determineAlignment = (
+  preferredAlignment: TooltipAlignmentType,
+  isTooltipPositionedVertically: boolean,
+  availableSpaceAroundAnchor: { [key in TooltipPositionType]: number },
+  tooltipHeight: number,
+  tooltipWidth: number,
+  anchorHeight: number,
+  anchorWidth: number,
+) => {
+  //return preferredAlignment if tooltip dimension is smaller than anchor since all alignment options will fit by default
+  if (tooltipWidth <= anchorWidth || tooltipHeight <= anchorHeight) return preferredAlignment;
+
+  //the extra px the tooltip occupies beyond the anchor edges
+  const sizeDiff = isTooltipPositionedVertically ? tooltipWidth - anchorWidth : tooltipHeight - anchorHeight;
+
+  //halfSizeDiff is the space needed on both sides of anchor to allow for 'center' alignment.
+  const halfSizeDiff = sizeDiff / 2;
+
+  const alignmentIsValid: AlignmentIsValidType = {
+    start: false,
+    center: false,
+    end: false,
+  };
+
+  if (isTooltipPositionedVertically) {
+    alignmentIsValid.start = sizeDiff <= availableSpaceAroundAnchor.right;
+    alignmentIsValid.center =
+      halfSizeDiff <= availableSpaceAroundAnchor.left && halfSizeDiff <= availableSpaceAroundAnchor.right;
+    alignmentIsValid.end = sizeDiff <= availableSpaceAroundAnchor.left;
+  } else {
+    alignmentIsValid.start = sizeDiff <= availableSpaceAroundAnchor.bottom;
+    alignmentIsValid.center =
+      halfSizeDiff <= availableSpaceAroundAnchor.top && halfSizeDiff <= availableSpaceAroundAnchor.bottom;
+    alignmentIsValid.end = sizeDiff <= availableSpaceAroundAnchor.top;
+  }
+
+  //return the preferred alignment if it fits within the viewport
+  if (alignmentIsValid[preferredAlignment]) return preferredAlignment;
+
+  //if preferred alignment is invalid, find the first alternative that fits, or default to 'start'.
+  const alignmentOptions = Object.keys(alignmentIsValid) as (keyof AlignmentIsValidType)[];
+  const validAlignment = alignmentOptions.find((alignment) => alignmentIsValid[alignment]);
+
+  return validAlignment || 'start';
 };
