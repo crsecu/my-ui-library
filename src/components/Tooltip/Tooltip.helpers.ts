@@ -5,6 +5,7 @@ import type {
   PositionCoordinatesType,
   PositionIsValidType,
   TooltipAlignmentType,
+  TooltipCoords,
   TooltipPositionType,
 } from './Tooltip.types.ts';
 
@@ -28,7 +29,7 @@ export const determineTooltipPlacement = (
   vw: number,
   preferredPosition: TooltipPositionType = 'top',
   preferredAlignment: TooltipAlignmentType = 'center',
-) => {
+): TooltipCoords => {
   const { height: tooltipHeight, width: tooltipWidth } = tooltipRect;
 
   //the gap in pixels between the anchor and the tooltip
@@ -78,7 +79,7 @@ export const determineTooltipPlacement = (
   return {
     [cssPropertyPrimary]: positionCoordinates[resolvedPosition],
     [cssPropertySecondary]: alignmentCoordinates[resolvedAlignment],
-  };
+  } as TooltipCoords;
 };
 
 /**
@@ -105,7 +106,7 @@ export const resolveTooltipPlacement = <
  * @param tooltipRect - The size and position of the tooltip element.
  * @returns An object containing the specific pixel values for each alignment option.
  */
-const generateAlignmentCoordinates = (
+export const generateAlignmentCoordinates = (
   isTooltipPositionedVertically: boolean,
   anchorRect: DOMRect,
   tooltipRect: DOMRect,
@@ -142,7 +143,8 @@ export const determinePosition = (
   tooltipHeight: number,
   tooltipWidth: number,
   tooltipOffset: number
-) => {
+): TooltipPositionType => {
+
   const positionIsValid: PositionIsValidType = {
     top: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.top,
     bottom: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.bottom,
@@ -179,7 +181,6 @@ export const determinePosition = (
   return validPosition;
 };
 
-
 /**
  * Determines where to align the tooltip relative to the anchor edge.
  * @param preferredAlignment - The preferred alignment (start, center, or end).
@@ -199,7 +200,7 @@ export const determineAlignment = (
   tooltipWidth: number,
   anchorHeight: number,
   anchorWidth: number,
-) => {
+): TooltipAlignmentType => {
   //return preferredAlignment if tooltip dimension is smaller than anchor since all alignment options will fit by default
   if (tooltipWidth <= anchorWidth || tooltipHeight <= anchorHeight) return preferredAlignment;
 
@@ -233,6 +234,6 @@ export const determineAlignment = (
   //if preferred alignment is invalid, find the first alternative that fits, or default to 'start'.
   const alignmentOptions = Object.keys(alignmentIsValid) as (keyof AlignmentIsValidType)[];
   const validAlignment = alignmentOptions.find((alignment) => alignmentIsValid[alignment]);
-
+  console.log('ALIGNMENT IS VALID ', alignmentIsValid, validAlignment);
   return validAlignment || 'start';
 };

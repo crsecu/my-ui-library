@@ -7,16 +7,17 @@ export const App = () => {
 
   return (
     <StoryGallery>
+      <Button variant="solid" intent="success" tooltipText="Hello" tooltipPosition="bottom" tooltipAlignment="start">
+        Submit
+      </Button>
       <Button
         variant="solid"
         intent="primary"
         ref={myRef}
         tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
         tooltipAlignment="end"
+        tooltipPosition="bottom"
       >
-        Button
-      </Button>
-      <Button variant="solid" intent="success" tooltipText="Hello World">
         Button
       </Button>
       <Button variant="solid" intent="neutral">
@@ -25,8 +26,14 @@ export const App = () => {
       <Button variant="solid" intent="danger">
         Button
       </Button>
-      <Button variant="solid" intent="warning">
-        Button
+      <Button
+        variant="solid"
+        intent="warning"
+        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+        tooltipPosition="bottom"
+        tooltipAlignment="end"
+      >
+        Button Button
       </Button>
     </StoryGallery>
   );

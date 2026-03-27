@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { determineTooltipPlacement } from './Tooltip.helpers.ts';
-import type { TooltipAlignmentType, TooltipCoords, TooltipPositionType, UseTooltipReturn } from './Tooltip.types.ts';
+import type {
+  InitialTooltipCoords,
+  TooltipAlignmentType,
+  TooltipCoords,
+  TooltipPositionType,
+  UseTooltipReturn,
+} from './Tooltip.types.ts';
 
 interface TooltipHookProps {
   anchorRef: RefObject<HTMLElement | null>;
@@ -9,10 +15,11 @@ interface TooltipHookProps {
   selectedAlign?: TooltipAlignmentType;
 }
 
-const initialTooltipPlacement: TooltipCoords = {
+const initialTooltipPlacement: InitialTooltipCoords = {
   top: undefined,
   left: undefined,
 };
+
 /**
  * A custom hook that manages visibility and positioning for Tooltip component.
  * @param anchorRef - The reference to the UI element that triggers the tooltip.
@@ -28,7 +35,7 @@ export const useTooltip = ({
   selectedAlign,
 }: TooltipHookProps): UseTooltipReturn => {
   const [isVisible, setIsVisible] = useState(false);
-  const [tooltipPlacement, setTooltipPlacement] = useState<TooltipCoords>(initialTooltipPlacement);
+  const [tooltipPlacement, setTooltipPlacement] = useState<InitialTooltipCoords | TooltipCoords>(initialTooltipPlacement);
 
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -95,14 +102,14 @@ export const useTooltip = ({
     const anchor = anchorRef.current;
 
     anchor.addEventListener('mouseenter', showTooltip);
-    anchor.addEventListener('mouseleave', hideTooltip);
+    //anchor.addEventListener('mouseleave', hideTooltip);
     anchor.addEventListener('focus', showTooltip);
     anchor.addEventListener('blur', hideTooltip);
     anchor.addEventListener('keydown', onEscKey);
 
     return () => {
       anchor.removeEventListener('mouseenter', showTooltip);
-      anchor.removeEventListener('mouseleave', hideTooltip);
+      //anchor.removeEventListener('mouseleave', hideTooltip);
       anchor.removeEventListener('focus', showTooltip);
       anchor.removeEventListener('blur', hideTooltip);
       anchor.removeEventListener('keydown', onEscKey);

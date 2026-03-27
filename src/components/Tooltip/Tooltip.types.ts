@@ -8,12 +8,16 @@ export type PositionCoordinatesType = { [key in TooltipPositionType]: number };
 export type AlignmentIsValidType = { [key in TooltipAlignmentType]: boolean };
 export type AlignmentCoordinatesType = { [key in TooltipAlignmentType]: number };
 
+export type InitialTooltipCoords = {
+  top: undefined;
+  left: undefined;
+};
 export type TooltipCoords = {
-  top: number | undefined;
-  left: number | undefined;
+  top: number;
+  left: number;
 };
 
 export type UseTooltipReturn = {
   isVisible: boolean;
-  tooltipStyles: TooltipCoords;
+  tooltipStyles: InitialTooltipCoords | TooltipCoords;
 };
