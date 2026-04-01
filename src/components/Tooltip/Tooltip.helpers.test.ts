@@ -270,7 +270,6 @@ describe("determineTooltipPlacement output for small tooltip", () => {
     const preferredAlignment = 'start';
 
     const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw, preferredPosition, preferredAlignment);
-    console.log(100, result);
 
     expect(roundTo(result.top)).toBe(57.20);
     expect(roundTo(result.left)).toBe(0);

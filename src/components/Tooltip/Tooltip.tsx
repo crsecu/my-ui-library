@@ -32,7 +32,7 @@ export const Tooltip = ({ content, position, align, anchorRef }: TooltipProps) =
   if (!isVisible) return null;
 
   return createPortal(
-    <p className={styles.tooltip} ref={tooltipRef} style={tooltipStyles}>
+    <p className={styles.tooltip} ref={tooltipRef} style={tooltipStyles} role="tooltip">
       {content}
     </p>,
     document.body,

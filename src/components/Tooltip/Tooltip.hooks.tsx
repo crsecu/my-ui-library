@@ -35,18 +35,20 @@ export const useTooltip = ({
   selectedAlign,
 }: TooltipHookProps): UseTooltipReturn => {
   const [isVisible, setIsVisible] = useState(false);
+  //tooltip coordinates for CSS
   const [tooltipPlacement, setTooltipPlacement] = useState<InitialTooltipCoords | TooltipCoords>(initialTooltipPlacement);
 
-  const timeoutIdRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const updateTooltipPlacement = useCallback(() => {
-    if (!isVisible || !anchorRef?.current || !tooltipRef?.current) return;
+    if (!anchorRef?.current || !tooltipRef?.current) return;
 
     const vh = window.document.documentElement.clientHeight;
     const vw = window.document.documentElement.clientWidth;
     const anchorRECT = anchorRef.current.getBoundingClientRect();
     const tooltipRECT = tooltipRef.current.getBoundingClientRect();
 
+    //resolvedPlacement = {top: "xPx", left: "xPx"}
     const resolvedPlacement = determineTooltipPlacement(
       tooltipRECT,
       anchorRECT,
@@ -56,26 +58,21 @@ export const useTooltip = ({
       selectedAlign,
     );
 
-    console.log('calculateTooltipPosition RESULT', resolvedPlacement);
-
     setTooltipPlacement((prevState) => {
       if (prevState.top === resolvedPlacement.top && prevState.left === resolvedPlacement.left) return prevState;
 
       return { ...prevState, ...resolvedPlacement };
     });
 
-    console.log('tooltip rect', tooltipRECT);
-    console.log('anchor rect', anchorRECT);
-  }, [anchorRef, tooltipRef, isVisible, selectedAlign, selectedPosition]);
+
+  }, [anchorRef, tooltipRef, selectedAlign, selectedPosition]);
 
   const showTooltip = useCallback(() => {
     if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
 
-    const timeoutId = setTimeout(() => {
+    timeoutIdRef.current = setTimeout(() => {
       setIsVisible(true);
     }, 300);
-
-    timeoutIdRef.current = timeoutId;
   }, []);
 
   const hideTooltip = useCallback(() => {
@@ -96,20 +93,17 @@ export const useTooltip = ({
   //attach event listeners to the anchor
   useEffect(() => {
     if (!anchorRef?.current) return;
-
-    console.log('firstEffect add/hide tooltip event');
-
     const anchor = anchorRef.current;
 
     anchor.addEventListener('mouseenter', showTooltip);
-    //anchor.addEventListener('mouseleave', hideTooltip);
+    anchor.addEventListener('mouseleave', hideTooltip);
     anchor.addEventListener('focus', showTooltip);
     anchor.addEventListener('blur', hideTooltip);
     anchor.addEventListener('keydown', onEscKey);
 
     return () => {
       anchor.removeEventListener('mouseenter', showTooltip);
-      //anchor.removeEventListener('mouseleave', hideTooltip);
+      anchor.removeEventListener('mouseleave', hideTooltip);
       anchor.removeEventListener('focus', showTooltip);
       anchor.removeEventListener('blur', hideTooltip);
       anchor.removeEventListener('keydown', onEscKey);
@@ -119,16 +113,15 @@ export const useTooltip = ({
   //update tooltip placement before DOM is painted
   useLayoutEffect(() => {
     if (!isVisible) return;
+    console.log('log 2');
 
-    console.log('useLayout');
     updateTooltipPlacement();
   }, [isVisible, updateTooltipPlacement]);
 
   //attach resize/scroll event listeners only if the tooltip is visible
   useEffect(() => {
     if (!isVisible) return;
-
-    console.log('resize event firing');
+    console.log('log 3');
 
     window.addEventListener('resize', updateTooltipPlacement);
     window.addEventListener('scroll', updateTooltipPlacement);
