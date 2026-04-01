@@ -9,7 +9,7 @@ import { Loader } from '../../../components/Loader/Loader.tsx';
 
 interface MockButtonProps {
   children: ReactNode;
-  isLoading: boolean;
+  isLoading?: boolean;
   tooltipText?: string;
   tooltipPosition?: TooltipPositionType;
   tooltipAlignment?: TooltipAlignmentType;
