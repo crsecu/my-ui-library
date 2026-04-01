@@ -50,7 +50,6 @@ export const useTooltip = ({
     const anchorRECT = anchorRef.current.getBoundingClientRect();
     const tooltipRECT = tooltipRef.current.getBoundingClientRect();
 
-    //resolvedPlacement = {top: "xPx", left: "xPx"}
     const resolvedPlacement = determineTooltipPlacement(
       tooltipRECT,
       anchorRECT,
