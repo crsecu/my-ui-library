@@ -4,25 +4,29 @@ import type {
   TooltipPositionType,
 } from '../../../components/Tooltip/Tooltip.types.ts';
 import { type ReactNode, useRef } from 'react';
-import styles from './MockTooltipAnchor.module.css';
+import styles from './MockButton.module.css';
+import { Loader } from '../../../components/Loader/Loader.tsx';
 
-interface MockTooltipAnchorProps {
+interface MockButtonProps {
   children: ReactNode;
+  isLoading: boolean;
   tooltipText?: string;
   tooltipPosition?: TooltipPositionType;
   tooltipAlignment?: TooltipAlignmentType;
 }
 
-export const MockTooltipAnchor = ({
+export const MockButton = ({
   children,
+  isLoading = false,
   tooltipText,
   tooltipPosition,
   tooltipAlignment,
-}: MockTooltipAnchorProps) => {
+}: MockButtonProps) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   return (
-    <button className={styles.mockTooltipAnchor} ref={ref}>
+    <button className={styles.mockButton} ref={ref}>
+      {isLoading && <Loader testId="miniLoader" />}
       {children}
 
       {tooltipText && (

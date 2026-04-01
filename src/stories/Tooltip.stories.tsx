@@ -1,7 +1,7 @@
 /* eslint-disable storybook/no-redundant-story-name */
 import type { Meta, StoryObj } from '@storybook/React';
 import { fn } from 'storybook/test';
-import { MockTooltipAnchor } from './utils/MockTooltipAnchor/MockTooltipAnchor.tsx';
+import { MockButton } from './utils/MockButton/MockButton.tsx';
 
 export const ActionsData = {
   onMouseEnter: fn(),
@@ -12,7 +12,7 @@ export const ActionsData = {
 
 const meta = {
   title: 'Tooltip',
-  component: MockTooltipAnchor,
+  component: MockButton,
   tags: ['autodocs'],
   excludeStories: /.*Data$/,
   args: {
@@ -21,7 +21,7 @@ const meta = {
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
     ...ActionsData,
   },
-} satisfies Meta<typeof MockTooltipAnchor>;
+} satisfies Meta<typeof MockButton>;
 
 export default meta;
 
