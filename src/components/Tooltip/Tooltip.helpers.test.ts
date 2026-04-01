@@ -154,9 +154,8 @@ describe('determinePosition helper', () => {
     expect(position).toBe('top');
   });
 
-  //write test for fallback positioning when not enough space exists for tooltip to
+  //TO DO later: write test for fallback positioning when not enough space exists for tooltip to
   // fit fully on viewport
-
   describe('determineAlignment helper', () => {
     test("tooltip validated alignment is 'start'", () => {
       const preferredAlignment = 'start';
@@ -185,7 +184,7 @@ describe('determinePosition helper', () => {
 
     test("tooltip validated alignment is 'center'", () => {
       const preferredAlignment = 'end';
-      const availabeSpaceAroundTheAnchor = {
+      const availableSpaceAroundTheAnchor = {
         top: 99.99,
         bottom: 89.88,
         right: 642.22,
@@ -199,7 +198,7 @@ describe('determinePosition helper', () => {
       const result = determineAlignment(
         preferredAlignment,
         false,
-        availabeSpaceAroundTheAnchor,
+        availableSpaceAroundTheAnchor,
         tooltipHeight,
         tooltipWidth,
         anchorHeight,
@@ -211,7 +210,7 @@ describe('determinePosition helper', () => {
 
     test('tooltip validated alignment is preferredAlignment', () => {
       const preferredAlignment = 'end';
-      const availabeSpaceAroundTheAnchor = {
+      const availableSpaceAroundTheAnchor = {
         top: 299.99,
         bottom: 47.88,
         right: 1067.67,
@@ -225,7 +224,7 @@ describe('determinePosition helper', () => {
       const result = determineAlignment(
         preferredAlignment,
         true,
-        availabeSpaceAroundTheAnchor,
+        availableSpaceAroundTheAnchor,
         tooltipHeight,
         tooltipWidth,
         anchorHeight,

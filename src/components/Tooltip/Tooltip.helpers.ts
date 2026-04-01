@@ -239,6 +239,5 @@ export const determineAlignment = (
   //if preferred alignment is invalid, find the first alternative that fits, or default to 'start'.
   const alignmentOptions = Object.keys(alignmentIsValid) as (keyof AlignmentIsValidType)[];
   const validAlignment = alignmentOptions.find((alignment) => alignmentIsValid[alignment]);
-  console.log('ALIGNMENT IS VALID ', alignmentIsValid, validAlignment);
   return validAlignment || 'start';
 };
