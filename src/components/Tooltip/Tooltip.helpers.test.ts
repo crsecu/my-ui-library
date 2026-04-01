@@ -1,7 +1,12 @@
-import type { AlignmentIsValidType, AvailableSpaceAroundAnchor, PositionIsValidType } from './Tooltip.types.ts';
+import type {
+  AlignmentIsValidType,
+  AvailableSpaceAroundAnchor,
+  PositionIsValidType,
+} from './Tooltip.types.ts';
 import {
   determineAlignment,
-  determinePosition, determineTooltipPlacement,
+  determinePosition,
+  determineTooltipPlacement,
   generateAlignmentCoordinates,
   resolveTooltipPlacement,
 } from './Tooltip.helpers.ts';
@@ -59,10 +64,13 @@ describe('generateAlignmentCoordinates helper', () => {
   const mockAnchorRect = new DOMRect(0, 99.99, 89.88, 43.11);
   const mockTooltipRect = new DOMRect(0, 813.75, 349.99, 154.38);
 
-
   test('computes alignment coordinates for horizontally positioned tooltip', () => {
     const isTooltipPositionedVertically = false;
-    const result = generateAlignmentCoordinates(isTooltipPositionedVertically, mockAnchorRect, mockTooltipRect);
+    const result = generateAlignmentCoordinates(
+      isTooltipPositionedVertically,
+      mockAnchorRect,
+      mockTooltipRect,
+    );
 
     expect(roundTo(result.start)).toBe(99.99);
     expect(roundTo(result.center)).toBe(44.35);
@@ -71,7 +79,11 @@ describe('generateAlignmentCoordinates helper', () => {
 
   test('computes alignment coordinates for vertically positioned tooltip', () => {
     const isTooltipPositionedVertically = true;
-    const result = generateAlignmentCoordinates(isTooltipPositionedVertically, mockAnchorRect, mockTooltipRect);
+    const result = generateAlignmentCoordinates(
+      isTooltipPositionedVertically,
+      mockAnchorRect,
+      mockTooltipRect,
+    );
 
     expect(result.start).toBe(0);
     expect(roundTo(result.center)).toBe(-130.06);
@@ -197,7 +209,7 @@ describe('determinePosition helper', () => {
       expect(result).toBe('center');
     });
 
-    test("tooltip validated alignment is preferredAlignment", () => {
+    test('tooltip validated alignment is preferredAlignment', () => {
       const preferredAlignment = 'end';
       const availabeSpaceAroundTheAnchor = {
         top: 299.99,
@@ -225,39 +237,44 @@ describe('determinePosition helper', () => {
   });
 });
 
-
-describe("determineTooltipPlacement output for large tooltip", () => {
+describe('determineTooltipPlacement output for large tooltip', () => {
   const mockAnchorRect = new DOMRect(1039.63, 299.99, 146.94, 43.11);
   const mockTooltipRect = new DOMRect(0, 428.05, 349.99, 70.39);
   const vh = 428;
   const vw = 1749;
 
-  test("returns coordinates that place tooltip on top of anchor (center alignment)", () => {
-  const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw)
-  expect(roundTo(result.top)).toBe(223.60);
-  expect(roundTo(result.left)).toBe(938.11);
-  })
+  test('returns coordinates that place tooltip on top of anchor (center alignment)', () => {
+    const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw);
+    expect(roundTo(result.top)).toBe(223.6);
+    expect(roundTo(result.left)).toBe(938.11);
+  });
 
   test('returns coordinates that place tooltip below anchor (end alignment)', () => {
     const preferredPosition = 'bottom';
     const preferredAlignment = 'end';
-    const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw, preferredPosition, preferredAlignment);
-    expect(roundTo(result.top)).toBe(349.10);
+    const result = determineTooltipPlacement(
+      mockTooltipRect,
+      mockAnchorRect,
+      vh,
+      vw,
+      preferredPosition,
+      preferredAlignment,
+    );
+    expect(roundTo(result.top)).toBe(349.1);
     expect(roundTo(result.left)).toBe(836.58);
   });
-})
+});
 
-describe("determineTooltipPlacement output for small tooltip", () => {
+describe('determineTooltipPlacement output for small tooltip', () => {
   const mockAnchorRect = new DOMRect(307.95, 9.99, 92.51, 43.11);
   const mockTooltipRect = new DOMRect(0, 463.57, 52.23, 36.79);
   const vh = 463;
   const vw = 1003;
 
-
   test('returns coordinates that place tooltip below anchor (center alignment)', () => {
-   const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw);
+    const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw);
 
-    expect(roundTo(result.top)).toBe(59.10);
+    expect(roundTo(result.top)).toBe(59.1);
     expect(roundTo(result.left)).toBe(328.09);
   });
 
@@ -269,11 +286,16 @@ describe("determineTooltipPlacement output for small tooltip", () => {
     const preferredPosition = 'bottom';
     const preferredAlignment = 'start';
 
-    const result = determineTooltipPlacement(mockTooltipRect, mockAnchorRect, vh, vw, preferredPosition, preferredAlignment);
+    const result = determineTooltipPlacement(
+      mockTooltipRect,
+      mockAnchorRect,
+      vh,
+      vw,
+      preferredPosition,
+      preferredAlignment,
+    );
 
-    expect(roundTo(result.top)).toBe(57.20);
+    expect(roundTo(result.top)).toBe(57.2);
     expect(roundTo(result.left)).toBe(0);
   });
-
-
-})
+});

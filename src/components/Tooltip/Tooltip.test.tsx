@@ -3,9 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRef } from 'react';
 
-
 const setup = (content = 'Helpful hint') => {
-
   const user = userEvent.setup();
 
   const AnchorWithTooltip = () => {
@@ -18,25 +16,23 @@ const setup = (content = 'Helpful hint') => {
     );
   };
 
-  const renderResult = render(<AnchorWithTooltip/>);
-
+  const renderResult = render(<AnchorWithTooltip />);
 
   return {
     user,
     anchorEl: screen.getByRole('button'),
     ...renderResult,
   };
-}
+};
 
 describe('Tooltip component', () => {
-  test("it is not in the DOM by default", () => {
+  test('it is not in the DOM by default', () => {
     setup();
-    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
-  test("tooltip appears after anchor is hovered", async () => {
-    const {user, anchorEl} = setup();
+  test('tooltip appears after anchor is hovered', async () => {
+    const { user, anchorEl } = setup();
     await user.hover(anchorEl);
 
     await waitFor(() => {
@@ -62,5 +58,4 @@ describe('Tooltip component', () => {
     const tooltip = await screen.findByRole('tooltip');
     expect(tooltip).toHaveTextContent('This is my tooltip');
   });
-
-})
+});

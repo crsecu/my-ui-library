@@ -7,4 +7,4 @@
 
 export const roundTo = (num: number, decimals: number = 2): number => {
   return Number(num.toFixed(decimals));
-}
+};

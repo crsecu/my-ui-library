@@ -1,4 +1,4 @@
-import { useRef,  type ReactNode, type RefObject, type ButtonHTMLAttributes } from 'react';
+import { useRef, type ReactNode, type RefObject, type ButtonHTMLAttributes } from 'react';
 import styles from './Button.module.css';
 import { Tooltip } from '../Tooltip/Tooltip';
 import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/Tooltip.types.ts';
@@ -67,7 +67,7 @@ export const Button = ({
         {...props}
       >
         <>
-          {isLoading && <Loader testId="miniLoader"/>}
+          {isLoading && <Loader testId="miniLoader" />}
 
           {children}
           {icon}

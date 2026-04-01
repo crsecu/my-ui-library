@@ -71,7 +71,11 @@ export const determineTooltipPlacement = (
     left: anchorRect.left - tooltipWidth - tooltipOffset,
   };
 
-  const alignmentCoordinates = generateAlignmentCoordinates(isPositionedVertically, anchorRect, tooltipRect);
+  const alignmentCoordinates = generateAlignmentCoordinates(
+    isPositionedVertically,
+    anchorRect,
+    tooltipRect,
+  );
 
   const cssPropertyPrimary = isPositionedVertically ? 'top' : 'left';
   const cssPropertySecondary = cssPropertyPrimary === 'top' ? 'left' : 'top';
@@ -89,9 +93,7 @@ export const determineTooltipPlacement = (
  * that placement
  * @returns The first key that is `true`; if none is true (Tooltip does not fully fit on viewport), it returns undefined
  */
-export const resolveTooltipPlacement = <
-  T extends PositionIsValidType | AlignmentIsValidType,
->(
+export const resolveTooltipPlacement = <T extends PositionIsValidType | AlignmentIsValidType>(
   placementIsValid: T,
 ): keyof T | undefined => {
   const placementOptions = Object.keys(placementIsValid) as (keyof T)[];
@@ -142,9 +144,8 @@ export const determinePosition = (
   availableSpaceAroundAnchor: AvailableSpaceAroundAnchor,
   tooltipHeight: number,
   tooltipWidth: number,
-  tooltipOffset: number
+  tooltipOffset: number,
 ): TooltipPositionType => {
-
   const positionIsValid: PositionIsValidType = {
     top: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.top,
     bottom: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.bottom,
@@ -205,7 +206,9 @@ export const determineAlignment = (
   if (tooltipWidth <= anchorWidth || tooltipHeight <= anchorHeight) return preferredAlignment;
 
   //the extra px the tooltip occupies beyond the anchor edges
-  const sizeDiff = isTooltipPositionedVertically ? tooltipWidth - anchorWidth : tooltipHeight - anchorHeight;
+  const sizeDiff = isTooltipPositionedVertically
+    ? tooltipWidth - anchorWidth
+    : tooltipHeight - anchorHeight;
 
   //halfSizeDiff is the space needed on both sides of anchor to allow for 'center' alignment.
   const halfSizeDiff = sizeDiff / 2;
@@ -219,12 +222,14 @@ export const determineAlignment = (
   if (isTooltipPositionedVertically) {
     alignmentIsValid.start = sizeDiff <= availableSpaceAroundAnchor.right;
     alignmentIsValid.center =
-      halfSizeDiff <= availableSpaceAroundAnchor.left && halfSizeDiff <= availableSpaceAroundAnchor.right;
+      halfSizeDiff <= availableSpaceAroundAnchor.left &&
+      halfSizeDiff <= availableSpaceAroundAnchor.right;
     alignmentIsValid.end = sizeDiff <= availableSpaceAroundAnchor.left;
   } else {
     alignmentIsValid.start = sizeDiff <= availableSpaceAroundAnchor.bottom;
     alignmentIsValid.center =
-      halfSizeDiff <= availableSpaceAroundAnchor.top && halfSizeDiff <= availableSpaceAroundAnchor.bottom;
+      halfSizeDiff <= availableSpaceAroundAnchor.top &&
+      halfSizeDiff <= availableSpaceAroundAnchor.bottom;
     alignmentIsValid.end = sizeDiff <= availableSpaceAroundAnchor.top;
   }
 

@@ -1,5 +1,8 @@
 import { Tooltip } from '../../../components/Tooltip/Tooltip.tsx';
-import type { TooltipAlignmentType, TooltipPositionType } from '../../../components/Tooltip/Tooltip.types.ts';
+import type {
+  TooltipAlignmentType,
+  TooltipPositionType,
+} from '../../../components/Tooltip/Tooltip.types.ts';
 import { type ReactNode, useRef } from 'react';
 import styles from './MockTooltipAnchor.module.css';
 
@@ -8,14 +11,18 @@ interface MockTooltipAnchorProps {
   tooltipText?: string;
   tooltipPosition?: TooltipPositionType;
   tooltipAlignment?: TooltipAlignmentType;
-
 }
 
-export const MockTooltipAnchor = ({ children, tooltipText, tooltipPosition, tooltipAlignment}: MockTooltipAnchorProps) => {
+export const MockTooltipAnchor = ({
+  children,
+  tooltipText,
+  tooltipPosition,
+  tooltipAlignment,
+}: MockTooltipAnchorProps) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   return (
-    <button className={styles.mockTooltipAnchor}  ref={ref}>
+    <button className={styles.mockTooltipAnchor} ref={ref}>
       {children}
 
       {tooltipText && (

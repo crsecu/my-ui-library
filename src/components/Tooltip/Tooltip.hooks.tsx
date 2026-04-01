@@ -36,7 +36,9 @@ export const useTooltip = ({
 }: TooltipHookProps): UseTooltipReturn => {
   const [isVisible, setIsVisible] = useState(false);
   //tooltip coordinates for CSS
-  const [tooltipPlacement, setTooltipPlacement] = useState<InitialTooltipCoords | TooltipCoords>(initialTooltipPlacement);
+  const [tooltipPlacement, setTooltipPlacement] = useState<InitialTooltipCoords | TooltipCoords>(
+    initialTooltipPlacement,
+  );
 
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -59,12 +61,11 @@ export const useTooltip = ({
     );
 
     setTooltipPlacement((prevState) => {
-      if (prevState.top === resolvedPlacement.top && prevState.left === resolvedPlacement.left) return prevState;
+      if (prevState.top === resolvedPlacement.top && prevState.left === resolvedPlacement.left)
+        return prevState;
 
       return { ...prevState, ...resolvedPlacement };
     });
-
-
   }, [anchorRef, tooltipRef, selectedAlign, selectedPosition]);
 
   const showTooltip = useCallback(() => {

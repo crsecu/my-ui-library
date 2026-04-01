@@ -29,7 +29,7 @@ const setup = () => {
   });
 
   return { result, anchorEl, unmount };
-}
+};
 
 //tests
 describe('useTooltip', () => {

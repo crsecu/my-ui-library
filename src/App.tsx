@@ -7,7 +7,13 @@ export const App = () => {
 
   return (
     <StoryGallery>
-      <Button variant="solid" intent="success" tooltipText="Hello" tooltipPosition="bottom" tooltipAlignment="start">
+      <Button
+        variant="solid"
+        intent="success"
+        tooltipText="Hello"
+        tooltipPosition="bottom"
+        tooltipAlignment="start"
+      >
         Submit
       </Button>
       <Button
