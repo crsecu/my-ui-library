@@ -14,7 +14,9 @@ interface MockButtonProps {
   tooltipPosition?: TooltipPositionType;
   tooltipAlignment?: TooltipAlignmentType;
 }
-
+/**
+ * Mock button for Storybook demos of components (e.g., Tooltip, Loader) that cannot be rendered on their own.
+ */
 export const MockButton = ({
   children,
   isLoading = false,
