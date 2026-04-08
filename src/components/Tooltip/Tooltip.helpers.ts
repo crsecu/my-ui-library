@@ -22,6 +22,10 @@ import type {
  * @param preferredAlignment - The preferred alignment on the opposite axis (start, center, end).
  * @returns An object containing the final `top` and `left` pixel coordinates for CSS positioning.
  */
+
+//the gap in pixels between the anchor and the tooltip
+export const TOOLTIP_OFFSET = 6;
+
 export const determineTooltipPlacement = (
   tooltipRect: DOMRect,
   anchorRect: DOMRect,
@@ -31,9 +35,6 @@ export const determineTooltipPlacement = (
   preferredAlignment: TooltipAlignmentType = 'center',
 ): TooltipCoords => {
   const { height: tooltipHeight, width: tooltipWidth } = tooltipRect;
-
-  //the gap in pixels between the anchor and the tooltip
-  const tooltipOffset = 6;
 
   const availableSpaceAroundAnchor: AvailableSpaceAroundAnchor = {
     top: anchorRect.top,
@@ -47,7 +48,6 @@ export const determineTooltipPlacement = (
     availableSpaceAroundAnchor,
     tooltipHeight,
     tooltipWidth,
-    tooltipOffset,
   );
 
   //this refers to tooltip position relative to the anchor
@@ -65,10 +65,10 @@ export const determineTooltipPlacement = (
   );
 
   const positionCoordinates: PositionCoordinatesType = {
-    top: anchorRect.top - tooltipHeight - tooltipOffset,
-    bottom: anchorRect.bottom + tooltipOffset,
-    right: anchorRect.right + tooltipOffset,
-    left: anchorRect.left - tooltipWidth - tooltipOffset,
+    top: anchorRect.top - tooltipHeight - TOOLTIP_OFFSET,
+    bottom: anchorRect.bottom + TOOLTIP_OFFSET,
+    right: anchorRect.right + TOOLTIP_OFFSET,
+    left: anchorRect.left - tooltipWidth - TOOLTIP_OFFSET,
   };
 
   const alignmentCoordinates = generateAlignmentCoordinates(
@@ -136,7 +136,6 @@ export const generateAlignmentCoordinates = (
  * @param availableSpaceAroundAnchor - Map of available space (pixels) between the anchor and the viewport edges.
  * @param tooltipHeight - Height of the tooltip.
  * @param tooltipWidth - Width of the tooltip.
- * @param tooltipOffset - The gap between the anchor and tooltip.
  * @returns A string (top, bottom, left, or right) representing the validated position for the tooltip.
  */
 export const determinePosition = (
@@ -144,13 +143,12 @@ export const determinePosition = (
   availableSpaceAroundAnchor: AvailableSpaceAroundAnchor,
   tooltipHeight: number,
   tooltipWidth: number,
-  tooltipOffset: number,
 ): TooltipPositionType => {
   const positionIsValid: PositionIsValidType = {
-    top: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.top,
-    bottom: tooltipHeight + tooltipOffset <= availableSpaceAroundAnchor.bottom,
-    right: tooltipWidth + tooltipOffset <= availableSpaceAroundAnchor.right,
-    left: tooltipWidth + tooltipOffset <= availableSpaceAroundAnchor.left,
+    top: tooltipHeight + TOOLTIP_OFFSET <= availableSpaceAroundAnchor.top,
+    bottom: tooltipHeight + TOOLTIP_OFFSET <= availableSpaceAroundAnchor.bottom,
+    right: tooltipWidth + TOOLTIP_OFFSET <= availableSpaceAroundAnchor.right,
+    left: tooltipWidth + TOOLTIP_OFFSET <= availableSpaceAroundAnchor.left,
   };
 
   //return the preferred position if it fits within the viewport
