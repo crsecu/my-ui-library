@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef } from 'react';
+import { Button } from './components/Button/Button';
+import { StoryGallery } from './stories/utils/StoryGallery/StoryGallery';
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {
+  const myRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+    <StoryGallery>
+      <Button
+        variant="solid"
+        intent="success"
+        tooltipText="Hello"
+        tooltipPosition="bottom"
+        tooltipAlignment="start"
+      >
+        Submit
+      </Button>
+      <Button
+        variant="solid"
+        intent="primary"
+        ref={myRef}
+        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+        tooltipAlignment="end"
+        tooltipPosition="bottom"
+      >
+        Button
+      </Button>
+      <Button variant="solid" intent="neutral">
+        Button
+      </Button>
+      <Button variant="solid" intent="danger">
+        Button
+      </Button>
+      <Button
+        variant="solid"
+        intent="warning"
+        tooltipText="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+        tooltipPosition="bottom"
+        tooltipAlignment="end"
+      >
+        Button Button
+      </Button>
+    </StoryGallery>
+  );
+};

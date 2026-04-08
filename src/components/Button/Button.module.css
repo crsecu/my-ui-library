@@ -1,0 +1,230 @@
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  font-weight: var(--weight-med);
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-lg);
+  width: fit-content;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    /* TO DO: change focus ring color */
+    outline: 2px solid purple;
+    outline-offset: 2px;
+  }
+}
+
+/********* VARIANTS *********/
+/* SOLID */
+.solid {
+  color: var(--text-light);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+
+  &:hover {
+    box-shadow:
+      rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  }
+
+  &.primary {
+    background-color: var(--primary-base);
+    color: var(--primary-contrast);
+    font-weight: var(--weight-semibold);
+  }
+
+  &.success {
+    background-color: var(--success);
+  }
+
+  &.danger {
+    background-color: var(--danger);
+  }
+
+  &.warning {
+    background-color: var(--warning);
+    color: var(--primary-contrast);
+  }
+
+  &.neutral {
+    background-color: var(--neutral);
+  }
+}
+
+/* OUTLINED */
+.outlined {
+  border-width: 1.5px;
+  border-style: solid;
+  font-weight: var(--weight-semibold);
+
+  &.primary {
+    border-color: var(--sky-8);
+    color: var(--sky-11);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+
+    border-width: 2px;
+
+    &:hover {
+      background-color: var(--sky-4);
+    }
+  }
+
+  &.success {
+    border-color: var(--success);
+    color: var(--success);
+
+    &:hover {
+      background-color: var(--success-soft);
+    }
+  }
+
+  &.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+
+    &:hover {
+      background-color: var(--danger-soft);
+    }
+  }
+
+  &.warning {
+    border-color: var(--warning);
+    color: var(--warning-text);
+
+    &:hover {
+      background-color: var(--warning-soft);
+    }
+  }
+
+  &.neutral {
+    border-color: var(--neutral);
+    color: var(--neutral);
+
+    &:hover {
+      background-color: var(--neutral-soft);
+    }
+  }
+}
+
+/* SOFT */
+.soft {
+  font-weight: var(--weight-med);
+  &:hover {
+    box-shadow:
+      rgba(50, 50, 93, 0.1) 0px 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.1) 0px 18px 36px -18px inset;
+  }
+
+  &.primary {
+    color: var(--primary-text-light);
+
+    background-color: var(--sky-4);
+    font-weight: var(--weight-semibold);
+  }
+
+  &.success {
+    background-color: var(--success-soft);
+    color: var(--success);
+  }
+
+  &.danger {
+    background-color: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  &.warning {
+    background-color: var(--warning-soft);
+    color: var(--warning-darker);
+  }
+
+  &.neutral {
+    background-color: var(--neutral-soft);
+    color: var(--neutral-darker);
+  }
+}
+
+/* SURFACE */
+.surface {
+  font-weight: var(--weight-med);
+  border-width: 0.5px;
+  border-style: solid;
+
+  &:hover {
+    box-shadow:
+      rgba(50, 50, 93, 0.1) 0px 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.1) 0px 18px 36px -18px inset;
+  }
+
+  &.primary {
+    color: var(--primary-text-light);
+    background-color: var(--sky-4);
+  }
+
+  &.success {
+    background-color: var(--success-soft);
+    color: var(--success);
+  }
+
+  &.danger {
+    background-color: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  &.warning {
+    background-color: var(--warning-soft);
+    color: var(--warning-darker);
+    border-color: var(--warning-darker);
+  }
+
+  &.neutral {
+    background-color: var(--neutral-soft);
+    color: var(--neutral-darker);
+  }
+}
+
+.text {
+  &.primary {
+    color: var(--primary-text-light);
+
+    &:hover {
+      background-color: var(--sky-4);
+    }
+  }
+
+  &.success {
+    color: var(--success);
+
+    &:hover {
+      background-color: var(--success-soft);
+    }
+  }
+
+  &.danger {
+    color: var(--danger);
+
+    &:hover {
+      background-color: var(--danger-soft);
+    }
+  }
+
+  &.warning {
+    color: var(--warning-darker);
+
+    &:hover {
+      background-color: var(--warning-soft);
+    }
+  }
+
+  &.neutral {
+    color: var(--neutral-darker);
+
+    &:hover {
+      background-color: var(--neutral-soft);
+    }
+  }
+}
