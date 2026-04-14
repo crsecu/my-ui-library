@@ -10,6 +10,7 @@ disabled?: boolean
 */
 
 import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps, useField } from 'formik';
+import { useCallback } from 'react';
 
 /* *** Formik controlled:
   Props:
@@ -58,9 +59,12 @@ export function useResolvedInputProps<T>(
   let isFormik = false;
   const fieldName = 'name' in props && Object.hasOwn(props, 'name') ? props.name : undefined;
 
-  function setValue(value: T, shouldValidate?: boolean): void {
-    if ('onChange' in props) props.onChange(value);
-  }
+  const setValue = useCallback(
+    (value: T, shouldValidate?: boolean): void => {
+      if ('onChange' in props) props.onChange(value);
+    },
+    [props],
+  );
 
   try {
     const fieldResult = useField(fieldName || '');
