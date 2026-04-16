@@ -1,29 +1,6 @@
-/* *** React controlled:
-  Props:
-value: T
-onChange: (value: T) => void  //this is the state setter function that updates the input state variable
-disabled?: boolean
-  Return:
- mergedInputProps: {value, onChange, disabled}
- setValue(value: T, shouldValidate?: boolean) => void
-
-*/
-
 import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps, useField } from 'formik';
 import { useCallback } from 'react';
 
-/* *** Formik controlled:
-  Props:
- name: string
- disabled?: boolean
- Return:
- metadataProps: {
-  touched,
-  error,
-  initialValue,
- }
-  setError(errorText?: string) => void
-*/
 type FormikControlled = {
   name: string;
   disabled?: boolean;
@@ -47,19 +24,27 @@ type FormikControlledReturn<T> = {
   setError?: (errorText?: string) => void;
 };
 
-//TO DO: memoize the return object
+/**
+ * Hook that resolves input control props into a unified interface that supports either:
+ * - Formik controlled inputs via `name` or
+ * - External controlled inputs (value/onChange pattern)
+ * Falls back to external control if Formik context is not present.
+ *
+ * @returns an object with merged props (`value`, `onChange`, `disabled`) along with
+ * helpers like `setValue`, and Formik metadata + helpers when formik context is available.
+ * Returns null if none of the above options are available.
+ */
 export function useResolvedInputProps<T>(props: FormikControlled): FormikControlledReturn<T>;
 export function useResolvedInputProps<T>(props: ExternalControlled<T>): ExternalControlledReturn<T>;
 export function useResolvedInputProps<T>(
   props: ExternalControlled<T> | FormikControlled,
 ): FormikControlledReturn<T> | ExternalControlledReturn<T> | null {
-  console.log('PROPS:', props);
-
-  const hasValueProp = Object.hasOwn(props, 'value');
   let isFormik = false;
+  const hasValueProp = Object.hasOwn(props, 'value');
   const fieldName = 'name' in props && Object.hasOwn(props, 'name') ? props.name : undefined;
 
   const setValue = useCallback(
+    //@ts-expect-error for shouldValidate
     (value: T, shouldValidate?: boolean): void => {
       if ('onChange' in props) props.onChange(value);
     },
@@ -67,15 +52,12 @@ export function useResolvedInputProps<T>(
   );
 
   try {
-    const fieldResult = useField(fieldName || '');
+    const fieldResult = useField<T>(fieldName || '');
     isFormik = true;
-
-    console.log('fieldResult', fieldResult);
 
     if (fieldName && isFormik) {
       const [field, meta, helpers] = fieldResult;
       const { value, onChange } = field;
-      console.log('field', field, value);
       const { error, touched, initialValue } = meta;
 
       return {
@@ -93,5 +75,6 @@ export function useResolvedInputProps<T>(
   if ('value' in props && 'onChange' in props && hasValueProp) {
     return { mergedProps: { ...props }, setValue };
   }
+
   return null;
 }
