@@ -45,6 +45,7 @@ export function useResolvedInputProps<T>(
 
   const setValue = useCallback(
     //@ts-expect-error for shouldValidate
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (value: T, shouldValidate?: boolean): void => {
       if ('onChange' in props) props.onChange(value);
     },
@@ -68,6 +69,7 @@ export function useResolvedInputProps<T>(
       };
     }
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.warn('useResolvedInputProps hook called outside of Formik Context', err);
   }
 
