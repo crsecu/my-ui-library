@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 import { Formik, Form } from 'formik';
 
+//EXTERNALLY CONTROLLED
 describe('useResolvedInputProps (ExternalControlled)', () => {
   test('returns mergedProps matching the input props', () => {
     const mockOnChange = vi.fn();
@@ -51,21 +52,6 @@ describe('useResolvedInputProps (ExternalControlled)', () => {
     expect(result.current).not.toHaveProperty('metaProps');
     expect(result.current).not.toHaveProperty('setError');
   });
-
-  //*** Please note! Commenting this test out because current hook implementation
-  // doesn't allow to call useMemo unconditionally, hence breaking rules of hooks ***
-
-  // test('should return the same object reference if props do not change', () => {
-  //   const props = { value: 'test value', onChange: vi.fn() };
-  //   const { result, rerender } = renderHook(() => useResolvedInputProps(props));
-  //
-  //   const firstRenderResult = result.current;
-  //
-  //   rerender();
-  //
-  //   // This checks if the entire returned object is the exact same instance
-  //   expect(result.current).toBe(firstRenderResult);
-  // });
 });
 
 //FORMIK CONTROLLED
@@ -87,7 +73,7 @@ describe('useResolvedInputProps (Formik Controlled)', () => {
   });
 
   test('returns null when neither Formik nor external props are valid', () => {
-    // @ts-ignore
+    // @ts-expect-error: passing empty object into useResolvedInputProps hook
     const { result } = renderHook(() => useResolvedInputProps({}));
 
     expect(result.current).toBeNull();
