@@ -37,7 +37,7 @@ type FormikControlledReturn<T> = {
  * Returns null if none of the above options are available.
  */
 
-//type predicate to check validity of certain prop
+//type predicate to check validity of name prop (Formik Controlled)
 function isFormikProps<T>(
   props: FormikControlled | ExternalControlled<T>,
 ): props is FormikControlled {
@@ -96,10 +96,7 @@ export function useResolvedInputProps<T>(
       mergedProps: {
         ...props,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-          //Note for mentor: we need to discuss the usage of generic T
-          if (typeof props.value === 'string') {
-            props.onChange(e.target.value as unknown as T);
-          }
+          props.onChange(e.target.value as unknown as T);
         },
       },
       setValue,
