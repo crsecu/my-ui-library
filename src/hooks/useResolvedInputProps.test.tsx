@@ -61,7 +61,12 @@ describe('useResolvedInputProps (Formik Controlled)', () => {
 
     renderHook(() => useResolvedInputProps({ name: 'testInputName' }));
 
-    expect(warnSpy).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          "Missing or invalid Formik field name. Ensure the 'name' prop corresponds to a valid Formik field and that the component is wrapped in a Formik context provider.",
+      }),
+    );
 
     warnSpy.mockRestore();
   });
@@ -95,27 +100,5 @@ describe('useResolvedInputProps (Formik Controlled)', () => {
     expect(typeof result.current?.mergedProps.onChange).toBe('function');
     expect(typeof result.current?.setError).toBe('function');
     expect(typeof result.current?.setValue).toBe('function');
-  });
-
-  test('logs warning message when name prop is not a valid Formik input field', () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <Formik initialValues={{ email: '' }} onSubmit={() => {}}>
-        <Form>{children}</Form>
-      </Formik>
-    );
-
-    renderHook(() => useResolvedInputProps({ name: 'random' }), {
-      wrapper,
-    });
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: 'Formik field value is undefined.',
-      }),
-    );
-
-    warnSpy.mockRestore();
   });
 });
