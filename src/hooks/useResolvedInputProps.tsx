@@ -1,5 +1,7 @@
-import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps, useField } from 'formik';
+/* eslint-disable no-console */
+import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps } from 'formik';
 import React, { useCallback } from 'react';
+import { useOptionalUseField } from './useOptionalUseField.ts';
 
 type FormikControlled = {
   name: string;
@@ -62,13 +64,15 @@ export function useResolvedInputProps<T>(
   );
 
   try {
-    const fieldResult = useField(fieldName || '');
+    const fieldResult = useOptionalUseField(fieldName || '');
 
-    //validation of Formik field value
-    if (!fieldName || fieldResult[0].value === undefined) {
-      throw new Error('Formik field value is undefined.');
+    if (!fieldName || !fieldResult) {
+      throw new Error(
+        "Missing or invalid Formik field name. Ensure the 'name' prop corresponds to a valid Formik field and that the component is wrapped in a Formik context provider.",
+      );
     }
 
+    console.log('fieldResult', fieldResult);
     const [field, meta, helpers] = fieldResult;
     const { value, onChange } = field;
     const { error, touched, initialValue } = meta;
@@ -80,15 +84,8 @@ export function useResolvedInputProps<T>(
       setError: helpers.setError,
     };
   } catch (err) {
-    const error = err as Error;
-
-    if (error?.message === "Cannot read properties of undefined (reading 'getFieldProps')") {
-      // eslint-disable-next-line no-console
-      console.warn('useResolvedInputProps hook called outside of Formik context.', error);
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn(error);
-    }
+    console.warn(err);
+    console.log('ERRR:', err);
   }
 
   if (!isFormikProps(props) && hasExternalCtrlProps) {
