@@ -1,10 +1,20 @@
 import { useResolvedInputProps } from './useResolvedInputProps.tsx';
-import { renderHook } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { Formik, Form } from 'formik';
 
-//EXTERNALLY CONTROLLED
-describe('useResolvedInputProps (ExternalControlled)', () => {
+// @ts-expect-error: overwriting "no usage of any" error
+function MockInput(props) {
+  const { dataTestId, ...restProps } = props;
+
+  const resolved = useResolvedInputProps<string>(restProps);
+
+  if (!resolved) return null;
+
+  return <input data-testid={dataTestId} name={restProps?.name} {...resolved.mergedProps} />;
+}
+
+describe('useResolvedInputProps (External Control)', () => {
   test('returns mergedProps matching the input props', () => {
     const mockOnChange = vi.fn();
     const inputProps = {
@@ -16,7 +26,9 @@ describe('useResolvedInputProps (ExternalControlled)', () => {
     const { result } = renderHook(() => useResolvedInputProps(inputProps));
     expect(result.current?.mergedProps.value).toBe('test');
     expect(result.current?.mergedProps.disabled).toBe(false);
-    //expect(result.current?.mergedProps.onChange).toBe(mockOnChange);
+
+    /** Commenting out the line below until we find a way to memoize the useResolvedInputProps return value
+    expect(result.current?.mergedProps.onChange).toBe(mockOnChange); **/
   });
 
   test('should handle optional disabled prop when omitted', () => {
@@ -54,8 +66,7 @@ describe('useResolvedInputProps (ExternalControlled)', () => {
   });
 });
 
-//FORMIK CONTROLLED
-describe('useResolvedInputProps (Formik Controlled)', () => {
+describe('useResolvedInputProps (Formik Control)', () => {
   test('logs warning message when used outside of Formik context', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -100,5 +111,60 @@ describe('useResolvedInputProps (Formik Controlled)', () => {
     expect(typeof result.current?.mergedProps.onChange).toBe('function');
     expect(typeof result.current?.setError).toBe('function');
     expect(typeof result.current?.setValue).toBe('function');
+  });
+});
+
+describe('input field consumes useResolvedInputProps return value (Formik Controlled)', () => {
+  test('should synchronize input value with Formik state updates', async () => {
+    render(
+      <Formik initialValues={{ email: '' }} onSubmit={() => {}}>
+        <Form>
+          <MockInput name="email" dataTestId="formik-input" />
+        </Form>
+      </Formik>,
+    );
+
+    const input = screen.getByTestId('formik-input') as HTMLInputElement;
+
+    expect(input.value).toBe('');
+
+    fireEvent.change(input, { target: { value: 'test@example.com', name: 'email' } });
+
+    await waitFor(() => {
+      expect(input.value).toBe('test@example.com');
+    });
+  });
+});
+
+describe("hook's return value contracts correctly with an input element (External Control)", () => {
+  test('should call the onChange callback with the raw string extracted from a ChangeEvent', () => {
+    const handleChangeMock = vi.fn();
+    const initialProps = { value: 'hello', onChange: handleChangeMock };
+
+    const { result } = renderHook(() => useResolvedInputProps(initialProps));
+    const { value, onChange } = result.current?.mergedProps ?? {};
+
+    expect(value).toBe('hello');
+
+    const mockEvent = { target: { value: 'new value' } } as React.ChangeEvent<HTMLInputElement>;
+
+    act(() => {
+      onChange(mockEvent);
+    });
+
+    expect(handleChangeMock).toHaveBeenCalledWith('new value');
+  });
+
+  test('standard input element consumes hook return value', () => {
+    const handleChange = vi.fn();
+
+    render(<MockInput dataTestId="external-input" value="Mary" onChange={handleChange} />);
+
+    const input = screen.getByTestId('external-input') as HTMLInputElement;
+    expect(input).toHaveValue('Mary');
+
+    fireEvent.change(input, { target: { value: 'Rose' } });
+
+    expect(handleChange).toHaveBeenCalledWith('Rose');
   });
 });
