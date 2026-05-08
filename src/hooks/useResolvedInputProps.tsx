@@ -1,27 +1,27 @@
-/* eslint-disable no-console */
 import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps } from 'formik';
 import React, { useCallback } from 'react';
 import { useOptionalUseField } from './useOptionalUseField.ts';
+import { isFormikProps } from './hooks.helpers.ts';
 
-type FormikControlled = {
+export type FormikControlled = {
   name: string;
   disabled?: boolean;
 };
 
-type ExternalControlled<T> = {
+export type ExternalControlled<T> = {
   value: T;
   onChange: (value: T) => void;
   disabled?: boolean;
 };
 
-type ExternalControlledReturn<T> = {
+export type ExternalControlledReturn<T> = {
   mergedProps: Pick<ExternalControlled<T>, 'value' | 'disabled'> & {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
   setValue: (value: T, shouldValidate?: boolean) => void;
 };
 
-type FormikControlledReturn<T> = {
+export type FormikControlledReturn<T> = {
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange'> & { disabled?: boolean };
   setValue: Pick<FieldHelperProps<T>, 'setValue'>;
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
@@ -38,14 +38,6 @@ type FormikControlledReturn<T> = {
  * helpers like `setValue`, and Formik metadata + helpers when formik context is available.
  * Returns null if none of the above options are available.
  */
-
-//type predicate to check validity of name prop (Formik Controlled)
-function isFormikProps<T>(
-  props: FormikControlled | ExternalControlled<T>,
-): props is FormikControlled {
-  return Object.hasOwn(props, 'name');
-}
-
 export function useResolvedInputProps<T>(props: FormikControlled): FormikControlledReturn<T>;
 export function useResolvedInputProps<T>(props: ExternalControlled<T>): ExternalControlledReturn<T>;
 export function useResolvedInputProps<T>(
@@ -72,7 +64,6 @@ export function useResolvedInputProps<T>(
       );
     }
 
-    console.log('fieldResult', fieldResult);
     const [field, meta, helpers] = fieldResult;
     const { value, onChange } = field;
     const { error, touched, initialValue } = meta;
@@ -84,8 +75,8 @@ export function useResolvedInputProps<T>(
       setError: helpers.setError,
     };
   } catch (err) {
+    /* eslint-disable no-console */
     console.warn(err);
-    console.log('ERRR:', err);
   }
 
   if (!isFormikProps(props) && hasExternalCtrlProps) {
