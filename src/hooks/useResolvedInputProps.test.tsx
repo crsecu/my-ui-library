@@ -11,7 +11,12 @@ function MockInput(props) {
 
   if (!resolved) return null;
 
-  return <input data-testid={dataTestId} name={restProps?.name} {...resolved.mergedProps} />;
+  return (
+    <div>
+      <input data-testid={dataTestId} name={restProps?.name} {...resolved.mergedProps} />
+      {resolved.metaProps?.touched && <span>Field was touched</span>}
+    </div>
+  );
 }
 
 describe('useResolvedInputProps (External Control)', () => {
@@ -111,6 +116,28 @@ describe('useResolvedInputProps (Formik Control)', () => {
     expect(typeof result.current?.mergedProps.onChange).toBe('function');
     expect(typeof result.current?.setError).toBe('function');
     expect(typeof result.current?.setValue).toBe('function');
+  });
+
+  test('updates touched state onBlur', async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <Formik initialValues={{ lastName: '' }} onSubmit={() => {}}>
+        <Form>{children}</Form>
+      </Formik>
+    );
+
+    const { result } = renderHook(() => useResolvedInputProps({ name: 'lastName' }), { wrapper });
+
+    expect(result.current?.metaProps?.touched).toBe(false);
+
+    act(() => {
+      result.current?.mergedProps.onBlur({
+        target: { name: 'lastName' },
+      } as React.FocusEvent<HTMLInputElement>);
+    });
+
+    await waitFor(() => {
+      expect(result.current?.metaProps?.touched).toBe(true);
+    });
   });
 });
 
