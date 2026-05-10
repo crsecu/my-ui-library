@@ -23,7 +23,7 @@ export type ExternalControlledReturn<T> = {
 
 export type FormikControlledReturn<T> = {
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled?: boolean };
-  setValue: Pick<FieldHelperProps<T>, 'setValue'>;
+  setValue: FieldHelperProps<T>['setValue'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
   setError?: (errorText?: string) => void;
 };
