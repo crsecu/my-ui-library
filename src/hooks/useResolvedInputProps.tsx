@@ -56,7 +56,7 @@ export function useResolvedInputProps<T>(
   );
 
   try {
-    const fieldResult = useOptionalUseField(fieldName || '');
+    const fieldResult = useOptionalUseField<T>(fieldName || '');
 
     if (!fieldName || !fieldResult) {
       throw new Error(
