@@ -57,7 +57,13 @@ export function useResolvedInputPropsRefactored<T>(
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeExternal?.(e.target.value as unknown as T);
+      const { type, value, checked } = e.target;
+
+      if (type === 'checkbox' || type === 'radio') {
+        onChangeExternal?.(checked as unknown as T);
+      } else {
+        onChangeExternal?.(value as unknown as T);
+      }
     },
     [onChangeExternal],
   );
@@ -80,7 +86,7 @@ export function useResolvedInputPropsRefactored<T>(
   if (hasExternalCtrlProps && props.value !== undefined) {
     return {
       mergedProps: {
-        value: props?.value,
+        value: props.value,
         onChange: handleChange,
         disabled: props.disabled ?? false,
       },
