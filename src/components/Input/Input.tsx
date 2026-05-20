@@ -11,21 +11,19 @@ interface InputProps<T extends string> extends Omit<
 }
 
 export const Input = <T extends string>({ labelText, ...props }: InputProps<T>) => {
-  const { value, onChange, disabled, ...restProps } = props;
+  const { name, value, onChange, disabled, ...restProps } = props;
 
-  const resolvedProps = useResolvedInputPropsRefactored({
-    name: props.name,
+  const resolvedProps = useResolvedInputPropsRefactored<T>({
+    name,
     value,
     onChange,
     disabled,
   });
 
-  console.log('resolvedProps:', resolvedProps);
-
   return (
     <label>
       {labelText}
-      <input {...restProps} {...resolvedProps?.mergedProps} />
+      <input name={name} {...restProps} {...resolvedProps?.mergedProps} />
     </label>
   );
 };
