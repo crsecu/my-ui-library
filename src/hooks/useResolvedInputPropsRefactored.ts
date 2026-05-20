@@ -4,22 +4,28 @@ import { useOptionalUseField } from './useOptionalUseField.ts';
 
 interface ResolveInputProps<T> extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'onChange'
+  'name' | 'value' | 'onChange'
 > {
+  name?: string;
   value?: T;
   onChange?: (value: T) => void;
 }
 
 export type ExternalControlledReturn<T> = {
+  mode: 'external';
   mergedProps: {
     value: T;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     disabled: boolean;
+    onBlur?: never;
   };
   setValue: (value: T, shouldValidate?: boolean) => void;
+  metaProps?: never;
+  setError?: never;
 };
 
 export type FormikControlledReturn<T> = {
+  mode: 'formik';
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled: boolean };
   setValue: FieldHelperProps<T>['setValue'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
@@ -40,7 +46,6 @@ export function useResolvedInputPropsRefactored<T>(
   props: ResolveInputProps<T>,
 ): FormikControlledReturn<T> | ExternalControlledReturn<T> | null {
   const fieldName = Object.hasOwn(props, 'name') ? props.name : undefined;
-  const hasExternalCtrlProps = Object.hasOwn(props, 'value') && Object.hasOwn(props, 'onChange');
 
   const { onChange: onChangeExternal } = props;
 
@@ -70,27 +75,31 @@ export function useResolvedInputPropsRefactored<T>(
 
   const fieldResult = useOptionalUseField<T>(fieldName || '');
 
-  if (fieldResult) {
-    const [field, meta, helpers] = fieldResult;
-    const { value, onChange, onBlur } = field;
-    const { error, touched, initialValue } = meta;
-
+  //External Control
+  if (props.value !== undefined && props.onChange !== undefined) {
     return {
-      mergedProps: { value, onChange, onBlur, disabled: props.disabled ?? false },
-      setValue: helpers.setValue,
-      metaProps: { error, touched, initialValue },
-      setError: helpers.setError,
-    };
-  }
-
-  if (hasExternalCtrlProps && props.value !== undefined) {
-    return {
+      mode: 'external',
       mergedProps: {
         value: props.value,
         onChange: handleChange,
         disabled: props.disabled ?? false,
       },
       setValue,
+    };
+  }
+
+  //Formik Control
+  if (fieldName && fieldResult) {
+    const [field, meta, helpers] = fieldResult;
+    const { value, onChange, onBlur } = field;
+    const { error, touched, initialValue } = meta;
+
+    return {
+      mode: 'formik',
+      mergedProps: { value, onChange, onBlur, disabled: props.disabled ?? false },
+      setValue: helpers.setValue,
+      metaProps: { error, touched, initialValue },
+      setError: helpers.setError,
     };
   }
 
