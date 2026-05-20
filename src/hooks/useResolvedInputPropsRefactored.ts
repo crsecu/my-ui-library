@@ -34,9 +34,9 @@ export type FormikControlledReturn<T> = {
 
 /**
  * Hook that resolves input control props into a unified interface that supports either:
- * - Formik controlled inputs via props.name or
  * - External controlled inputs value/onChange pattern
- * Falls back to external control if Formik context is not present.
+ * - Formik controlled inputs via props.name
+ * Falls back to checking Formik context is external control props are not present.
  *
  * @returns an object with merged props (`value`, `onChange`, `disabled`) along with
  * helpers like `setValue`, and Formik metadata + helpers when formik context is available.
