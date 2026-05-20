@@ -20,6 +20,8 @@ export const Input = <T extends string>({ labelText, ...props }: InputProps<T>) 
     disabled,
   });
 
+  if (!resolvedProps) return null;
+
   return (
     <label>
       {labelText}
