@@ -1,18 +1,20 @@
 import { type FieldHelperProps, type FieldInputProps, type FieldMetaProps } from 'formik';
-import React, { type InputHTMLAttributes, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useOptionalUseField } from './useOptionalUseField.ts';
+import { isFormikProps } from './hooks.helpers.ts';
 
-interface ResolveInputProps<T> extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'name' | 'value' | 'onChange'
-> {
-  name?: string;
-  value?: T;
-  onChange?: (value: T) => void;
-}
+export type FormikControlled = {
+  name: string;
+  disabled?: boolean;
+};
+
+export type ExternalControlled<T> = {
+  value: T;
+  onChange: (value: T) => void;
+  disabled?: boolean;
+};
 
 export type ExternalControlledReturn<T> = {
-  mode: 'external';
   mergedProps: {
     value: T;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -20,12 +22,9 @@ export type ExternalControlledReturn<T> = {
     onBlur?: never;
   };
   setValue: (value: T, shouldValidate?: boolean) => void;
-  metaProps?: never;
-  setError?: never;
 };
 
 export type FormikControlledReturn<T> = {
-  mode: 'formik';
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled: boolean };
   setValue: FieldHelperProps<T>['setValue'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
@@ -43,11 +42,12 @@ export type FormikControlledReturn<T> = {
  * Returns null if none of the above options are available.
  */
 export function useResolvedInputPropsRefactored<T>(
-  props: ResolveInputProps<T>,
+  props: ExternalControlled<T> | FormikControlled,
 ): FormikControlledReturn<T> | ExternalControlledReturn<T> | null {
-  const fieldName = Object.hasOwn(props, 'name') ? props.name : undefined;
-
-  const { onChange: onChangeExternal } = props;
+  const isFormik = isFormikProps(props);
+  const fieldName = isFormik ? props.name : undefined;
+  const hasExternalProps = Object.hasOwn(props, 'value') && Object.hasOwn(props, 'onChange');
+  const onChangeExternal = 'onChange' in props ? props.onChange : undefined;
 
   const setValue = useCallback(
     //@ts-expect-error for shouldValidate
@@ -62,12 +62,14 @@ export function useResolvedInputPropsRefactored<T>(
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!onChangeExternal) return;
+
       const { type, value, checked } = e.target;
 
       if (type === 'checkbox' || type === 'radio') {
-        onChangeExternal?.(checked as unknown as T);
+        onChangeExternal(checked as unknown as T);
       } else {
-        onChangeExternal?.(value as unknown as T);
+        onChangeExternal(value as unknown as T);
       }
     },
     [onChangeExternal],
@@ -76,9 +78,8 @@ export function useResolvedInputPropsRefactored<T>(
   const fieldResult = useOptionalUseField<T>(fieldName || '');
 
   //External Control
-  if (props.value !== undefined && props.onChange !== undefined) {
+  if (!isFormik && hasExternalProps) {
     return {
-      mode: 'external',
       mergedProps: {
         value: props.value,
         onChange: handleChange,
@@ -95,7 +96,6 @@ export function useResolvedInputPropsRefactored<T>(
     const { error, touched, initialValue } = meta;
 
     return {
-      mode: 'formik',
       mergedProps: { value, onChange, onBlur, disabled: props.disabled ?? false },
       setValue: helpers.setValue,
       metaProps: { error, touched, initialValue },

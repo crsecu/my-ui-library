@@ -3,6 +3,8 @@ import { useResolvedInputPropsRefactored } from './useResolvedInputPropsRefactor
 import React, { act } from 'react';
 import { Form, Formik } from 'formik';
 import userEvent from '@testing-library/user-event';
+import type { InputComponentProps } from '../components/Input/Input.tsx';
+import { isFormikResolved } from './hooks.helpers.ts';
 
 describe('useResolvedInputPropsRefactored (tests for External Control)', () => {
   test('returns mergedProps matching the input props', () => {
@@ -63,7 +65,10 @@ describe('useResolvedInputPropsRefactored (tests for Formik Control)', () => {
 
   test('returns null when neither Formik nor external props are valid', () => {
     const { result } = renderHook(() =>
-      useResolvedInputPropsRefactored({ type: 'text', disabled: false }),
+      useResolvedInputPropsRefactored({
+        value: 'text',
+        disabled: false,
+      } as InputComponentProps<string>),
     );
 
     expect(result.current).toBeNull();
@@ -82,7 +87,7 @@ describe('useResolvedInputPropsRefactored (tests for Formik Control)', () => {
 
     expect(result.current).not.toBeNull();
 
-    if (result.current?.mode === 'formik') {
+    if (isFormikResolved(result?.current)) {
       expect(result.current).toHaveProperty('metaProps');
       expect(typeof result.current?.mergedProps.onChange).toBe('function');
       expect(typeof result.current?.setError).toBe('function');
@@ -97,13 +102,16 @@ describe('useResolvedInputPropsRefactored (tests for Formik Control)', () => {
       </Formik>
     );
 
-    const { result } = renderHook(() => useResolvedInputPropsRefactored({ name: 'lastName' }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useResolvedInputPropsRefactored<string>({ name: 'lastName' }),
+      {
+        wrapper,
+      },
+    );
 
     expect(result.current).not.toBeNull();
 
-    if (result.current?.mode === 'formik') {
+    if (isFormikResolved(result?.current)) {
       expect(result.current?.metaProps?.touched).toBe(false);
 
       act(() => {
@@ -113,7 +121,9 @@ describe('useResolvedInputPropsRefactored (tests for Formik Control)', () => {
       });
 
       await waitFor(() => {
-        expect(result.current?.metaProps?.touched).toBe(true);
+        if (isFormikResolved(result?.current)) {
+          expect(result.current?.metaProps?.touched).toBe(true);
+        }
       });
     }
   });
@@ -144,7 +154,7 @@ describe('useResolvedInputPropsRefactored (tests for Formik Control)', () => {
       wrapper,
     });
 
-    if (result.current?.mode === 'formik') {
+    if (isFormikResolved(result?.current)) {
       act(() => {
         result.current?.setValue('updated');
       });
@@ -169,12 +179,14 @@ describe('useResolvedInputPropsRefactored (User Interactions in External Mode)',
       },
     });
 
+    const isFormik = isFormikResolved(resolved);
+
     if (!resolved) return null;
 
     return (
       <div>
         <input data-testid={'external-input'} {...resolved.mergedProps} />
-        {resolved.metaProps?.touched && <span>Field was touched</span>}
+        {isFormik && resolved.metaProps?.touched && <span>Field was touched</span>}
       </div>
     );
   }
@@ -199,6 +211,7 @@ describe('useResolvedInputPropsRefactored (User Interactions in External Mode)',
 describe('useResolvedInputPropsRefactored (User Interactions in Formik Mode)', () => {
   const FormikMockInput = ({ name }: { name: string }) => {
     const resolved = useResolvedInputPropsRefactored<string>({ name });
+    const isFormik = isFormikResolved(resolved);
 
     if (!resolved) return null;
 
@@ -206,7 +219,7 @@ describe('useResolvedInputPropsRefactored (User Interactions in Formik Mode)', (
       <div>
         <input name={name} data-testid="formik-input" {...resolved.mergedProps} />
         <span data-testid="touched-status">
-          {resolved.metaProps?.touched ? 'Field was touched' : 'Field untouched'}
+          {isFormik && resolved.metaProps?.touched ? 'Field was touched' : 'Field untouched'}
         </span>
       </div>
     );

@@ -1,31 +1,31 @@
-import type { InputHTMLAttributes } from 'react';
+import { type InputHTMLAttributes } from 'react';
+import {
+  type ExternalControlled,
+  type FormikControlled,
+} from '../../hooks/useResolvedInputProps.tsx';
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
 
-interface InputProps<T extends string> extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'onChange'
-> {
-  label: string;
-  value?: T;
-  onChange?: (value: T) => void;
-}
+export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
+  labelText: string;
+};
 
-export const Input = <T extends string>({ label, ...props }: InputProps<T>) => {
-  const { name, value, onChange, disabled, ...restProps } = props;
+export type InputPropsFormik = FormikControlled & InputPropsCommon;
 
-  const resolvedProps = useResolvedInputPropsRefactored<T>({
-    name,
-    value,
-    onChange,
-    disabled,
-  });
+export type InputPropsExternal<T> = ExternalControlled<T> & InputPropsCommon;
+
+export type InputComponentProps<T extends string> = InputPropsFormik | InputPropsExternal<T>;
+
+export type ValueType = string;
+
+export const Input = ({ labelText, ...props }: InputComponentProps<ValueType>) => {
+  const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
 
   if (!resolvedProps) return null;
 
   return (
     <label>
-      {label}
-      <input name={name} {...restProps} {...resolvedProps?.mergedProps} />
+      {labelText}
+      <input {...props} {...resolvedProps?.mergedProps} name={props.name} />
     </label>
   );
 };
