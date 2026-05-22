@@ -1,5 +1,4 @@
 import type { FormikControlled, ExternalControlled } from './useResolvedInputProps.tsx';
-import { is } from 'storybook/internal/babel';
 import type {
   ExternalControlledReturn,
   FormikControlledReturn,
