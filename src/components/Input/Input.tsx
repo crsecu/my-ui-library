@@ -5,12 +5,12 @@ interface InputProps<T extends string> extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'value' | 'onChange'
 > {
-  labelText: string;
+  label: string;
   value?: T;
   onChange?: (value: T) => void;
 }
 
-export const Input = <T extends string>({ labelText, ...props }: InputProps<T>) => {
+export const Input = <T extends string>({ label, ...props }: InputProps<T>) => {
   const { name, value, onChange, disabled, ...restProps } = props;
 
   const resolvedProps = useResolvedInputPropsRefactored<T>({
@@ -24,7 +24,7 @@ export const Input = <T extends string>({ labelText, ...props }: InputProps<T>) 
 
   return (
     <label>
-      {labelText}
+      {label}
       <input name={name} {...restProps} {...resolvedProps?.mergedProps} />
     </label>
   );
