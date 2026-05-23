@@ -1,0 +1,21 @@
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  & button {
+    position: absolute;
+    right: 0;
+    padding: 8px 12px;
+    color: var(--sky-11);
+  }
+}
+.input {
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--form-border);
+  font-size: 1rem;
+  width: 100%;
+
+  color: var(--text-main);
+}
