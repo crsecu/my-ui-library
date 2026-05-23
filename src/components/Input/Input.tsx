@@ -60,7 +60,7 @@ export const Input = ({
           id={id}
           className={styles.input}
         />
-        {resolvedProps.mergedProps.value !== '' && (
+        {resolvedProps.mergedProps.value !== '' && type === 'password' && (
           <button type="button" onClick={toggleVisibility}>
             {isVisible ? <EyeOff size={22} /> : <Eye size={22} />}
           </button>
