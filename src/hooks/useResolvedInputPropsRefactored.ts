@@ -28,7 +28,7 @@ export type FormikControlledReturn<T> = {
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled: boolean };
   setValue: FieldHelperProps<T>['setValue'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
-  setError?: (errorText?: string) => void;
+  setError?: FieldHelperProps<T>['setError'];
 };
 
 /**
