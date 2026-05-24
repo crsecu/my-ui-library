@@ -6,7 +6,7 @@ interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
   children: ReactNode;
 }
 
-export const Label = ({ htmlFor, children, ...props }: LabelProps) => {
+export const Label = ({ children, htmlFor, ...props }: LabelProps) => {
   return (
     <label {...props} className={styles.label} htmlFor={htmlFor}>
       {children}
