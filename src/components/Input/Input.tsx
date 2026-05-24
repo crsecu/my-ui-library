@@ -13,7 +13,8 @@ export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onCh
   id: string;
   error?: string;
   showPassword?: boolean;
-  clearInputValue?: boolean;
+  clearInput?: boolean;
+  onClearInput?: () => void;
 };
 
 export type InputPropsFormik = FormikControlled & InputPropsCommon;
@@ -33,7 +34,8 @@ export const Input = ({
   type,
   error,
   showPassword,
-  clearInputValue,
+  clearInput,
+  onClearInput,
   ...props
 }: InputComponentProps<ValueType>) => {
   const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
@@ -47,6 +49,10 @@ export const Input = ({
 
   const clearValue = () => {
     resolvedProps.setValue('');
+
+    if (onClearInput) {
+      onClearInput();
+    }
   };
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
 
@@ -72,7 +78,7 @@ export const Input = ({
               {isVisible ? <EyeOff /> : <Eye />}
             </button>
           )}
-          {clearInputValue && resolvedProps.mergedProps.value && (
+          {clearInput && resolvedProps.mergedProps.value && (
             <button type={'button'} onClick={clearValue}>
               <CircleX />
             </button>
