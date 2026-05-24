@@ -6,13 +6,14 @@ import {
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
 import { Label } from '../Label/Label.tsx';
 import styles from './Input.module.css';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, CircleX } from 'lucide-react';
 
 export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
   labelText: string;
   id: string;
   error?: string;
   showPassword?: boolean;
+  clearInputValue?: boolean;
 };
 
 export type InputPropsFormik = FormikControlled & InputPropsCommon;
@@ -32,6 +33,7 @@ export const Input = ({
   type,
   error,
   showPassword,
+  clearInputValue,
   ...props
 }: InputComponentProps<ValueType>) => {
   const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
@@ -41,6 +43,10 @@ export const Input = ({
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
+  };
+
+  const clearValue = () => {
+    resolvedProps.setValue('');
   };
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
 
@@ -60,11 +66,18 @@ export const Input = ({
           id={id}
           className={styles.input}
         />
-        {resolvedProps.mergedProps.value !== '' && type === 'password' && (
-          <button type="button" onClick={toggleVisibility}>
-            {isVisible ? <EyeOff size={22} /> : <Eye size={22} />}
-          </button>
-        )}
+        <div className={styles.iconWrapper}>
+          {showPassword && resolvedProps.mergedProps.value !== '' && type === 'password' && (
+            <button type="button" onClick={toggleVisibility}>
+              {isVisible ? <EyeOff /> : <Eye />}
+            </button>
+          )}
+          {clearInputValue && resolvedProps.mergedProps.value && (
+            <button type={'button'} onClick={clearValue}>
+              <CircleX />
+            </button>
+          )}
+        </div>
       </div>
 
       {errorMessage && <p>{errorMessage}</p>}
