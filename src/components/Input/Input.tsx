@@ -26,9 +26,6 @@ export type InputComponentProps<T extends string> = InputPropsFormik | InputProp
 
 export type ValueType = string;
 
-/** ⦁	Optional password prop: ability to hide/view value behind bullets via click on view icon (boolean prop);
- - (hide/fiew icon appears when input field is populated with a value; if input field is empty, icon isn't visible)
- */
 export const Input = ({
   labelText,
   id,
