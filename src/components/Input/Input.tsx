@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes, useState } from 'react';
+import { type InputHTMLAttributes, useRef, useState } from 'react';
 import {
   type ExternalControlled,
   type FormikControlled,
@@ -7,6 +7,7 @@ import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPro
 import { Label } from '../Label/Label.tsx';
 import styles from './Input.module.css';
 import { Eye, EyeOff, CircleX } from 'lucide-react';
+import { Tooltip } from '../Tooltip/Tooltip.tsx';
 
 export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
   labelText: string;
@@ -40,6 +41,7 @@ export const Input = ({
 }: InputComponentProps<ValueType>) => {
   const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
   const [isVisible, setIsVisible] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (!resolvedProps) return null;
 
@@ -49,6 +51,7 @@ export const Input = ({
 
   const clearValue = () => {
     resolvedProps.setValue('');
+    if ('setError' in resolvedProps && resolvedProps.setError) resolvedProps.setError(undefined);
 
     if (onClearInput) {
       onClearInput();
@@ -56,7 +59,7 @@ export const Input = ({
   };
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
 
-  const errorMessage = 'metaProps' in resolvedProps ? resolvedProps.metaProps?.error : error;
+  const errorMessage = ('metaProps' in resolvedProps && resolvedProps.metaProps?.error) ?? error;
 
   console.log(resolvedProps, props);
 
@@ -69,8 +72,9 @@ export const Input = ({
           {...resolvedProps?.mergedProps}
           name={props.name}
           type={inputType}
+          ref={inputRef}
           id={id}
-          className={styles.input}
+          className={`${styles.input} ${errorMessage ? styles.errorInput : ''}`}
         />
         <div className={styles.iconWrapper}>
           {showPassword && resolvedProps.mergedProps.value !== '' && type === 'password' && (
@@ -86,7 +90,7 @@ export const Input = ({
         </div>
       </div>
 
-      {errorMessage && <p>{errorMessage}</p>}
+      {errorMessage && <Tooltip content={errorMessage} anchorRef={inputRef} />}
     </>
   );
 };

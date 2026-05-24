@@ -3,6 +3,10 @@
   align-items: center;
   position: relative;
 }
+
+.errorInput {
+  background-color: var(--danger-soft);
+}
 .input {
   padding: 6px 14px;
   border-radius: var(--radius-md);
