@@ -66,6 +66,10 @@ export const Input = ({
     }
   };
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
+  const showPasswordToggle =
+    showPassword && resolvedProps.mergedProps.value !== '' && type === 'password';
+  const showClearInput = clearInput && resolvedProps.mergedProps.value;
+  const passwordAriaLabel = isVisible ? 'Hide password' : 'Show password';
 
   const errorMessage =
     'metaProps' in resolvedProps && resolvedProps.metaProps?.error
@@ -88,18 +92,20 @@ export const Input = ({
           id={id}
           className={styles.input}
         />
-        <div className={styles.iconWrapper}>
-          {showPassword && resolvedProps.mergedProps.value !== '' && type === 'password' && (
-            <button type="button" onClick={toggleVisibility}>
-              {isVisible ? <EyeOff /> : <Eye />}
-            </button>
-          )}
-          {clearInput && resolvedProps.mergedProps.value && (
-            <button type={'button'} onClick={clearValue}>
-              <CircleX />
-            </button>
-          )}
-        </div>
+        {(showPasswordToggle || showClearInput) && (
+          <div className={styles.iconWrapper}>
+            {showPasswordToggle && (
+              <button type="button" onClick={toggleVisibility} aria-label={passwordAriaLabel}>
+                {isVisible ? <EyeOff /> : <Eye />}
+              </button>
+            )}
+            {showClearInput && (
+              <button type={'button'} onClick={clearValue} aria-label={'Clear input'}>
+                <CircleX />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {errorMessage && <Tooltip content={errorMessage} anchorRef={inputRef} />}
