@@ -16,6 +16,7 @@ export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onCh
   showPassword?: boolean;
   clearInput?: boolean;
   onClearInput?: () => void;
+  normalizeValue?: (value: string) => string;
 };
 
 export type InputPropsFormik = FormikControlled & InputPropsCommon;
@@ -34,6 +35,7 @@ export const Input = ({
   showPassword,
   clearInput,
   onClearInput,
+  normalizeValue,
   ...props
 }: InputComponentProps<ValueType>) => {
   const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
@@ -41,6 +43,15 @@ export const Input = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (!resolvedProps) return null;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (normalizeValue) {
+      const normalized = normalizeValue(e.target.value);
+      resolvedProps.setValue(normalized);
+    } else {
+      resolvedProps.mergedProps.onChange(e);
+    }
+  };
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -56,9 +67,12 @@ export const Input = ({
   };
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
 
-  const errorMessage = ('metaProps' in resolvedProps && resolvedProps.metaProps?.error) ?? error;
+  const errorMessage =
+    'metaProps' in resolvedProps && resolvedProps.metaProps?.error
+      ? resolvedProps.metaProps.error
+      : error;
 
-  console.log(resolvedProps, props);
+  console.log(resolvedProps, props, 'errror msg: ', errorMessage, 'error: ', error);
 
   return (
     <>
@@ -67,6 +81,7 @@ export const Input = ({
         <input
           {...props}
           {...resolvedProps?.mergedProps}
+          onChange={handleChange}
           name={props.name}
           type={inputType}
           ref={inputRef}
