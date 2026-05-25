@@ -77,7 +77,7 @@ export const Input = ({
   return (
     <>
       <Label htmlFor={id}>{labelText}</Label>
-      <div className={styles.inputWrapper}>
+      <div className={`${styles.inputWrapper} ${errorMessage ? styles.errorInput : ''}`}>
         <input
           {...props}
           {...resolvedProps?.mergedProps}
@@ -86,7 +86,7 @@ export const Input = ({
           type={inputType}
           ref={inputRef}
           id={id}
-          className={`${styles.input} ${errorMessage ? styles.errorInput : ''}`}
+          className={styles.input}
         />
         <div className={styles.iconWrapper}>
           {showPassword && resolvedProps.mergedProps.value !== '' && type === 'password' && (
