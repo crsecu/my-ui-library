@@ -59,7 +59,9 @@ export const Input = ({
 
   const clearValue = () => {
     resolvedProps.setValue('');
-    if ('setError' in resolvedProps && resolvedProps.setError) resolvedProps.setError(undefined);
+    if ('setError' in resolvedProps && resolvedProps.setError) {
+      resolvedProps.setError(undefined);
+    }
 
     if (onClearInput) {
       onClearInput();
@@ -70,13 +72,14 @@ export const Input = ({
     showPassword && resolvedProps.mergedProps.value !== '' && type === 'password';
   const showClearInput = clearInput && resolvedProps.mergedProps.value;
   const passwordAriaLabel = isVisible ? 'Hide password' : 'Show password';
+  const formikError =
+    'metaProps' in resolvedProps && resolvedProps.metaProps?.touched
+      ? resolvedProps.metaProps?.error
+      : undefined;
 
-  const errorMessage =
-    'metaProps' in resolvedProps && resolvedProps.metaProps?.error
-      ? resolvedProps.metaProps.error
-      : error;
+  const errorMessage = formikError || error;
 
-  console.log(resolvedProps, props, 'errror msg: ', errorMessage, 'error: ', error);
+  console.log(resolvedProps, props, 'errror msg: ', errorMessage);
 
   return (
     <>
