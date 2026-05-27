@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Form, Formik } from 'formik';
 
 describe('Input Component', () => {
-  test('toggle password and clear input icons are not visible when input field is empty', () => {
+  test('should hide action icons(toggle password/clear input) when input value is empty', () => {
     const mockOnChange = vi.fn();
 
     render(
@@ -28,7 +28,7 @@ describe('Input Component', () => {
     expect(clearInput).toBeNull();
   });
 
-  test('clear input icon becomes visible when input field is populated with a value', async () => {
+  test('clear input icon should be visible only when input text is present', async () => {
     const user = userEvent.setup();
 
     const TestWrapper = () => {
@@ -55,7 +55,7 @@ describe('Input Component', () => {
     expect(screen.getByRole('button', { name: /clear input/i })).toBeInTheDocument();
   });
 
-  test('clicking the clear input icon clears the input field and calls onClearInput', async () => {
+  test("should clear input text and trigger 'onClearInput' callback when clicking clear icon'", async () => {
     const user = userEvent.setup();
     const mockOnClear = vi.fn();
 
@@ -143,7 +143,7 @@ describe('Input Component', () => {
     expect(screen.getByRole('button', { name: /hide password/i })).toBeInTheDocument();
   });
 
-  test('label is displayed when labelText prop is passed in', () => {
+  test('should render semantic HTML label linked to input element', () => {
     const mockOnChange = vi.fn();
     render(<Input labelText={'Last Name'} value="" onChange={mockOnChange} id={'lastNameId'} />);
 
@@ -151,7 +151,7 @@ describe('Input Component', () => {
     expect(label.tagName).toBe('LABEL');
   });
 
-  test('when an error is present, input background turns soft red and tooltip appears on hover', async () => {
+  test('should apply error style and display message tooltip on hover', async () => {
     const user = userEvent.setup();
     const mockOnChange = vi.fn();
     render(
@@ -173,7 +173,7 @@ describe('Input Component', () => {
     expect(inputWrapper).toHaveClass(styles.errorInput);
   });
 
-  test('input value gets transformed to uppercase when capitalize function is passed via normalizeValue prop', async () => {
+  test("should normalize text value via 'normalizeValue' callback", async () => {
     const user = userEvent.setup();
 
     const capitalize = (string: string) => {
@@ -251,7 +251,7 @@ describe('Input Component (Formik Integration)', () => {
     expect(errorTooltip).toBeInTheDocument();
   });
 
-  test('clearing the input field also clears out any errors', async () => {
+  test('should clear active validation errors from UI when clear action is triggered', async () => {
     const user = userEvent.setup();
 
     const validateForm = (values: { firstName: string }) => {
@@ -286,7 +286,7 @@ describe('Input Component (Formik Integration)', () => {
     expect(errorTooltip).toBeInTheDocument();
   });
 
-  test('errors are displayed only if touched state is true', async () => {
+  test('should display form validation errors only after field is touched', async () => {
     const user = userEvent.setup();
 
     const validateForm = (values: { firstName: string }) => {
