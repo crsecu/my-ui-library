@@ -250,37 +250,77 @@ describe('Input Component (Formik Integration)', () => {
     const errorTooltip = await screen.findByText('Email is a required field');
     expect(errorTooltip).toBeInTheDocument();
   });
-});
 
-test('clearing the input field also clears out any errors', async () => {
-  const user = userEvent.setup();
+  test('clearing the input field also clears out any errors', async () => {
+    const user = userEvent.setup();
 
-  const validateForm = (values: { firstName: string }) => {
-    const errors: Record<string, string> = {};
+    const validateForm = (values: { firstName: string }) => {
+      const errors: Record<string, string> = {};
 
-    if (values.firstName.length < 3) {
-      errors.firstName = 'Invalid. First name must be at least 2 characters';
-    }
+      if (values.firstName.length < 3) {
+        errors.firstName = 'Invalid. First name must be at least 3 characters';
+      }
 
-    return errors;
-  };
+      return errors;
+    };
 
-  render(
-    <Formik initialValues={{ firstName: '' }} validate={validateForm} onSubmit={vi.fn()}>
-      <Form>
-        <Input labelText="First Name" id="firstNameId3" name="firstName" />
-        <button>Submit</button>
-      </Form>
-    </Formik>,
-  );
+    render(
+      <Formik initialValues={{ firstName: '' }} validate={validateForm} onSubmit={vi.fn()}>
+        <Form>
+          <Input labelText="First Name" id="firstNameId3" name="firstName" />
+          <button>Submit</button>
+        </Form>
+      </Formik>,
+    );
 
-  const inputEl = screen.getByLabelText('First Name');
-  await user.type(inputEl, 'Ma');
-  await user.click(screen.getByRole('button', { name: /submit/i }));
-  await user.hover(inputEl);
+    const inputEl = screen.getByLabelText('First Name');
+    await user.type(inputEl, 'Ma');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.hover(inputEl);
 
-  screen.debug();
+    screen.debug();
 
-  const errorTooltip = await screen.findByText('Invalid. First name must be at least 2 characters');
-  expect(errorTooltip).toBeInTheDocument();
+    const errorTooltip = await screen.findByText(
+      'Invalid. First name must be at least 3 characters',
+    );
+    expect(errorTooltip).toBeInTheDocument();
+  });
+
+  test('errors are displayed only if touched state is true', async () => {
+    const user = userEvent.setup();
+
+    const validateForm = (values: { firstName: string }) => {
+      const errors: Record<string, string> = {};
+
+      if (values.firstName.length < 3) {
+        errors.firstName = 'Invalid. First Name must be at least 3 characters';
+      }
+
+      return errors;
+    };
+
+    render(
+      <Formik initialValues={{ firstName: '' }} validate={validateForm} onSubmit={vi.fn()}>
+        <Form>
+          <Input labelText="First Name" id="firstNameId4" name="firstName" />
+          <button>Submit</button>
+        </Form>
+      </Formik>,
+    );
+
+    const inputEl = screen.getByLabelText('First Name');
+    const inputWrapper = inputEl.parentElement;
+    await user.type(inputEl, 'Cr');
+
+    expect(inputWrapper).not.toHaveClass(styles.errorInput);
+    await user.tab();
+    await user.unhover(inputEl);
+
+    expect(inputWrapper).toHaveClass(styles.errorInput);
+
+    await user.hover(inputEl);
+    const tooltip = await screen.findByText('Invalid. First Name must be at least 3 characters');
+
+    expect(tooltip).toBeInTheDocument();
+  });
 });
