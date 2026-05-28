@@ -20,7 +20,7 @@ describe('Input Component', () => {
   test('should hide action icons(toggle password/clear input) when input value is empty', () => {
     renderControlledInput({
       labelText: 'Password',
-      id: 'pass123',
+      id: 'passwordId1',
       showPassword: true,
       clearInput: true,
     });
@@ -37,7 +37,7 @@ describe('Input Component', () => {
   test("should display 'clear input' icon as soon as input field gets populated with a value", async () => {
     const user = userEvent.setup();
 
-    renderControlledInput({ labelText: 'First Name', id: 'firstName123', clearInput: true });
+    renderControlledInput({ labelText: 'First Name', id: 'firstNameId1', clearInput: true });
 
     const inputEl = screen.getByRole('textbox');
 
@@ -52,7 +52,7 @@ describe('Input Component', () => {
     renderControlledInput({
       type: 'password',
       labelText: 'Password',
-      id: 'pass1',
+      id: 'passwordId2',
       showPassword: true,
     });
 
@@ -70,7 +70,7 @@ describe('Input Component', () => {
 
     renderControlledInput({
       labelText: 'Clear Test',
-      id: 'clearTest',
+      id: 'clearTestId1',
       value: 'Initial value',
       clearInput: true,
       onClearInput: mockOnClear,
@@ -89,7 +89,7 @@ describe('Input Component', () => {
     renderControlledInput({
       type: 'password',
       labelText: 'Password',
-      id: 'pass2',
+      id: 'passwordId3',
       showPassword: true,
     });
 
@@ -106,7 +106,7 @@ describe('Input Component', () => {
   });
 
   test('should render semantic HTML label linked to input element', () => {
-    renderControlledInput({ labelText: 'Last Name', id: 'lastNameId' });
+    renderControlledInput({ labelText: 'Last Name', id: 'lastNameId1' });
 
     const label = screen.getByText('Last Name');
     expect(label.tagName).toBe('LABEL');
@@ -114,7 +114,7 @@ describe('Input Component', () => {
 
   test('should apply error style and display tooltip (with error message) on hover', async () => {
     const user = userEvent.setup();
-    renderControlledInput({ valueText: 'age', id: 'ageId', error: 'Something went wrong' });
+    renderControlledInput({ valueText: 'age', id: 'ageId1', error: 'Something went wrong' });
 
     const inputEl = screen.getByRole('textbox');
     const inputWrapper = inputEl.parentElement;
@@ -131,7 +131,7 @@ describe('Input Component', () => {
       return string.toUpperCase();
     };
 
-    renderControlledInput({ labelText: 'City', id: 'city1', normalizeValue: capitalize });
+    renderControlledInput({ labelText: 'City', id: 'cityId1', normalizeValue: capitalize });
 
     const inputEl = screen.getByLabelText('City');
 
@@ -141,6 +141,18 @@ describe('Input Component', () => {
 });
 
 describe('Input Component (Formik Integration)', () => {
+  const validateForm = (values: { email: string }) => {
+    const errors: Record<string, string> = {};
+
+    if (!values.email) {
+      errors.email = 'Email is a required field.';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = 'Invalid email address.';
+    }
+
+    return errors;
+  };
+
   test('should bind successfully to Formik context and updates form state', async () => {
     const user = userEvent.setup();
 
@@ -161,15 +173,6 @@ describe('Input Component (Formik Integration)', () => {
   test('should display Formik validation messages', async () => {
     const user = userEvent.setup();
 
-    const validateForm = (values: { email: string }) => {
-      const errors: Record<string, string> = {};
-
-      if (!values.email) {
-        errors.email = 'Email is a required field';
-      }
-      return errors;
-    };
-
     render(
       <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={() => {}}>
         <Form>
@@ -181,45 +184,33 @@ describe('Input Component (Formik Integration)', () => {
 
     const inputEl = screen.getByLabelText('Email');
 
-    expect(screen.queryByText('Email is a required field')).toBeNull();
+    expect(screen.queryByText('Email is a required field.')).toBeNull();
     await user.click(inputEl);
     await user.click(screen.getByRole('button', { name: /submit/i }));
     await user.hover(inputEl);
-    const errorTooltip = await screen.findByText('Email is a required field');
+    const errorTooltip = await screen.findByText('Email is a required field.');
     expect(errorTooltip).toBeInTheDocument();
   });
 
   test.skip('should clear active validation errors from UI when clear action is triggered', async () => {
     const user = userEvent.setup();
 
-    const validateForm = (values: { firstName: string }) => {
-      const errors: Record<string, string> = {};
-
-      if (values.firstName.length < 3) {
-        errors.firstName = 'Invalid. First name must be at least 3 characters';
-      }
-
-      return errors;
-    };
-
     render(
-      <Formik initialValues={{ firstName: '' }} validate={validateForm} onSubmit={vi.fn()}>
+      <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={vi.fn()}>
         <Form>
-          <Input labelText="First Name" id="firstNameId3" name="firstName" />
+          <Input labelText="Email" id="emailId2" name="email" />
           <button>Submit</button>
         </Form>
       </Formik>,
     );
 
-    const inputEl = screen.getByLabelText('First Name');
+    const inputEl = screen.getByLabelText('Email');
 
     await user.type(inputEl, 'Ma');
     await user.click(screen.getByRole('button', { name: /submit/i }));
     await user.hover(inputEl);
 
-    const errorTooltip = await screen.findByText(
-      'Invalid. First name must be at least 3 characters',
-    );
+    const errorTooltip = await screen.findByText('Invalid email address.');
 
     expect(errorTooltip).toBeInTheDocument();
     //TO DO: come back to this test after clarifying whether resetting errors should also reset touched state
@@ -229,26 +220,16 @@ describe('Input Component (Formik Integration)', () => {
   test('should display form validation errors only after field is touched', async () => {
     const user = userEvent.setup();
 
-    const validateForm = (values: { firstName: string }) => {
-      const errors: Record<string, string> = {};
-
-      if (values.firstName.length < 3) {
-        errors.firstName = 'Invalid. First Name must be at least 3 characters';
-      }
-
-      return errors;
-    };
-
     render(
-      <Formik initialValues={{ firstName: '' }} validate={validateForm} onSubmit={vi.fn()}>
+      <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={vi.fn()}>
         <Form>
-          <Input labelText="First Name" id="firstNameId4" name="firstName" />
+          <Input labelText="Email" id="emailId3" name="email" />
           <button>Submit</button>
         </Form>
       </Formik>,
     );
 
-    const inputEl = screen.getByLabelText('First Name');
+    const inputEl = screen.getByLabelText('Email');
     const inputWrapper = inputEl.parentElement;
 
     await user.type(inputEl, 'Cr');
@@ -258,7 +239,7 @@ describe('Input Component (Formik Integration)', () => {
     expect(inputWrapper).toHaveClass(styles.errorInput);
     await user.hover(inputEl);
 
-    const tooltip = await screen.findByText('Invalid. First Name must be at least 3 characters');
+    const tooltip = await screen.findByText('Invalid email address.');
 
     expect(tooltip).toBeInTheDocument();
   });
