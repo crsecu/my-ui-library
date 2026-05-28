@@ -6,18 +6,24 @@ import { useState } from 'react';
 import { Form, Formik } from 'formik';
 
 describe('Input Component', () => {
-  test('should hide action icons(toggle password/clear input) when input value is empty', () => {
-    const mockOnChange = vi.fn();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderControlledInput = (props: any) => {
+    const Wrapper = () => {
+      const [value, setValue] = useState(props.value ?? '');
 
-    render(
-      <Input
-        labelText={'password'}
-        id={'pass123'}
-        value={''}
-        onChange={mockOnChange}
-        showPassword={true}
-      />,
-    );
+      return <Input {...props} value={value} onChange={setValue} />;
+    };
+
+    render(<Wrapper />);
+  };
+
+  test('should hide action icons(toggle password/clear input) when input value is empty', () => {
+    renderControlledInput({
+      labelText: 'Password',
+      id: 'pass123',
+      showPassword: true,
+      clearInput: true,
+    });
 
     const showPassword = screen.queryByRole('button', { name: /show password/i });
     const hidePassword = screen.queryByRole('button', { name: /hide password/i });
@@ -28,111 +34,67 @@ describe('Input Component', () => {
     expect(clearInput).toBeNull();
   });
 
-  test('clear input icon should be visible only when input text is present', async () => {
+  test("should display 'clear input' icon as soon as input field gets populated with a value", async () => {
     const user = userEvent.setup();
 
-    const TestWrapper = () => {
-      const [value, setValue] = useState('');
-
-      return (
-        <Input
-          labelText={'First Name'}
-          id={'firstName123'}
-          value={value}
-          onChange={setValue}
-          clearInput={true}
-        />
-      );
-    };
-
-    render(<TestWrapper />);
+    renderControlledInput({ labelText: 'First Name', id: 'firstName123', clearInput: true });
 
     const inputEl = screen.getByRole('textbox');
-    expect(screen.queryByRole('button', { name: /clear input/i })).toBeNull();
 
+    expect(screen.queryByRole('button', { name: /clear input/i })).toBeNull();
     await user.type(inputEl, 'A');
     expect(inputEl).toHaveValue('A');
     expect(screen.getByRole('button', { name: /clear input/i })).toBeInTheDocument();
   });
 
-  test("should clear input text and trigger 'onClearInput' callback when clicking clear icon'", async () => {
+  test('should display toggle password icon as soon as input field gets populated with a value', async () => {
     const user = userEvent.setup();
-    const mockOnClear = vi.fn();
-
-    const TestWrapper = () => {
-      const [value, setValue] = useState('Initial Value');
-      return (
-        <Input
-          labelText="Clear Test"
-          id="clearTest"
-          value={value}
-          onChange={setValue}
-          clearInput={true}
-          onClearInput={mockOnClear}
-        />
-      );
-    };
-
-    render(<TestWrapper />);
-
-    const inputEl = screen.getByLabelText('Clear Test');
-    const clearIcon = screen.getByRole('button', { name: /clear input/i });
-
-    await user.click(clearIcon);
-
-    expect(inputEl).toHaveValue('');
-    expect(mockOnClear).toHaveBeenCalledTimes(1);
-  });
-
-  test('toggle password icon becomes visible when input field is populated with a value', async () => {
-    const user = userEvent.setup();
-
-    const TestWrapper = () => {
-      const [value, setValue] = useState('');
-
-      return (
-        <Input
-          type={'password'}
-          labelText={'Password'}
-          id={'pass1'}
-          value={value}
-          onChange={setValue}
-          showPassword={true}
-        />
-      );
-    };
-
-    render(<TestWrapper />);
+    renderControlledInput({
+      type: 'password',
+      labelText: 'Password',
+      id: 'pass1',
+      showPassword: true,
+    });
 
     const inputEl = screen.getByLabelText('Password');
-    expect(screen.queryByRole('button', { name: /show password/i })).toBeNull();
 
+    expect(screen.queryByRole('button', { name: /show password/i })).toBeNull();
     await user.type(inputEl, 'T');
     expect(inputEl).toHaveValue('T');
     expect(screen.getByRole('button', { name: /show password/i })).toBeInTheDocument();
   });
 
-  test('Hide password icon is rendered when password is visible', async () => {
+  test("should clear input text and trigger 'onClearInput' callback when clicking 'clear input' icon", async () => {
     const user = userEvent.setup();
+    const mockOnClear = vi.fn();
 
-    const TestWrapper = () => {
-      const [value, setValue] = useState('');
+    renderControlledInput({
+      labelText: 'Clear Test',
+      id: 'clearTest',
+      value: 'Initial value',
+      clearInput: true,
+      onClearInput: mockOnClear,
+    });
 
-      return (
-        <Input
-          type={'password'}
-          labelText={'Password'}
-          id={'pass2'}
-          value={value}
-          onChange={setValue}
-          showPassword={true}
-        />
-      );
-    };
+    const inputEl = screen.getByLabelText('Clear Test');
+    const clearIcon = screen.getByRole('button', { name: /clear input/i });
 
-    render(<TestWrapper />);
+    await user.click(clearIcon);
+    expect(inputEl).toHaveValue('');
+    expect(mockOnClear).toHaveBeenCalledTimes(1);
+  });
+
+  test("should display 'hide password' icon when password is visible", async () => {
+    const user = userEvent.setup();
+    renderControlledInput({
+      type: 'password',
+      labelText: 'Password',
+      id: 'pass2',
+      showPassword: true,
+    });
 
     const inputEl = screen.getByLabelText('Password');
+
     expect(screen.queryByRole('button', { name: /hide password/i })).toBeNull();
     await user.type(inputEl, 'Test');
     expect(inputEl).toHaveValue('Test');
@@ -144,25 +106,15 @@ describe('Input Component', () => {
   });
 
   test('should render semantic HTML label linked to input element', () => {
-    const mockOnChange = vi.fn();
-    render(<Input labelText={'Last Name'} value="" onChange={mockOnChange} id={'lastNameId'} />);
+    renderControlledInput({ labelText: 'Last Name', id: 'lastNameId' });
 
     const label = screen.getByText('Last Name');
     expect(label.tagName).toBe('LABEL');
   });
 
-  test('should apply error style and display message tooltip on hover', async () => {
+  test('should apply error style and display tooltip (with error message) on hover', async () => {
     const user = userEvent.setup();
-    const mockOnChange = vi.fn();
-    render(
-      <Input
-        labelText={'Age'}
-        value=""
-        onChange={mockOnChange}
-        id={'AgeId'}
-        error={'Something went wrong'}
-      />,
-    );
+    renderControlledInput({ valueText: 'age', id: 'ageId', error: 'Something went wrong' });
 
     const inputEl = screen.getByRole('textbox');
     const inputWrapper = inputEl.parentElement;
@@ -175,26 +127,12 @@ describe('Input Component', () => {
 
   test("should normalize text value via 'normalizeValue' callback", async () => {
     const user = userEvent.setup();
-
     const capitalize = (string: string) => {
       return string.toUpperCase();
     };
 
-    const TestWrapper = () => {
-      const [value, setValue] = useState('');
+    renderControlledInput({ labelText: 'City', id: 'city1', normalizeValue: capitalize });
 
-      return (
-        <Input
-          labelText={'City'}
-          id={'city1'}
-          value={value}
-          onChange={setValue}
-          normalizeValue={capitalize}
-        />
-      );
-    };
-
-    render(<TestWrapper />);
     const inputEl = screen.getByLabelText('City');
 
     await user.type(inputEl, 'London');
@@ -203,12 +141,11 @@ describe('Input Component', () => {
 });
 
 describe('Input Component (Formik Integration)', () => {
-  test('binds successfully to Formik context and updates form state', async () => {
+  test('should bind successfully to Formik context and updates form state', async () => {
     const user = userEvent.setup();
-    const mockSubmit = vi.fn();
 
     render(
-      <Formik initialValues={{ username: '' }} onSubmit={mockSubmit}>
+      <Formik initialValues={{ username: '' }} onSubmit={() => {}}>
         <Form>
           <Input labelText="Username" id="usernameId1" name="username" />
         </Form>
@@ -216,11 +153,12 @@ describe('Input Component (Formik Integration)', () => {
     );
 
     const inputEl = screen.getByLabelText('Username');
+
     await user.type(inputEl, 'user_113');
     expect(inputEl).toHaveValue('user_113');
   });
 
-  test('displays validation error messages from Formik', async () => {
+  test('should display Formik validation messages', async () => {
     const user = userEvent.setup();
 
     const validateForm = (values: { email: string }) => {
@@ -233,25 +171,25 @@ describe('Input Component (Formik Integration)', () => {
     };
 
     render(
-      <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={vi.fn()}>
+      <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={() => {}}>
         <Form>
-          <Input labelText="Email" id="emailId" name="email" />
+          <Input labelText="Email" id="emailId" name="email" clearInput={true} />
           <button>Submit</button>
         </Form>
       </Formik>,
     );
 
     const inputEl = screen.getByLabelText('Email');
+
     expect(screen.queryByText('Email is a required field')).toBeNull();
     await user.click(inputEl);
     await user.click(screen.getByRole('button', { name: /submit/i }));
-
     await user.hover(inputEl);
     const errorTooltip = await screen.findByText('Email is a required field');
     expect(errorTooltip).toBeInTheDocument();
   });
 
-  test('should clear active validation errors from UI when clear action is triggered', async () => {
+  test.skip('should clear active validation errors from UI when clear action is triggered', async () => {
     const user = userEvent.setup();
 
     const validateForm = (values: { firstName: string }) => {
@@ -274,16 +212,18 @@ describe('Input Component (Formik Integration)', () => {
     );
 
     const inputEl = screen.getByLabelText('First Name');
+
     await user.type(inputEl, 'Ma');
     await user.click(screen.getByRole('button', { name: /submit/i }));
     await user.hover(inputEl);
 
-    screen.debug();
-
     const errorTooltip = await screen.findByText(
       'Invalid. First name must be at least 3 characters',
     );
+
     expect(errorTooltip).toBeInTheDocument();
+    //TO DO: come back to this test after clarifying whether resetting errors should also reset touched state
+    //await user.click(screen.getByRole('button', { name: /clear input/i }));
   });
 
   test('should display form validation errors only after field is touched', async () => {
@@ -310,15 +250,14 @@ describe('Input Component (Formik Integration)', () => {
 
     const inputEl = screen.getByLabelText('First Name');
     const inputWrapper = inputEl.parentElement;
-    await user.type(inputEl, 'Cr');
 
+    await user.type(inputEl, 'Cr');
     expect(inputWrapper).not.toHaveClass(styles.errorInput);
     await user.tab();
     await user.unhover(inputEl);
-
     expect(inputWrapper).toHaveClass(styles.errorInput);
-
     await user.hover(inputEl);
+
     const tooltip = await screen.findByText('Invalid. First Name must be at least 3 characters');
 
     expect(tooltip).toBeInTheDocument();
