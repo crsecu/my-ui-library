@@ -57,10 +57,13 @@ export const Input = ({
     setIsVisible(!isVisible);
   };
 
-  const clearValue = () => {
+  const clearValue = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     resolvedProps.setValue('');
+
     if ('setError' in resolvedProps && resolvedProps.setError) {
-      resolvedProps.setError(undefined);
+      resolvedProps.setError();
     }
 
     if (onClearInput) {
@@ -79,10 +82,12 @@ export const Input = ({
 
   const errorMessage = formikError || error;
 
-  console.log(resolvedProps, props, 'errror msg: ', errorMessage);
+  console.log(resolvedProps, props, 'error msg: ', errorMessage);
 
   return (
     <>
+      <p>{errorMessage}</p>
+
       <Label htmlFor={id}>{labelText}</Label>
       <div className={`${styles.inputWrapper} ${errorMessage ? styles.errorInput : ''}`}>
         <input
@@ -103,7 +108,7 @@ export const Input = ({
               </button>
             )}
             {showClearInput && (
-              <button type={'button'} onClick={clearValue} aria-label={'Clear input'}>
+              <button type={'button'} onMouseDown={clearValue} aria-label={'Clear input'}>
                 <CircleX />
               </button>
             )}
