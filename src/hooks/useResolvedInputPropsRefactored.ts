@@ -28,18 +28,24 @@ export type FormikControlledReturn<T> = {
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled: boolean };
   setValue: FieldHelperProps<T>['setValue'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
-  setError?: FieldHelperProps<T>['setError'];
+  setError: (errorText?: string) => void;
 };
 
 /**
  * Hook that resolves input control props into a unified interface that supports either:
  * - External controlled inputs value/onChange pattern
  * - Formik controlled inputs via props.name
- * Falls back to checking Formik context is external control props are not present.
  *
- * @returns an object with merged props (`value`, `onChange`, `disabled`) along with
- * helpers like `setValue`, and Formik metadata + helpers when formik context is available.
- * Returns null if none of the above options are available.
+ * Falls back to checking Formik context if external control props are not present.
+ *
+ * @template T - The data type of the input's underlying value.
+ * @param props - The control props passed to the component.
+ * @returns an object with merged props (`value`, `onChange`, `disabled`) and 'setValue' helper;
+ * When Formik controlled, return object also includes:
+ * - metadata(error, touched, initialValue)
+ * - extended setError helper that also resets touched state
+ *
+ * Returns null if neither valid external props nor a Formik name prop are provided.
  */
 export function useResolvedInputPropsRefactored<T>(
   props: ExternalControlled<T> | FormikControlled,
@@ -99,7 +105,11 @@ export function useResolvedInputPropsRefactored<T>(
       mergedProps: { value, onChange, onBlur, disabled: props.disabled ?? false },
       setValue: helpers.setValue,
       metaProps: { error, touched, initialValue },
-      setError: helpers.setError,
+      setError: (errorText?: string) => {
+        helpers.setError(errorText || undefined);
+        helpers.setTouched(false, false);
+        //TO DO: find out if we should allow consumers to pass shouldValidate
+      },
     };
   }
 
