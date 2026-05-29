@@ -150,8 +150,6 @@ describe('Input Component', () => {
       onClick: onClickMock,
     });
 
-    screen.debug();
-
     const inputEl = screen.getByLabelText('City');
     expect(inputEl).toBeDisabled();
     await user.click(inputEl);
@@ -217,13 +215,13 @@ describe('Input Component (Formik Integration)', () => {
     expect(errorTooltip).toBeInTheDocument();
   });
 
-  test.skip('should clear active validation errors from UI when clear action is triggered', async () => {
+  test('should clear active validation errors from UI when clear action is triggered', async () => {
     const user = userEvent.setup();
 
     render(
       <Formik initialValues={{ email: '' }} validate={validateForm} onSubmit={vi.fn()}>
         <Form>
-          <Input labelText="Email" id="emailId2" name="email" />
+          <Input labelText="Email" id="emailId2" name="email" clearInput={true} />
           <button>Submit</button>
         </Form>
       </Formik>,
@@ -238,8 +236,8 @@ describe('Input Component (Formik Integration)', () => {
     const errorTooltip = await screen.findByText('Invalid email address.');
 
     expect(errorTooltip).toBeInTheDocument();
-    //TO DO: come back to this test after clarifying whether resetting errors should also reset touched state
-    //await user.click(screen.getByRole('button', { name: /clear input/i }));
+    await user.click(screen.getByRole('button', { name: /clear input/i }));
+    expect(errorTooltip).not.toBeInTheDocument();
   });
 
   test('should display form validation errors only after field is touched', async () => {
