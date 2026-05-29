@@ -107,8 +107,14 @@ export function useResolvedInputPropsRefactored<T>(
       metaProps: { error, touched, initialValue },
       setError: (errorText?: string) => {
         helpers.setError(errorText || undefined);
-        helpers.setTouched(false, false);
+
         //TO DO: find out if we should allow consumers to pass shouldValidate
+
+        //Resetting touched state only if errorText is not passed in;
+        //If errorText is passed in, we may not want to reset touched state???
+        if (!errorText) {
+          helpers.setTouched(false, false);
+        }
       },
     };
   }
