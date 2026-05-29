@@ -1,6 +1,6 @@
 import { Input } from './Input.tsx';
 import styles from './Input.module.css';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { Form, Formik } from 'formik';
@@ -138,6 +138,25 @@ describe('Input Component', () => {
     await user.type(inputEl, 'London');
     expect(inputEl).toHaveValue('LONDON');
   });
+
+  test('should not allow user interaction when disabled prop is false', async () => {
+    const user = userEvent.setup();
+    const onClickMock = vi.fn();
+
+    renderControlledInput({
+      labelText: 'City',
+      id: 'cityId2',
+      disabled: true,
+      onClick: onClickMock,
+    });
+
+    screen.debug();
+
+    const inputEl = screen.getByLabelText('City');
+    expect(inputEl).toBeDisabled();
+    await user.click(inputEl);
+    expect(onClickMock).toBeCalledTimes(0);
+  });
 });
 
 describe('Input Component (Formik Integration)', () => {
@@ -153,11 +172,16 @@ describe('Input Component (Formik Integration)', () => {
     return errors;
   };
 
-  test('should bind successfully to Formik context and updates form state', async () => {
+  test('should bind successfully to Formik context and update form state', async () => {
     const user = userEvent.setup();
 
     render(
-      <Formik initialValues={{ username: '' }} onSubmit={() => {}}>
+      <Formik
+        initialValues={{ username: '' }}
+        onSubmit={() => {}}
+        validateOnChange={false}
+        validateOnBlur={false}
+      >
         <Form>
           <Input labelText="Username" id="usernameId1" name="username" />
         </Form>
@@ -167,6 +191,7 @@ describe('Input Component (Formik Integration)', () => {
     const inputEl = screen.getByLabelText('Username');
 
     await user.type(inputEl, 'user_113');
+
     expect(inputEl).toHaveValue('user_113');
   });
 
