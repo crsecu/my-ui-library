@@ -70,6 +70,7 @@ export const Input = ({
       onClearInput();
     }
   };
+
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
   const showPasswordToggle =
     showPassword && resolvedProps.mergedProps.value !== '' && type === 'password';
@@ -82,12 +83,10 @@ export const Input = ({
 
   const errorMessage = formikError || error;
 
-  console.log(resolvedProps, props, 'error msg: ', errorMessage);
+  //console.log(resolvedProps, props, 'error msg: ', errorMessage);
 
   return (
     <>
-      <p>{errorMessage}</p>
-
       <Label htmlFor={id}>{labelText}</Label>
       <div className={`${styles.inputWrapper} ${errorMessage ? styles.errorInput : ''}`}>
         <input
