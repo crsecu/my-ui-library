@@ -82,13 +82,16 @@ export const Input = ({
       : undefined;
 
   const errorMessage = formikError || error;
+  const displayError = errorMessage && !props.disabled ? true : false;
 
-  //console.log(resolvedProps, props, 'error msg: ', errorMessage);
+  console.log(resolvedProps, props, 'error msg: ', errorMessage, 'display error??? ', displayError);
 
   return (
     <>
       <Label htmlFor={id}>{labelText}</Label>
-      <div className={`${styles.inputWrapper} ${errorMessage ? styles.errorInput : ''}`}>
+      <div
+        className={`${styles.inputWrapper} ${displayError ? styles.errorInput : ''} ${props.disabled ? styles.wrapperDisabled : ''}`}
+      >
         <input
           {...props}
           {...resolvedProps?.mergedProps}
