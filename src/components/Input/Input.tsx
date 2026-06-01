@@ -8,15 +8,18 @@ import { Label } from '../Label/Label.tsx';
 import styles from './Input.module.css';
 import { Eye, EyeOff, CircleX } from 'lucide-react';
 import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import type { TooltipAlignmentType, TooltipPositionType } from '../Tooltip/Tooltip.types.ts';
 
 export type InputPropsCommon = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
   labelText: string;
   id: string;
-  error?: string;
   showPassword?: boolean;
   clearInput?: boolean;
   onClearInput?: () => void;
   normalizeValue?: (value: string) => string;
+  error?: string;
+  tooltipPosition?: TooltipPositionType;
+  tooltipAlignment?: TooltipAlignmentType;
 };
 
 export type InputPropsFormik = FormikControlled & InputPropsCommon;
@@ -31,11 +34,13 @@ export const Input = ({
   labelText,
   id,
   type,
-  error,
   showPassword,
   clearInput,
   onClearInput,
   normalizeValue,
+  error,
+  tooltipPosition,
+  tooltipAlignment,
   ...props
 }: InputComponentProps<ValueType>) => {
   const resolvedProps = useResolvedInputPropsRefactored<ValueType>(props);
@@ -90,6 +95,7 @@ export const Input = ({
     <>
       <Label htmlFor={id}>{labelText}</Label>
       <div
+        ref={inputRef}
         className={`${styles.inputWrapper} ${displayError ? styles.errorInput : ''} ${props.disabled ? styles.wrapperDisabled : ''}`}
       >
         <input
@@ -98,7 +104,6 @@ export const Input = ({
           onChange={handleChange}
           name={props.name}
           type={inputType}
-          ref={inputRef}
           id={id}
           className={styles.input}
         />
@@ -118,7 +123,14 @@ export const Input = ({
         )}
       </div>
 
-      {errorMessage && <Tooltip content={errorMessage} anchorRef={inputRef} />}
+      {errorMessage && (
+        <Tooltip
+          content={errorMessage}
+          anchorRef={inputRef}
+          position={tooltipPosition}
+          align={tooltipAlignment}
+        />
+      )}
     </>
   );
 };
