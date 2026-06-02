@@ -2,13 +2,11 @@
   display: flex;
   align-items: center;
   width: 100%;
-  border: 1px solid var(--form-border);
   border-radius: var(--radius-md);
-  padding: 6px 0px 6px 14px;
-}
+  gap: 12px;
+  padding: 0 14px;
 
-.inputWrapper:focus-within {
-  outline: 2px solid purple;
+  border: 1px solid var(--form-border-color);
 }
 
 .input {
@@ -19,31 +17,65 @@
   background: transparent;
   font-size: 1rem;
   color: var(--text-main);
+  padding: 4px 0 4px 0;
+}
 
-  padding: 0;
+.input::placeholder {
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: inherit;
+  color: inherit;
+  opacity: 0.5;
+}
+
+.inputWrapper:hover {
+  border-color: var(--form-border-focus-color);
+  background-color: var(--sky-2);
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+}
+
+.inputWrapper:focus-within {
+  background-color: var(--sky-2);
+  border: 1px solid var(--input-focus);
 }
 
 .iconWrapper {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding-right: 14px;
   flex-shrink: 0;
 }
 
 .iconWrapper button {
+  color: hsl(210, 13%, 13%, 80%);
   color: var(--sky-11);
 }
 
-.iconWrapper button:focus {
-  outline-offset: 4px;
+.iconWrapper button:focus-visible {
+  outline-offset: 2px;
 }
 
 .iconWrapper button svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
 }
 
+.wrapperDisabled {
+  pointer-events: none;
+  opacity: 50%;
+}
+
+/* error state */
 .errorInput {
+  border-color: var(--danger-border);
+}
+
+.inputWrapper.errorInput:hover {
+  border-color: var(--danger-border);
   background-color: var(--danger-soft);
+}
+
+.inputWrapper.errorInput:focus-within {
+  border-color: var(--danger);
+  background-color: var(--pure-white);
 }
