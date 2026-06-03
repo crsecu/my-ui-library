@@ -84,6 +84,52 @@ describe('Input Component', () => {
     expect(mockOnClear).toHaveBeenCalledTimes(1);
   });
 
+  test("should clear input value when pressing Enter while 'clear input' icon is focused", async () => {
+    const user = userEvent.setup();
+
+    renderControlledInput({
+      labelText: 'Clear Test',
+      id: 'clearTestIdEnterKey',
+      value: '',
+      clearInput: true,
+    });
+
+    const inputEl = screen.getByLabelText('Clear Test');
+
+    await user.click(inputEl);
+    await user.type(inputEl, 'T');
+
+    const clearIcon = screen.getByRole('button', { name: /clear input/i });
+    expect(clearIcon).toBeInTheDocument();
+    await user.tab();
+    expect(clearIcon).toHaveFocus();
+    await user.keyboard('[Enter]');
+    expect(inputEl).toHaveValue('');
+  });
+
+  test("should clear input value when pressing Spacebar while 'clear input' icon is focused", async () => {
+    const user = userEvent.setup();
+
+    renderControlledInput({
+      labelText: 'Clear Test',
+      id: 'clearTestIdSpacebarKey',
+      value: '',
+      clearInput: true,
+    });
+
+    const inputEl = screen.getByLabelText('Clear Test');
+
+    await user.click(inputEl);
+    await user.type(inputEl, 'T');
+
+    const clearIcon = screen.getByRole('button', { name: /clear input/i });
+    expect(clearIcon).toBeInTheDocument();
+    await user.tab();
+    expect(clearIcon).toHaveFocus();
+    await user.keyboard('[Space]');
+    expect(inputEl).toHaveValue('');
+  });
+
   test("should display 'hide password' icon when password is visible", async () => {
     const user = userEvent.setup();
     renderControlledInput({
@@ -101,6 +147,56 @@ describe('Input Component', () => {
     expect(screen.getByRole('button', { name: /show password/i })).toBeInTheDocument();
     expect(inputEl).toHaveAttribute('type', 'password');
     await user.click(screen.getByRole('button', { name: /show password/i }));
+    expect(inputEl).toHaveAttribute('type', 'text');
+    expect(screen.getByRole('button', { name: /hide password/i })).toBeInTheDocument();
+  });
+
+  test("should toggle password visibility when pressing Enter while 'toggle password' icon is focused", async () => {
+    const user = userEvent.setup();
+
+    renderControlledInput({
+      type: 'password',
+      labelText: 'Password',
+      id: 'passwordIdEnterKey',
+      showPassword: true,
+    });
+
+    const inputEl = screen.getByLabelText('Password');
+
+    await user.click(inputEl);
+    await user.type(inputEl, 'A');
+
+    const showPasswordIcon = screen.getByRole('button', { name: /show password/i });
+    expect(showPasswordIcon).toBeInTheDocument();
+    await user.tab();
+    expect(showPasswordIcon).toHaveFocus();
+    await user.keyboard('[Enter]');
+
+    expect(inputEl).toHaveAttribute('type', 'text');
+    expect(screen.getByRole('button', { name: /hide password/i })).toBeInTheDocument();
+  });
+
+  test("should toggle password visibility when pressing Spacebar while 'toggle password' icon is focused", async () => {
+    const user = userEvent.setup();
+
+    renderControlledInput({
+      type: 'password',
+      labelText: 'Password',
+      id: 'passwordIdSpacebarKey',
+      showPassword: true,
+    });
+
+    const inputEl = screen.getByLabelText('Password');
+
+    await user.click(inputEl);
+    await user.type(inputEl, 'B');
+
+    const showPasswordIcon = screen.getByRole('button', { name: /show password/i });
+    expect(showPasswordIcon).toBeInTheDocument();
+    await user.tab();
+    expect(showPasswordIcon).toHaveFocus();
+    await user.keyboard('[Space]');
+
     expect(inputEl).toHaveAttribute('type', 'text');
     expect(screen.getByRole('button', { name: /hide password/i })).toBeInTheDocument();
   });
