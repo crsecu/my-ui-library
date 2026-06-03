@@ -30,6 +30,38 @@ export type InputComponentProps<T extends string> = InputPropsFormik | InputProp
 
 export type ValueType = string;
 
+/**
+ * A flexible form input component that handles either **Formik** form state
+ * or custom **externally controlled** state automatically.
+ *
+ * Features:
+ * - Displays validation errors via an anchored tooltip.
+ * - Interactive buttons to toggle password visibility and clear input values.
+
+ * @param labelText - The visible text label assigned to the input field.
+ * @param id - Unique identifier used to link the label to the input for screen readers.
+ * @param showPassword - If true, enables the eye icon toggle for password fields.
+ * @param clearInput - If true, displays an 'X' button to wipe the text field clean.
+ * @param normalizeValue - Optional function to format text as the user types.
+ * @param error - A manual error message string (only for externally controlled inputs)
+ * @param tooltipPosition - Determines where the error box sits relative to the input (e.g., 'top', 'bottom').
+ * @param tooltipAlignment - Determines where the error box sits relative to the input (e.g., 'top', 'bottom').
+ *
+ @example
+ ```tsx
+ // 1. Formik Mode (requires the 'name' prop)
+ <Input labelText="Email" id="user-email" name="email" />
+
+ // 2. Standard Mode (requires 'value' and 'onChange' props)
+ <Input
+ labelText="Search"
+ id="search-box"
+ value={text}
+ onChange={setText}
+ clearInput
+ />
+ ```
+ */
 export const Input = ({
   labelText,
   id,
