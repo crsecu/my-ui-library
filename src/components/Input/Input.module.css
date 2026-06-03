@@ -4,9 +4,10 @@
   width: 100%;
   border-radius: var(--radius-md);
   gap: 12px;
-  padding: 0 14px;
+  padding: 0 10px;
 
   border: 1px solid var(--form-border-color);
+  background-color: var(--pure-white);
 }
 
 .input {
@@ -15,9 +16,10 @@
   border: none;
   outline: none;
   background: transparent;
+
   font-size: 1rem;
   color: var(--text-main);
-  padding: 4px 0 4px 0;
+  padding: 6px 0 6px 0;
 }
 
 .input::placeholder {
@@ -37,6 +39,7 @@
 .inputWrapper:focus-within {
   background-color: var(--sky-2);
   border: 1px solid var(--input-focus);
+  box-shadow: var(--input-focus) 0px 1px 0px;
 }
 
 .iconWrapper {
@@ -62,7 +65,8 @@
 
 .wrapperDisabled {
   pointer-events: none;
-  opacity: 50%;
+  background-color: var(--input-disabled1);
+  opacity: 60%;
 }
 
 /* error state */
@@ -77,5 +81,6 @@
 
 .inputWrapper.errorInput:focus-within {
   border-color: var(--danger);
-  background-color: var(--pure-white);
+  background-color: #fffcfc;
+  box-shadow: var(--danger-border) 0px 1px 0px;
 }
