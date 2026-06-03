@@ -2,13 +2,18 @@ import { type LabelHTMLAttributes, type ReactNode } from 'react';
 import styles from './Label.module.css';
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
-  htmlFor: string;
   children: ReactNode;
+  htmlFor: string;
+  disabled?: boolean;
 }
 
-export const Label = ({ children, htmlFor, ...props }: LabelProps) => {
+export const Label = ({ children, htmlFor, disabled, ...props }: LabelProps) => {
   return (
-    <label {...props} className={styles.label} htmlFor={htmlFor}>
+    <label
+      {...props}
+      className={`${styles.label} ${disabled ? styles.disabled : ''}`}
+      htmlFor={htmlFor}
+    >
       {children}
     </label>
   );
