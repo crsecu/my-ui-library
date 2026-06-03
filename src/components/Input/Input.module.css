@@ -65,7 +65,7 @@
 
 .wrapperDisabled {
   pointer-events: none;
-  background-color: var(--input-disabled1);
+  background-color: var(--input-disabled);
   opacity: 60%;
 }
 
