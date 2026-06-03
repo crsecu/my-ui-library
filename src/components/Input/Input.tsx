@@ -49,33 +49,6 @@ export const Input = ({
 
   if (!resolvedProps) return null;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (normalizeValue) {
-      const normalized = normalizeValue(e.target.value);
-      resolvedProps.setValue(normalized);
-    } else {
-      resolvedProps.mergedProps.onChange(e);
-    }
-  };
-
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
-
-  const clearValue = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    resolvedProps.setValue('');
-
-    if ('setError' in resolvedProps && resolvedProps.setError) {
-      resolvedProps.setError();
-    }
-
-    if (onClearInput) {
-      onClearInput();
-    }
-  };
-
   const inputType = type !== 'password' ? type : isVisible ? 'text' : 'password';
   const showPasswordToggle =
     showPassword && resolvedProps.mergedProps.value !== '' && type === 'password';
@@ -89,11 +62,53 @@ export const Input = ({
   const errorMessage = formikError || error;
   const displayError = errorMessage && !props.disabled ? true : false;
 
-  console.log(resolvedProps, props, 'error msg: ', errorMessage, 'display error??? ', displayError);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (normalizeValue) {
+      const normalized = normalizeValue(e.target.value);
+      resolvedProps.setValue(normalized);
+    } else {
+      resolvedProps.mergedProps.onChange(e);
+    }
+  };
+
+  const toggleVisibility = (
+    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+    setIsVisible(!isVisible);
+  };
+
+  const clearValue = (
+    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+
+    resolvedProps.setValue('');
+
+    if ('setError' in resolvedProps && resolvedProps.setError) {
+      resolvedProps.setError();
+    }
+
+    if (onClearInput) {
+      onClearInput();
+    }
+  };
+
+  const onEscKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    const action = e.currentTarget.dataset.action;
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (action === passwordAriaLabel) toggleVisibility(e);
+
+      if (action === 'Clear input') clearValue(e);
+    }
+  };
 
   return (
     <>
-      <Label htmlFor={id}>{labelText}</Label>
+      <Label htmlFor={id} disabled={props.disabled}>
+        {labelText}
+      </Label>
       <div
         ref={inputRef}
         className={`${styles.inputWrapper} ${displayError ? styles.errorInput : ''} ${props.disabled ? styles.wrapperDisabled : ''}`}
@@ -110,12 +125,24 @@ export const Input = ({
         {(showPasswordToggle || showClearInput) && (
           <div className={styles.iconWrapper}>
             {showPasswordToggle && (
-              <button type="button" onClick={toggleVisibility} aria-label={passwordAriaLabel}>
+              <button
+                type="button"
+                onMouseDown={toggleVisibility}
+                onKeyDown={onEscKey}
+                aria-label={passwordAriaLabel}
+                data-action={passwordAriaLabel}
+              >
                 {isVisible ? <EyeOff /> : <Eye />}
               </button>
             )}
             {showClearInput && (
-              <button type={'button'} onMouseDown={clearValue} aria-label={'Clear input'}>
+              <button
+                type={'button'}
+                onMouseDown={clearValue}
+                onKeyDown={onEscKey}
+                aria-label={'Clear input'}
+                data-action={'Clear input'}
+              >
                 <CircleX />
               </button>
             )}
