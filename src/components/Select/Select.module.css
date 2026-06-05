@@ -1,0 +1,35 @@
+.selectContainer {
+  display: inline-block;
+}
+
+.dropdownMenu {
+  background-color: var(--sky-2);
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  overflow-y: scroll;
+  /*scrollbar-width: thin;*/
+  padding: 4px 0;
+}
+
+/*TEMPORARY*/
+.valueDisplay {
+  background-color: var(--neutral-soft);
+  display: flex;
+  gap: 24px;
+  padding: 3px 14px;
+  margin-bottom: 6px;
+}
+
+.valueDisplay:hover {
+  background-color: var(--danger-border);
+}
+
+/*STYLES for Option*/
+.option {
+  display: flex;
+  padding: 0 14px;
+}
+.option:hover {
+  background-color: var(--sky-4);
+}
