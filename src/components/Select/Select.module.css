@@ -1,5 +1,6 @@
 .selectContainer {
   display: inline-block;
+  min-width: 200px;
 }
 
 .dropdownMenu {
@@ -13,23 +14,41 @@
 }
 
 /*TEMPORARY*/
-.valueDisplay {
-  background-color: var(--neutral-soft);
-  display: flex;
-  gap: 24px;
-  padding: 3px 14px;
-  margin-bottom: 6px;
+.valueContainer {
+  background-color: var(--pure-white);
+  border: 1px solid var(--neutral-soft);
+  padding: 4px 8px;
 }
 
-.valueDisplay:hover {
+.valueContainer:hover {
   background-color: var(--danger-border);
+}
+
+.valueDisplay {
+  display: flex;
+  justify-content: space-between;
 }
 
 /*STYLES for Option*/
 .option {
   display: flex;
-  padding: 0 14px;
+  padding: 0 8px;
 }
 .option:hover {
   background-color: var(--sky-4);
+}
+
+.selectContainer input {
+  border: none;
+  background-color: inherit;
+}
+
+.selectContainer input:focus,
+.selectContainer input:focus-visible {
+  border: none;
+  outline: none;
+}
+
+.valueContainer:focus-within {
+  border: 1px solid red;
 }

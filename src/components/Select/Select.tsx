@@ -4,14 +4,16 @@ import styles from './Select.module.css';
 
 type SelectProps = {
   id: string;
-  placeholder?: string;
+  placeholder: string;
   options: Option[];
   onChange?: (value: string) => void;
+  searchable?: boolean;
 };
 
-export const Select = ({ options, id, ...props }: SelectProps) => {
+export const Select = ({ id, options, placeholder, searchable, ...props }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedOption, setSelectedOption] = useState<null | string>(null);
+  const [searchValue, setSearchValue] = useState('');
 
   const toggleMenuVisibility = () => {
     setShowMenu(!showMenu);
@@ -23,6 +25,10 @@ export const Select = ({ options, id, ...props }: SelectProps) => {
     setShowMenu(false);
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.currentTarget.value);
+  };
+
   const closeMenu = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     setSelectedOption(null);
@@ -30,10 +36,17 @@ export const Select = ({ options, id, ...props }: SelectProps) => {
 
   return (
     <div className={styles.selectContainer}>
-      <p className={styles.valueDisplay} onClick={toggleMenuVisibility}>
-        {selectedOption ? selectedOption : 'Animals'}
-        {selectedOption && <span onClick={closeMenu}>x</span>}
-      </p>
+      <div className={styles.valueContainer}>
+        {searchable ? (
+          <input value={searchValue} onClick={toggleMenuVisibility} onChange={handleSearch} />
+        ) : (
+          <div className={styles.valueDisplay} onClick={toggleMenuVisibility}>
+            {selectedOption ? selectedOption : placeholder}
+            {selectedOption && <span onClick={closeMenu}>x</span>}
+          </div>
+        )}
+      </div>
+
       {showMenu && (
         <div className={styles.dropdownMenu}>
           {options.map((option, index) => (
