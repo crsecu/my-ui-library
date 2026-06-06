@@ -18,10 +18,13 @@
   background-color: var(--pure-white);
   border: 1px solid var(--neutral-soft);
   padding: 4px 8px;
+
+  display: flex;
+  position: relative;
 }
 
 .valueContainer:hover {
-  background-color: var(--danger-border);
+  background-color: var(--danger-soft);
 }
 
 .valueDisplay {
@@ -51,4 +54,16 @@
 
 .valueContainer:focus-within {
   border: 1px solid red;
+}
+
+.placeholder {
+  font-size: 14px;
+  color: var(--neutral);
+
+  padding: 3px 0 2px 0;
+}
+
+.hide {
+  position: absolute;
+  left: 20px;
 }
