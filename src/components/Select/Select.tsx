@@ -33,42 +33,37 @@ export const Select = ({ id, options, placeholder, searchable, ...props }: Selec
   const closeMenu = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     setSelectedOption(null);
-
-    if (searchValue) {
-      setSearchValue('');
-      console.log('testtttt', searchInputRef.current);
-
-      if (searchInputRef.current) {
-        const input = searchInputRef.current;
-        console.log('INPUT', input);
-      }
-    }
   };
 
   const filteredOptions = options.filter((option: Option) => option.value.includes(searchValue));
   const displayOptions = searchValue ? filteredOptions : options;
+
+  const shouldDisplayInput = searchable && !selectedOption;
 
   console.log(filteredOptions);
 
   return (
     <div className={styles.selectContainer}>
       <div className={styles.valueContainer}>
-        {searchable && (
+        <div className={`${styles.valueDisplay}`} onClick={toggleMenuVisibility}>
+          {selectedOption
+            ? selectedOption
+            : !shouldDisplayInput && <span className={styles.placeholder}>{placeholder}</span>}
+
           <input
             ref={searchInputRef}
             value={searchValue}
-            onClick={toggleMenuVisibility}
             onChange={handleSearch}
+            onClick={toggleMenuVisibility}
+            placeholder={!selectedOption ? placeholder : ''}
+            style={{ width: shouldDisplayInput ? 'unset' : '0' }}
           />
-        )}
 
-        <div className={`${styles.valueDisplay} ${styles.hide}`} onClick={toggleMenuVisibility}>
-          {selectedOption ? (
-            selectedOption
-          ) : (
-            <span className={styles.placeholder}>{placeholder}</span>
+          {selectedOption && (
+            <span className={styles.closeBtn} onClick={closeMenu}>
+              x
+            </span>
           )}
-          {selectedOption && <span onClick={closeMenu}>x</span>}
         </div>
       </div>
 

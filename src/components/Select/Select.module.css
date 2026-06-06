@@ -1,6 +1,4 @@
 .selectContainer {
-  display: inline-block;
-  min-width: 200px;
 }
 
 .dropdownMenu {
@@ -18,9 +16,6 @@
   background-color: var(--pure-white);
   border: 1px solid var(--neutral-soft);
   padding: 4px 8px;
-
-  display: flex;
-  position: relative;
 }
 
 .valueContainer:hover {
@@ -29,7 +24,10 @@
 
 .valueDisplay {
   display: flex;
-  justify-content: space-between;
+}
+
+.valueDisplay .closeBtn {
+  margin-left: auto;
 }
 
 /*STYLES for Option*/
@@ -61,9 +59,4 @@
   color: var(--neutral);
 
   padding: 3px 0 2px 0;
-}
-
-.hide {
-  position: absolute;
-  left: 20px;
 }
