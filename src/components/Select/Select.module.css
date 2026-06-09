@@ -2,24 +2,39 @@
 }
 
 .dropdownMenu {
-  background-color: var(--sky-2);
+  background-color: var(--pure-white);
+  box-shadow:
+    rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
-  height: 80px;
+
+  height: 150px;
   overflow-y: scroll;
-  /*scrollbar-width: thin;*/
-  padding: 4px 0;
+
+  padding: 3px 0;
+  scroll-padding: 200px;
+}
+
+.wrapperDisabled {
+  pointer-events: none;
+  opacity: 60%;
 }
 
 /*TEMPORARY*/
 .valueContainer {
   background-color: var(--pure-white);
-  border: 1px solid var(--neutral-soft);
-  padding: 4px 8px;
+  border: 1px solid var(--form-border-color);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+  margin-bottom: 4px;
 }
 
 .valueContainer:hover {
-  background-color: var(--danger-soft);
+  border-color: var(--form-border-focus-color);
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
 }
 
 .valueDisplay {
@@ -33,15 +48,16 @@
 /*STYLES for Option*/
 .option {
   display: flex;
-  padding: 0 8px;
+  padding: 4px 8px;
 }
 .option:hover {
-  background-color: var(--sky-4);
+  background-color: var(--sky-3);
 }
 
 .selectContainer input {
   border: none;
   background-color: inherit;
+  color: var(--text-main);
 }
 
 .selectContainer input:focus,
@@ -51,12 +67,30 @@
 }
 
 .valueContainer:focus-within {
-  border: 1px solid red;
+  border: 1px solid var(--input-focus);
+  box-shadow: var(--input-focus) 0px 1px 0px;
 }
 
 .placeholder {
-  font-size: 14px;
-  color: var(--neutral);
-
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  opacity: 0.5;
   padding: 3px 0 2px 0;
+}
+
+input::placeholder {
+  color: inherit;
+  opacity: 0.5;
+  padding: 3px 0 2px 0;
+}
+
+input.displaySelectedValue::placeholder {
+  color: var(--text-main);
+  opacity: unset;
+  font-size: inherit;
+}
+
+.selected {
+  background-color: var(--sky-6);
 }

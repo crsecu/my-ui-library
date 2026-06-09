@@ -10,11 +10,13 @@ export interface SelectOptionProps {
   disabled?: boolean;
   key: number;
   onClick: MouseEventHandler<HTMLDivElement>;
+  isSelected: boolean;
 }
 
-export const SelectOption = ({ option, onClick, ...props }: SelectOptionProps) => {
+export const SelectOption = ({ option, onClick, isSelected, ...props }: SelectOptionProps) => {
+  console.log(option, isSelected);
   return (
-    <div className={styles.option} onClick={onClick}>
+    <div className={`${styles.option} ${isSelected ? styles.selected : ''}`} onClick={onClick}>
       {option.label}
     </div>
   );

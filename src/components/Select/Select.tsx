@@ -10,6 +10,7 @@ type SelectProps = {
   name: string;
   label?: string;
   placeholder: string;
+  disabled?: boolean;
   options: Option[];
   onChange?: (value: string) => void;
   searchable?: boolean;
@@ -21,10 +22,10 @@ export const Select = ({
   name,
   options,
   label,
+  disabled,
   placeholder,
   searchable,
   withFreeText,
-  ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedOption, setSelectedOption] = useState<null | string>(null);
@@ -83,7 +84,7 @@ export const Select = ({
   console.log(filteredOptions);
 
   return (
-    <div className={styles.selectContainer}>
+    <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
       {label && <Label htmlFor={id}>{label}</Label>}
       <div className={styles.valueContainer}>
         <div className={`${styles.valueDisplay}`} onClick={toggleMenuVisibility}>
@@ -95,6 +96,7 @@ export const Select = ({
               onChange={handleSearch}
               placeholder={selectedOption ?? placeholder}
               className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
+              disabled={disabled}
             />
           ) : (
             (selectedOption ?? <span className={styles.placeholder}>{placeholder}</span>)
@@ -112,7 +114,8 @@ export const Select = ({
             <SelectOption
               option={option}
               key={index}
-              onClick={(e) => handleSelectedOption(e, option.value)}
+              onClick={(e) => handleSelectedOption(e, option.label)}
+              isSelected={selectedOption === option.label}
             />
           ))}
 
