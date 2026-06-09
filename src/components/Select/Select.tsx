@@ -87,44 +87,38 @@ export const Select = ({
   return (
     <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className={styles.valueContainer}>
-        <div className={`${styles.valueDisplay}`} onClick={toggleMenuVisibility}>
-          {searchable ? (
-            <input
-              {...resolvedProps?.mergedProps}
-              name={name}
-              value={searchValue}
-              onChange={handleSearch}
-              placeholder={selectedOption ?? placeholder}
-              className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
-              disabled={disabled}
-            />
-          ) : (
-            (selectedOption ?? <span className={styles.placeholder}>{placeholder}</span>)
+      <div className={styles.valueContainer} onClick={toggleMenuVisibility}>
+        {searchable ? (
+          <input
+            {...resolvedProps?.mergedProps}
+            name={name}
+            value={searchValue}
+            onChange={handleSearch}
+            placeholder={selectedOption ?? placeholder}
+            className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
+            disabled={disabled}
+          />
+        ) : selectedOption ? (
+          <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
+        ) : (
+          <span className={styles.placeholderDisplay}>{placeholder}</span>
+        )}
+
+        <div className={styles.iconWrapper}>
+          {(searchValue || selectedOption) && (
+            <button
+              type={'button'}
+              aria-label={'Clear input'}
+              onClick={clearValue}
+              className={styles.closeBtn}
+            >
+              <X />
+            </button>
           )}
 
-          {/*<span className={styles.closeBtn} onClick={clearValue}>*/}
-          {/*  x*/}
-          {/*</span>*/}
-          <div className={styles.iconWrapper}>
-            {(searchValue || selectedOption) && (
-              <>
-                <button
-                  type={'button'}
-                  aria-label={'Clear input'}
-                  onClick={clearValue}
-                  className={styles.closeBtn}
-                >
-                  <X />
-                </button>
-                {/*<div className={styles.separator}></div>*/}
-              </>
-            )}
-
-            <span>
-              <ChevronDown />
-            </span>
-          </div>
+          <span>
+            <ChevronDown />
+          </span>
         </div>
       </div>
 

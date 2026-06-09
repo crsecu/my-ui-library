@@ -1,6 +1,60 @@
 .selectContainer {
 }
 
+/*TEMPORARY*/
+.valueContainer {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+
+  background-color: var(--pure-white);
+  border: 1px solid var(--form-border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  padding-left: 8px;
+}
+
+.valueContainer:hover {
+  border-color: var(--form-border-focus-color);
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+}
+
+.valueDisplay {
+  flex: 1;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.closeBtn {
+  display: flex;
+  position: relative;
+}
+
+.iconWrapper .closeBtn::after {
+  content: '|';
+  color: var(--slate-border);
+  position: absolute;
+  right: -3px;
+}
+
+.iconWrapper svg {
+  width: 20px;
+  height: 20px;
+}
+
+.iconWrapper > * {
+  padding: 8px;
+  color: var(--neutral-darker);
+}
+
+.iconWrapper > *:hover {
+  color: var(--sky-11);
+}
+
 .dropdownMenu {
   background-color: var(--pure-white);
   box-shadow:
@@ -21,56 +75,6 @@
 .wrapperDisabled {
   pointer-events: none;
   opacity: 60%;
-}
-
-/*TEMPORARY*/
-.valueContainer {
-  background-color: var(--pure-white);
-  border: 1px solid var(--form-border-color);
-  border-radius: var(--radius-md);
-  /*padding: 6px 8px;*/
-  padding: 0 8px;
-  margin-bottom: 4px;
-}
-
-.valueContainer:hover {
-  border-color: var(--form-border-focus-color);
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
-}
-
-.valueDisplay {
-  display: flex;
-  align-items: center;
-  min-height: 36px;
-}
-
-.iconWrapper {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.valueDisplay .closeBtn {
-  margin-left: auto;
-  display: flex;
-  position: relative;
-}
-
-.valueDisplay .iconWrapper .closeBtn::after {
-  content: '|';
-  color: var(--slate-border);
-  position: absolute;
-  right: -3px;
-}
-
-.valueDisplay .iconWrapper svg {
-  width: 20px;
-  height: 20px;
-}
-
-.valueDisplay .iconWrapper > * {
-  padding: 8px;
-  color: var(--neutral-darker);
 }
 
 /*STYLES for Option*/
@@ -101,7 +105,8 @@
   box-shadow: var(--input-focus) 0px 1px 0px;
 }
 
-.placeholder {
+.placeholderDisplay {
+  flex: 1;
   font-family: inherit;
   font-weight: inherit;
   color: inherit;
