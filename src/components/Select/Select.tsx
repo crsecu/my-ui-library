@@ -4,6 +4,7 @@ import styles from './Select.module.css';
 
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
 import { Label } from '../Label/Label.tsx';
+import { ChevronDown, X } from 'lucide-react';
 
 type SelectProps = {
   id: string;
@@ -59,7 +60,7 @@ export const Select = ({
     setSearchValue(e.currentTarget.value);
   };
 
-  const closeMenu = (e: React.MouseEvent<HTMLSpanElement>) => {
+  const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     setSelectedOption(null);
 
@@ -67,11 +68,11 @@ export const Select = ({
       resolvedProps?.setValue('');
     }
 
-    if (showMenu) setShowMenu(false);
-
     if (searchValue) {
       setSearchValue('');
     }
+
+    // if (showMenu) setShowMenu(false);
   };
 
   const filteredOptions = options.filter((option: Option) => {
@@ -102,9 +103,28 @@ export const Select = ({
             (selectedOption ?? <span className={styles.placeholder}>{placeholder}</span>)
           )}
 
-          <span className={styles.closeBtn} onClick={closeMenu}>
-            x
-          </span>
+          {/*<span className={styles.closeBtn} onClick={clearValue}>*/}
+          {/*  x*/}
+          {/*</span>*/}
+          <div className={styles.iconWrapper}>
+            {(searchValue || selectedOption) && (
+              <>
+                <button
+                  type={'button'}
+                  aria-label={'Clear input'}
+                  onClick={clearValue}
+                  className={styles.closeBtn}
+                >
+                  <X />
+                </button>
+                {/*<div className={styles.separator}></div>*/}
+              </>
+            )}
+
+            <span>
+              <ChevronDown />
+            </span>
+          </div>
         </div>
       </div>
 
