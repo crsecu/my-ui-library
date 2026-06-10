@@ -1,5 +1,5 @@
 import { type Option, SelectOption } from './SelectOption.tsx';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './Select.module.css';
 
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
@@ -13,30 +13,35 @@ type SelectProps = {
   placeholder: string;
   disabled?: boolean;
   options: Option[];
-  onChange?: (value: string) => void;
   searchable?: boolean;
   withFreeText?: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
 };
 
+// TO DO: withFreeText value becomes selectedOption when user presses enter/click etc
+// state lives in parent component, not internally
+
+//when withFreeText = false, value from parent shouldn't be updated (use dif way to capture
+//the value typed in by user
 export const Select = ({
   id,
-  name,
   options,
   label,
   disabled,
   placeholder,
   searchable,
   withFreeText,
+  ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedOption, setSelectedOption] = useState<null | string>(null);
   const [searchValue, setSearchValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const resolvedProps = useResolvedInputPropsRefactored({
-    name,
-  });
+  const resolvedProps = useResolvedInputPropsRefactored(props);
 
-  console.log('select resolvedProps', resolvedProps);
+  console.log('resolved PROPS', resolvedProps);
 
   const toggleMenuVisibility = () => {
     if (filteredOptions.length < 1 && showMenu) {
@@ -57,6 +62,8 @@ export const Select = ({
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!showMenu) setShowMenu(true);
+
     setSearchValue(e.currentTarget.value);
   };
 
@@ -72,7 +79,11 @@ export const Select = ({
       setSearchValue('');
     }
 
-    // if (showMenu) setShowMenu(false);
+    inputRef.current?.focus();
+  };
+
+  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('KEY', e.key);
   };
 
   const filteredOptions = options.filter((option: Option) => {
@@ -82,8 +93,6 @@ export const Select = ({
     return optionSafe.includes(searchValueSafe);
   });
 
-  console.log(filteredOptions);
-
   return (
     <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
       {label && <Label htmlFor={id}>{label}</Label>}
@@ -91,12 +100,14 @@ export const Select = ({
         {searchable ? (
           <input
             {...resolvedProps?.mergedProps}
-            name={name}
-            value={searchValue}
-            onChange={handleSearch}
+            name={props.name}
+            // value={searchValue}
+            // onChange={handleSearch}
             placeholder={selectedOption ?? placeholder}
             className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
             disabled={disabled}
+            ref={inputRef}
+            onKeyDown={handleKey}
           />
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>

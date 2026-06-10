@@ -14,7 +14,6 @@ export interface SelectOptionProps {
 }
 
 export const SelectOption = ({ option, onClick, isSelected, ...props }: SelectOptionProps) => {
-  console.log(option, isSelected);
   return (
     <div className={`${styles.option} ${isSelected ? styles.selected : ''}`} onClick={onClick}>
       {option.label}
