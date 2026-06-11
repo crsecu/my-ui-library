@@ -138,7 +138,9 @@ export const Select = ({
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
         ) : (
-          <span className={styles.placeholderDisplay}>{placeholder}</span>
+          <button className={styles.placeholderDisplay} type={'button'}>
+            <span>{placeholder}</span>
+          </button>
         )}
 
         <div className={styles.iconWrapper}>
