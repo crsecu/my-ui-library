@@ -5,18 +5,28 @@ export interface Option {
   value: string;
   label: string;
 }
-export interface SelectOptionProps {
-  option: Option;
+
+export interface SelectOptionProps extends Option {
   disabled?: boolean;
   key: number;
   onClick: MouseEventHandler<HTMLDivElement>;
   isSelected: boolean;
 }
 
-export const SelectOption = ({ option, onClick, isSelected, ...props }: SelectOptionProps) => {
+export const SelectOption = ({
+  value,
+  label,
+  onClick,
+  isSelected,
+  ...props
+}: SelectOptionProps) => {
   return (
-    <div className={`${styles.option} ${isSelected ? styles.selected : ''}`} onClick={onClick}>
-      {option.label}
+    <div
+      className={`${styles.option} ${isSelected ? styles.selected : ''}`}
+      onClick={onClick}
+      tabIndex={0}
+    >
+      {label}
     </div>
   );
 };

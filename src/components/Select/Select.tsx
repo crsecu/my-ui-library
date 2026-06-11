@@ -41,16 +41,24 @@ export const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
 
-  console.log('resolved PROPS', resolvedProps);
+  // console.log('resolved PROPS', resolvedProps);
 
-  const toggleMenuVisibility = () => {
-    if (filteredOptions.length < 1 && showMenu) {
-      setSearchValue('');
-    }
-    setShowMenu(!showMenu);
+  const openDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
+    console.log('openDropdownMenu', e);
+
+    setShowMenu(true);
   };
 
-  const handleSelectedOption = (e: React.MouseEvent<HTMLDivElement>, optionValue: string) => {
+  const closeDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
+    const current = e.currentTarget;
+    const relatedTarget = e.currentTarget;
+
+    if (!current.contains(relatedTarget)) {
+      setShowMenu(false);
+    }
+  };
+
+  const handleSelectedOption = (optionValue: string) => {
     if (searchValue) setSearchValue('');
 
     if (resolvedProps) {
@@ -61,10 +69,22 @@ export const Select = ({
     setShowMenu(false);
   };
 
+  //save searchQuery as selected option
+  const handleFreeText = () => {
+    if (!withFreeText) return;
+
+    if (filteredOptions.length < 1) {
+      handleSelectedOption(searchValue);
+    }
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!showMenu) setShowMenu(true);
 
     setSearchValue(e.currentTarget.value);
+    if (filteredOptions.length < 1) {
+      console.log('NO MATCHING OPTIONS');
+    }
   };
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -83,9 +103,14 @@ export const Select = ({
   };
 
   const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('KEY', e.key);
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      handleFreeText();
+    }
   };
 
+  //Filter Options based on Search Query
   const filteredOptions = options.filter((option: Option) => {
     const searchValueSafe = searchValue?.trim().toLowerCase();
     const optionSafe = option.value.trim().toLowerCase();
@@ -94,19 +119,22 @@ export const Select = ({
   });
 
   return (
-    <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
+    <div
+      className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}
+      onBlur={closeDropdownMenu}
+    >
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className={styles.valueContainer} onClick={toggleMenuVisibility}>
+      <div className={styles.valueContainer} onFocus={openDropdownMenu}>
         {searchable ? (
           <input
-            {...resolvedProps?.mergedProps}
             name={props.name}
-            // value={searchValue}
-            // onChange={handleSearch}
+            value={searchValue}
             placeholder={selectedOption ?? placeholder}
             className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
             disabled={disabled}
             ref={inputRef}
+            onChange={handleSearch}
+            onClick={handleFreeText}
             onKeyDown={handleKey}
           />
         ) : selectedOption ? (
@@ -137,9 +165,10 @@ export const Select = ({
         <div className={`${styles.dropdownMenu} `}>
           {filteredOptions.map((option, index) => (
             <SelectOption
-              option={option}
+              value={option.value}
+              label={option.label}
               key={index}
-              onClick={(e) => handleSelectedOption(e, option.label)}
+              onClick={() => handleSelectedOption(option.label)}
               isSelected={selectedOption === option.label}
             />
           ))}
