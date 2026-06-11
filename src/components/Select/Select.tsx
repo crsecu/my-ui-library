@@ -50,10 +50,7 @@ export const Select = ({
   };
 
   const closeDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
-    const current = e.currentTarget;
-    const relatedTarget = e.currentTarget;
-
-    if (!current.contains(relatedTarget)) {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowMenu(false);
     }
   };
@@ -79,7 +76,7 @@ export const Select = ({
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!showMenu) setShowMenu(true);
+    //if (!showMenu) setShowMenu(true);
 
     setSearchValue(e.currentTarget.value);
     if (filteredOptions.length < 1) {
@@ -103,6 +100,7 @@ export const Select = ({
   };
 
   const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('test');
     if (e.key === 'Enter') {
       e.preventDefault();
 
@@ -155,7 +153,7 @@ export const Select = ({
             </button>
           )}
 
-          <span>
+          <span tabIndex={-1}>
             <ChevronDown />
           </span>
         </div>
