@@ -56,6 +56,7 @@ export const Select = ({
 
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowMenu(false);
+      setSearchValue('');
     }
   };
 
@@ -80,7 +81,7 @@ export const Select = ({
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //if (!showMenu) setShowMenu(true);
+    if (!showMenu) setShowMenu(true);
 
     setSearchValue(e.currentTarget.value);
     if (filteredOptions.length < 1) {
@@ -166,7 +167,9 @@ export const Select = ({
       </div>
 
       {showMenu && (
-        <div className={`${styles.dropdownMenu} `}>
+        <div
+          className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
+        >
           {filteredOptions.map((option, index) => (
             <SelectOption
               value={option.value}

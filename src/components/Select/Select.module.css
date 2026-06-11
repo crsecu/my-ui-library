@@ -63,13 +63,23 @@
   display: flex;
   flex-direction: column;
 
-  height: 150px;
+  height: fit-content;
+  max-height: 150px;
   overflow-y: scroll;
 
   padding: 3px 0;
   scroll-padding: 200px;
 }
 
+.noOptions {
+  overflow-y: hidden;
+}
+
+.noOptions span {
+  text-align: center;
+  color: var(--neutral-darker);
+  padding: 6px 8px;
+}
 .wrapperDisabled {
   pointer-events: none;
   opacity: 60%;
