@@ -44,16 +44,10 @@ export const Select = ({
   // console.log('resolved PROPS', resolvedProps);
 
   const openDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
-    console.log('openDropdownMenu', e);
-
     setShowMenu(true);
   };
 
   const closeDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
-    console.log('currentTarget', e.currentTarget);
-    console.log('target', e.target);
-    console.log('relatedTarget', e.relatedTarget);
-
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowMenu(false);
       setSearchValue('');
