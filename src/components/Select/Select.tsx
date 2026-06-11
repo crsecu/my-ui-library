@@ -50,6 +50,10 @@ export const Select = ({
   };
 
   const closeDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
+    console.log('currentTarget', e.currentTarget);
+    console.log('target', e.target);
+    console.log('relatedTarget', e.relatedTarget);
+
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowMenu(false);
     }
@@ -173,7 +177,11 @@ export const Select = ({
             />
           ))}
 
-          {filteredOptions.length < 1 && <span className={styles.noOptions}>No options</span>}
+          {filteredOptions.length < 1 && (
+            <span className={styles.noOptions} onMouseDown={(e) => e.preventDefault()}>
+              No options
+            </span>
+          )}
         </div>
       )}
     </div>
