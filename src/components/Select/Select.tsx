@@ -96,8 +96,11 @@ export const Select = ({
   };
 
   //save searchQuery as selected option
-  const handleFreeText = (e: React.MouseEvent<HTMLInputElement>) => {
-    e.stopPropagation();
+  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (searchValue) {
+      e.stopPropagation();
+    }
+
     if (!withFreeText) return;
 
     if (filteredOptions.length < 1) {
@@ -229,7 +232,7 @@ export const Select = ({
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
             onChange={handleSearch}
-            onClick={handleFreeText}
+            onClick={handleInputClick}
           />
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
@@ -257,32 +260,31 @@ export const Select = ({
         </div>
       </div>
       {showMenu && (
-        <>
-          <ul
-            className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
-            ref={menuRef}
-            onKeyDown={handleMenuKeyDown}
-          >
-            {filteredOptions.map((option, index) => (
-              <SelectOption
-                key={index}
-                ref={(el: HTMLLIElement) => {
-                  optionRefs.current[index] = el;
-                }}
-                value={option.value}
-                label={option.label}
-                isSelected={selectedOption === option.label}
-                onClick={() => handleSelectedOption(option.label)}
-                onMouseEnter={() => setFocusedIndex(index)}
-              />
-            ))}
-          </ul>
-          {filteredOptions.length < 1 && (
+        <div
+          className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
+        >
+          {filteredOptions.length > 0 ? (
+            <ul ref={menuRef} onKeyDown={handleMenuKeyDown}>
+              {filteredOptions.map((option, index) => (
+                <SelectOption
+                  key={index}
+                  ref={(el: HTMLLIElement) => {
+                    optionRefs.current[index] = el;
+                  }}
+                  value={option.value}
+                  label={option.label}
+                  isSelected={selectedOption === option.label}
+                  onClick={() => handleSelectedOption(option.label)}
+                  onMouseEnter={() => setFocusedIndex(index)}
+                />
+              ))}
+            </ul>
+          ) : (
             <span className={styles.noOptions} onMouseDown={(e) => e.preventDefault()}>
               No options
             </span>
           )}
-        </>
+        </div>
       )}
     </div>
   );
