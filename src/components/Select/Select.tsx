@@ -36,7 +36,7 @@ const Select = ({
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  //trigger refs
+  //Trigger refs
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -125,13 +125,15 @@ const Select = ({
         !triggerContainer?.contains(e.target as Node)
       ) {
         console.log('handleClickOutside CLOSE MENU', e.target);
+        if (!withFreeText) setSearchValue('');
+
         closeDropdownMenu();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu, closeDropdownMenu]);
+  }, [showMenu, closeDropdownMenu, triggerRef, withFreeText]);
 
   // Handle trigger keyboard events
   const handleTriggerKeyDown = useCallback(
@@ -234,7 +236,9 @@ const Select = ({
             onChange={handleSearch}
           />
         ) : selectedOption ? (
-          <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
+          <div className={`${styles.valueDisplay}`} tabIndex={0}>
+            {selectedOption}
+          </div>
         ) : (
           <button
             className={styles.placeholderDisplay}
