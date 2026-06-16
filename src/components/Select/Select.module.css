@@ -64,11 +64,10 @@
   flex-direction: column;
 
   height: fit-content;
-  max-height: 150px;
+  max-height: 180px;
   overflow-y: scroll;
 
   padding: 3px 0;
-  scroll-padding: 200px;
 }
 
 .noOptions {

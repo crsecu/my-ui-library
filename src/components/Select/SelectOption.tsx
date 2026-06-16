@@ -1,5 +1,5 @@
 import styles from './Select.module.css';
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, RefObject } from 'react';
 
 export interface Option {
   value: string;
@@ -9,8 +9,10 @@ export interface Option {
 export interface SelectOptionProps extends Option {
   disabled?: boolean;
   key: number;
-  onClick: MouseEventHandler<HTMLDivElement>;
+  onClick: MouseEventHandler<HTMLLIElement>;
+  onMouseEnter?: MouseEventHandler<HTMLLIElement>;
   isSelected: boolean;
+  ref?: React.Ref<HTMLLIElement>;
 }
 
 export const SelectOption = ({
@@ -18,15 +20,17 @@ export const SelectOption = ({
   label,
   onClick,
   isSelected,
+  ref,
   ...props
 }: SelectOptionProps) => {
   return (
-    <div
+    <li
       className={`${styles.option} ${isSelected ? styles.selected : ''}`}
       onClick={onClick}
-      tabIndex={0}
+      tabIndex={-1}
+      ref={ref}
     >
       {label}
-    </div>
+    </li>
   );
 };

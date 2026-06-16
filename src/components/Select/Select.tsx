@@ -1,10 +1,9 @@
 import { type Option, SelectOption } from './SelectOption.tsx';
-import { useRef, useState } from 'react';
-import styles from './Select.module.css';
-
-import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
 import { Label } from '../Label/Label.tsx';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import styles from './Select.module.css';
 import { ChevronDown, X } from 'lucide-react';
+import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
 
 type SelectProps = {
   id: string;
@@ -19,11 +18,6 @@ type SelectProps = {
   onChange?: (value: string) => void;
 };
 
-// TO DO: withFreeText value becomes selectedOption when user presses enter/click etc
-// state lives in parent component, not internally
-
-//when withFreeText = false, value from parent shouldn't be updated (use dif way to capture
-//the value typed in by user
 export const Select = ({
   id,
   options,
@@ -32,59 +26,50 @@ export const Select = ({
   placeholder,
   searchable,
   withFreeText,
+  onChange,
   ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedOption, setSelectedOption] = useState<null | string>(null);
   const [searchValue, setSearchValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+
+  const triggerRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
+  const optionRefs = useRef<HTMLLIElement[]>([]);
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
+  console.log('resolvedProps ', resolvedProps);
 
-  // console.log('resolved PROPS', resolvedProps);
+  //Filter Options based on Search Query
+  const filteredOptions = options.filter((option: Option) => {
+    const searchValueSafe = searchValue?.trim().toLowerCase();
+    const optionSafe = option.value.trim().toLowerCase();
 
-  const openDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
+    return optionSafe.includes(searchValueSafe);
+  });
+
+  const openDropdownMenu = () => {
     setShowMenu(true);
+    setFocusedIndex(0);
   };
 
-  const closeDropdownMenu = (e: React.FocusEvent<HTMLElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setShowMenu(false);
-      setSearchValue('');
-    }
-  };
-
-  const handleSelectedOption = (optionValue: string) => {
-    if (searchValue) setSearchValue('');
-
-    if (resolvedProps) {
-      resolvedProps?.setValue(optionValue);
-    }
-    setSelectedOption(optionValue);
-
+  const closeDropdownMenu = () => {
     setShowMenu(false);
-  };
+    setFocusedIndex(-1);
 
-  //save searchQuery as selected option
-  const handleFreeText = () => {
-    if (!withFreeText) return;
-
-    if (filteredOptions.length < 1) {
-      handleSelectedOption(searchValue);
-    }
+    triggerRef.current?.focus();
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!showMenu) setShowMenu(true);
 
     setSearchValue(e.currentTarget.value);
-    if (filteredOptions.length < 1) {
-      console.log('NO MATCHING OPTIONS');
-    }
   };
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
+    console.log('clear');
     setSelectedOption(null);
 
     if (resolvedProps) {
@@ -95,44 +80,156 @@ export const Select = ({
       setSearchValue('');
     }
 
-    inputRef.current?.focus();
+    triggerRef.current?.focus();
   };
 
-  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('test');
-    if (e.key === 'Enter') {
-      e.preventDefault();
+  const handleSelectedOption = (optionValue: string) => {
+    if (searchValue) setSearchValue('');
 
-      handleFreeText();
+    if (resolvedProps) {
+      resolvedProps?.setValue(optionValue);
+    }
+
+    setSelectedOption(optionValue);
+
+    setShowMenu(false);
+  };
+
+  //save searchQuery as selected option
+  const handleFreeText = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (!withFreeText) return;
+
+    if (filteredOptions.length < 1) {
+      handleSelectedOption(searchValue);
     }
   };
 
-  //Filter Options based on Search Query
-  const filteredOptions = options.filter((option: Option) => {
-    const searchValueSafe = searchValue?.trim().toLowerCase();
-    const optionSafe = option.value.trim().toLowerCase();
+  // Focus the option at the current index
+  useEffect(() => {
+    if (showMenu && focusedIndex >= 0) {
+      optionRefs.current[focusedIndex]?.focus();
+    }
+  }, [showMenu, focusedIndex]);
 
-    return optionSafe.includes(searchValueSafe);
-  });
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const triggerContainer = triggerRef.current?.parentElement as HTMLDivElement;
+
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node) &&
+        !triggerContainer?.contains(e.target as Node)
+      ) {
+        console.log('handleClickOutside CLOSE MENU', triggerRef.current?.nextElementSibling);
+        closeDropdownMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMenu, closeDropdownMenu]);
+
+  // Handle trigger keyboard events
+  const handleTriggerKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      console.log('handleTriggerKeyDown', e);
+      switch (e.key) {
+        case 'Enter':
+          e.preventDefault();
+          break;
+        case ' ':
+        case 'ArrowDown':
+          e.preventDefault();
+          openDropdownMenu();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setShowMenu(true);
+          setFocusedIndex(filteredOptions.length - 1);
+          break;
+        case 'Escape':
+          e.preventDefault();
+          closeDropdownMenu();
+          setSearchValue('');
+          break;
+        default:
+          break;
+      }
+    },
+    [openDropdownMenu, filteredOptions.length],
+  );
+
+  // Handle menu keyboard events
+  const handleMenuKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLUListElement>) => {
+      console.log('filtered options ', filteredOptions, optionRefs);
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
+          break;
+        case 'Home':
+          e.preventDefault();
+          setFocusedIndex(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          setFocusedIndex(filteredOptions.length - 1);
+          break;
+        case 'Enter':
+        case ' ':
+          e.preventDefault();
+          if (focusedIndex >= 0) {
+            const selected = filteredOptions[focusedIndex];
+            console.log('selected', selected);
+            handleSelectedOption(selected.label);
+            closeDropdownMenu();
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          closeDropdownMenu();
+          break;
+        case 'Tab':
+          closeDropdownMenu();
+          break;
+        default:
+          break;
+      }
+    },
+    [filteredOptions, focusedIndex, handleSelectedOption, closeDropdownMenu],
+  );
 
   return (
-    <div
-      className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}
-      onBlur={closeDropdownMenu}
-    >
+    <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className={styles.valueContainer} onFocus={openDropdownMenu}>
+      <div
+        className={styles.valueContainer}
+        onClick={() => {
+          console.log('CAUGHT');
+          return showMenu ? setShowMenu(false) : setShowMenu(true);
+        }}
+      >
         {searchable ? (
           <input
             name={props.name}
-            value={searchValue}
             placeholder={selectedOption ?? placeholder}
             className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
             disabled={disabled}
-            ref={inputRef}
+            ref={triggerRef}
+            onKeyDown={handleTriggerKeyDown}
+            value={searchValue}
             onChange={handleSearch}
             onClick={handleFreeText}
-            onKeyDown={handleKey}
           />
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
@@ -147,39 +244,45 @@ export const Select = ({
             <button
               type={'button'}
               aria-label={'Clear input'}
-              onClick={clearValue}
               className={styles.closeBtn}
+              onClick={clearValue}
             >
               <X />
             </button>
           )}
 
-          <span tabIndex={-1}>
+          <span>
             <ChevronDown />
           </span>
         </div>
       </div>
-
       {showMenu && (
-        <div
-          className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
-        >
-          {filteredOptions.map((option, index) => (
-            <SelectOption
-              value={option.value}
-              label={option.label}
-              key={index}
-              onClick={() => handleSelectedOption(option.label)}
-              isSelected={selectedOption === option.label}
-            />
-          ))}
-
+        <>
+          <ul
+            className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
+            ref={menuRef}
+            onKeyDown={handleMenuKeyDown}
+          >
+            {filteredOptions.map((option, index) => (
+              <SelectOption
+                key={index}
+                ref={(el: HTMLLIElement) => {
+                  optionRefs.current[index] = el;
+                }}
+                value={option.value}
+                label={option.label}
+                isSelected={selectedOption === option.label}
+                onClick={() => handleSelectedOption(option.label)}
+                onMouseEnter={() => setFocusedIndex(index)}
+              />
+            ))}
+          </ul>
           {filteredOptions.length < 1 && (
             <span className={styles.noOptions} onMouseDown={(e) => e.preventDefault()}>
               No options
             </span>
           )}
-        </div>
+        </>
       )}
     </div>
   );
