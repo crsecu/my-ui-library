@@ -159,6 +159,9 @@ export const Select = ({
           closeDropdownMenu();
           setSearchValue('');
           break;
+        case 'Tab':
+          console.log('Tab is cliked', e, 'active: ', document.activeElement);
+          break;
         default:
           break;
       }
@@ -262,6 +265,7 @@ export const Select = ({
       {showMenu && (
         <div
           className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
+          tabIndex={-1}
         >
           {filteredOptions.length > 0 ? (
             <ul ref={menuRef} onKeyDown={handleMenuKeyDown}>
