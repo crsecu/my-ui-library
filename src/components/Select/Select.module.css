@@ -93,8 +93,14 @@
   display: flex;
   padding: 6px 12px;
 }
+
 .option:hover {
   background-color: var(--sky-3);
+}
+
+.option:focus-visible {
+  background-color: var(--sky-3);
+  outline: none;
 }
 
 .selectContainer input {
@@ -103,6 +109,7 @@
   background-color: inherit;
   color: var(--text-main);
   padding: 0;
+  border-radius: inherit;
 }
 
 .selectContainer input:focus,
@@ -113,7 +120,7 @@
 
 .valueContainer:focus-within {
   border: 1px solid var(--input-focus);
-  box-shadow: var(--input-focus) 0px 1px 0px;
+  box-shadow: var(--input-focus) 1px 1px 1px;
 }
 
 .placeholderDisplay {
@@ -146,6 +153,7 @@ input.displaySelectedValue::placeholder {
 
 .selected {
   background-color: var(--sky-6);
+  font-weight: var(--weight-semibold);
 }
 
 .valueContainer > input,
