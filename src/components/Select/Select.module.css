@@ -21,6 +21,10 @@
   padding-left: 8px;
 }
 
+.valueDisplay:focus-visible {
+  outline: none;
+}
+
 .iconWrapper {
   display: flex;
   align-items: center;
@@ -30,6 +34,15 @@
 .closeBtn {
   display: flex;
   position: relative;
+}
+.closeBtn:focus-visible {
+  outline: none;
+}
+.closeBtn:focus-visible svg {
+  background-color: var(--icon-focus);
+  color: var(--sky-12);
+  outline: 3px solid var(--icon-focus);
+  border-radius: 9999px;
 }
 
 .iconWrapper .closeBtn::after {
