@@ -40,8 +40,8 @@ const Select = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const triggerRef = searchValue ? inputRef : buttonRef;
-  const menuRef = useRef<HTMLUListElement>(null);
+  const triggerRef = searchable ? inputRef : buttonRef;
+  const menuRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<HTMLLIElement[]>([]);
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
@@ -71,6 +71,10 @@ const Select = ({
     if (!showMenu) setShowMenu(true);
 
     setSearchValue(e.currentTarget.value);
+
+    if (withFreeText) {
+      resolvedProps?.mergedProps.onChange(e);
+    }
   };
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -101,17 +105,6 @@ const Select = ({
     setShowMenu(false);
   };
 
-  //save searchQuery as selected option
-  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    if (searchValue) {
-      e.stopPropagation();
-    }
-
-    if (!withFreeText) return;
-
-    handleSelectedOption(searchValue);
-  };
-
   // Focus the option at the current index
   useEffect(() => {
     if (showMenu && focusedIndex >= 0) {
@@ -128,10 +121,10 @@ const Select = ({
 
       if (
         menuRef.current &&
-        !menuRef.current.contains(e.target as Node) &&
+        !menuRef.current?.contains(e.target as Node) &&
         !triggerContainer?.contains(e.target as Node)
       ) {
-        console.log('handleClickOutside CLOSE MENU', triggerRef.current?.nextElementSibling);
+        console.log('handleClickOutside CLOSE MENU', e.target);
         closeDropdownMenu();
       }
     };
@@ -164,7 +157,7 @@ const Select = ({
           setSearchValue('');
           break;
         case 'Tab':
-          console.log('Tab is cliked', e, 'active: ', document.activeElement);
+          closeDropdownMenu();
           break;
         default:
           break;
@@ -239,7 +232,6 @@ const Select = ({
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
             onChange={handleSearch}
-            onClick={handleInputClick}
           />
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
@@ -275,9 +267,10 @@ const Select = ({
         <div
           className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
           tabIndex={-1}
+          ref={menuRef}
         >
           {filteredOptions.length > 0 ? (
-            <ul ref={menuRef} onKeyDown={handleMenuKeyDown}>
+            <ul onKeyDown={handleMenuKeyDown}>
               {filteredOptions.map((option, index) => (
                 <SelectOption
                   key={index}
