@@ -18,7 +18,9 @@ type SelectProps = {
   onChange?: (value: string) => void;
 };
 
-export const Select = ({
+type TriggerType = HTMLInputElement | HTMLButtonElement;
+
+const Select = ({
   id,
   options,
   label,
@@ -34,7 +36,11 @@ export const Select = ({
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  const triggerRef = useRef<HTMLInputElement>(null);
+  //trigger refs
+  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const triggerRef = searchValue ? inputRef : buttonRef;
   const menuRef = useRef<HTMLUListElement>(null);
   const optionRefs = useRef<HTMLLIElement[]>([]);
 
@@ -103,9 +109,7 @@ export const Select = ({
 
     if (!withFreeText) return;
 
-    if (filteredOptions.length < 1) {
-      handleSelectedOption(searchValue);
-    }
+    handleSelectedOption(searchValue);
   };
 
   // Focus the option at the current index
@@ -138,7 +142,7 @@ export const Select = ({
 
   // Handle trigger keyboard events
   const handleTriggerKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
+    (e: React.KeyboardEvent<TriggerType>) => {
       console.log('handleTriggerKeyDown', e);
       switch (e.key) {
         case 'Enter':
@@ -166,7 +170,7 @@ export const Select = ({
           break;
       }
     },
-    [openDropdownMenu, filteredOptions.length],
+    [openDropdownMenu, closeDropdownMenu, filteredOptions.length],
   );
 
   // Handle menu keyboard events
@@ -231,7 +235,7 @@ export const Select = ({
             placeholder={selectedOption ?? placeholder}
             className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
             disabled={disabled}
-            ref={triggerRef}
+            ref={inputRef}
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
             onChange={handleSearch}
@@ -240,7 +244,12 @@ export const Select = ({
         ) : selectedOption ? (
           <div className={`${styles.valueDisplay}`}>{selectedOption}</div>
         ) : (
-          <button className={styles.placeholderDisplay} type={'button'}>
+          <button
+            className={styles.placeholderDisplay}
+            type={'button'}
+            ref={buttonRef}
+            onKeyDown={handleTriggerKeyDown}
+          >
             <span>{placeholder}</span>
           </button>
         )}
@@ -293,3 +302,4 @@ export const Select = ({
     </div>
   );
 };
+export default Select;
