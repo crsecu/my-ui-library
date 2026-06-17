@@ -138,7 +138,8 @@ const Select = ({
   // Handle trigger keyboard events
   const handleTriggerKeyDown = useCallback(
     (e: React.KeyboardEvent<TriggerType>) => {
-      console.log('handleTriggerKeyDown', e);
+      console.log('handleTriggerKeyDown', e, 'trigger: ', triggerRef);
+
       switch (e.key) {
         case 'Enter':
           e.preventDefault();
@@ -214,9 +215,17 @@ const Select = ({
     [filteredOptions, focusedIndex, handleSelectedOption, closeDropdownMenu],
   );
 
+  const hasNoOptions = showMenu && filteredOptions.length === 0;
+  const srMessage = hasNoOptions ? 'No options found' : '';
+  console.log('hasNoOptions', hasNoOptions, srMessage);
+
   return (
     <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
       {label && <Label htmlFor={id}>{label}</Label>}
+      <div role="status" aria-live="polite" className={styles.srOnly}>
+        {srMessage}
+      </div>
+
       <div
         className={styles.valueContainer}
         onClick={() => {
@@ -226,34 +235,43 @@ const Select = ({
       >
         {searchable ? (
           <input
+            id={id}
             name={props.name}
             placeholder={selectedOption ?? placeholder}
-            className={` ${selectedOption ? styles.displaySelectedValue : ''}`}
+            className={selectedOption ? styles.displaySelectedOption : ''}
             disabled={disabled}
             ref={inputRef}
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
             onChange={handleSearch}
+            role="combobox"
+            aria-haspopup="listbox"
+            aria-expanded={showMenu}
+            aria-controls={'dropdownId'}
+            aria-autocomplete="list"
           />
-        ) : selectedOption ? (
-          <div className={`${styles.valueDisplay}`} tabIndex={0}>
-            {selectedOption}
-          </div>
         ) : (
           <button
-            className={styles.placeholderDisplay}
+            className={`${styles.dropdownButton} ${selectedOption ? styles.selectedOption : ''}`}
             type={'button'}
             ref={buttonRef}
             onKeyDown={handleTriggerKeyDown}
+            id={id}
+            role="combobox"
+            aria-haspopup="listbox"
+            aria-controls={'dropdownId'}
+            aria-expanded={showMenu}
           >
-            <span>{placeholder}</span>
+            <span className={selectedOption ? styles.selectedOption : ''}>
+              {selectedOption ?? placeholder}
+            </span>
           </button>
         )}
 
         <div className={styles.iconWrapper}>
           {(searchValue || selectedOption) && (
             <button
-              type={'button'}
+              type="button"
               aria-label={'Clear input'}
               className={styles.closeBtn}
               onClick={clearValue}
@@ -267,14 +285,16 @@ const Select = ({
           </span>
         </div>
       </div>
+
       {showMenu && (
         <div
           className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
           tabIndex={-1}
           ref={menuRef}
+          id={'dropdownId'}
         >
           {filteredOptions.length > 0 ? (
-            <ul onKeyDown={handleMenuKeyDown}>
+            <ul role="listbox" onKeyDown={handleMenuKeyDown}>
               {filteredOptions.map((option, index) => (
                 <SelectOption
                   key={index}
@@ -285,7 +305,9 @@ const Select = ({
                   label={option.label}
                   isSelected={selectedOption === option.label}
                   onClick={() => handleSelectedOption(option.label)}
-                  onMouseEnter={() => setFocusedIndex(index)}
+                  onMouseEnter={() => {
+                    setFocusedIndex(index);
+                  }}
                 />
               ))}
             </ul>
