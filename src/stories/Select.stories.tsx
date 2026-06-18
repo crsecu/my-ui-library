@@ -1,21 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/React';
 import { useState } from 'storybook/preview-api';
 import Select from '../components/Select/Select.tsx';
-import type { Option } from '../components/Select/SelectOption.tsx';
-
-const options: Option[] = [
-  { value: 'cat', label: 'Cat' },
-  { value: 'dog', label: 'Dog' },
-  { value: 'bird', label: 'Bird' },
-  { value: 'fish', label: 'Fish' },
-  { value: 'cow', label: 'Cow' },
-  { value: 'horse', label: 'Horse' },
-  { value: 'grumpy cat', label: 'Grumpy cat' },
-  { value: 'donkey', label: 'Donkey' },
-  { value: 'penguin', label: 'Penguin' },
-  { value: 'giraffe', label: 'Giraffe' },
-  { value: 'cute cat', label: 'Cute cat' },
-];
+import { selectOptions } from '../components/Select/selectTestData.ts';
 
 const meta = {
   title: 'Inputs/Select',
@@ -47,7 +33,7 @@ export const Default: Story = {
     value: '',
     name: 'defaultStory',
     placeholder: 'Placeholder text...',
-    options: options,
+    options: selectOptions,
     onChange: () => {},
   },
 };
@@ -59,7 +45,7 @@ export const WithSearchField: Story = {
     value: '',
     name: 'selectWithSearchFieldStory',
     placeholder: 'Placeholder text...',
-    options: options,
+    options: selectOptions,
     onChange: () => {},
     searchable: true,
   },
