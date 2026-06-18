@@ -17,6 +17,7 @@
 
   --pure-white: #ffffff;
 
+
   /* PRIMARY (Brand) */
   --primary-base: var(--sky-9);
   --primary-text-light: #00a2c7;
@@ -100,6 +101,8 @@
   --form-border-focus-color: var(--slate-border-focus);
   --input-focus: #00a2c7;
   --input-disabled: hsl(240, 10%, 92%);
+  --icon-focus: hsl(205, 50%, 23%, 0.2);
+
 }
 
 

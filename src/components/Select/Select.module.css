@@ -135,7 +135,7 @@
   box-shadow: var(--input-focus) 1px 1px 1px;
 }
 
-.placeholderDisplay {
+.dropdownButton {
   width: 100%;
   height: 100%;
   text-align: start;
@@ -147,7 +147,7 @@
   padding: 3px 0 2px 0;
 }
 
-.placeholderDisplay:focus-visible {
+.dropdownButton:focus-visible {
   outline: none;
 }
 
@@ -157,10 +157,15 @@ input::placeholder {
   padding: 3px 0 2px 0;
 }
 
-input.displaySelectedValue::placeholder {
+input.displaySelectedOption::placeholder {
   color: var(--text-main);
   opacity: unset;
   font-size: inherit;
+}
+
+.selectedOption {
+  opacity: unset;
+  color: var(--text-main);
 }
 
 .selected {
@@ -172,4 +177,16 @@ input.displaySelectedValue::placeholder {
 .valueContainer button {
   min-height: 38px;
   padding-left: 12px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
