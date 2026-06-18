@@ -28,7 +28,6 @@ const Select = ({
   placeholder,
   searchable,
   withFreeText,
-  onChange,
   ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -133,13 +132,11 @@ const Select = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu, closeDropdownMenu, triggerRef, withFreeText]);
+  }, [showMenu, closeDropdownMenu, withFreeText, triggerRef]);
 
   // Handle trigger keyboard events
   const handleTriggerKeyDown = useCallback(
     (e: React.KeyboardEvent<TriggerType>) => {
-      console.log('handleTriggerKeyDown', e, 'trigger: ', triggerRef);
-
       switch (e.key) {
         case 'Enter':
           e.preventDefault();
@@ -163,6 +160,7 @@ const Select = ({
           closeDropdownMenu();
           break;
         default:
+          console.log('what is this');
           break;
       }
     },
@@ -172,10 +170,9 @@ const Select = ({
   // Handle menu keyboard events
   const handleMenuKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLUListElement>) => {
-      console.log('filtered options ', filteredOptions, optionRefs);
-
       switch (e.key) {
         case 'ArrowDown':
+          console.log('EL WITH FOCUS IS:', document.activeElement);
           e.preventDefault();
           setFocusedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
           break;
@@ -240,6 +237,7 @@ const Select = ({
             placeholder={selectedOption ?? placeholder}
             className={selectedOption ? styles.displaySelectedOption : ''}
             disabled={disabled}
+            aria-disabled={disabled}
             ref={inputRef}
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
@@ -257,10 +255,12 @@ const Select = ({
             ref={buttonRef}
             onKeyDown={handleTriggerKeyDown}
             id={id}
+            disabled={disabled}
             role="combobox"
             aria-haspopup="listbox"
             aria-controls={'dropdownId'}
             aria-expanded={showMenu}
+            aria-disabled={disabled}
           >
             <span className={selectedOption ? styles.selectedOption : ''}>
               {selectedOption ?? placeholder}
@@ -305,9 +305,6 @@ const Select = ({
                   label={option.label}
                   isSelected={selectedOption === option.label}
                   onClick={() => handleSelectedOption(option.label)}
-                  onMouseEnter={() => {
-                    setFocusedIndex(index);
-                  }}
                 />
               ))}
             </ul>
