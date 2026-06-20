@@ -124,7 +124,6 @@ const Select = ({
         !triggerContainer?.contains(e.target as Node)
       ) {
         console.log('handleClickOutside CLOSE MENU', e.target);
-        if (!withFreeText) setSearchValue('');
 
         closeDropdownMenu();
       }
@@ -192,6 +191,7 @@ const Select = ({
         case ' ':
           e.preventDefault();
           if (focusedIndex >= 0) {
+            console.log('logging event: ', e);
             const selected = filteredOptions[focusedIndex];
             console.log('selected', selected);
             handleSelectedOption(selected.label);
@@ -247,6 +247,10 @@ const Select = ({
             aria-expanded={showMenu}
             aria-controls={'dropdownId'}
             aria-autocomplete="list"
+            onBlur={() => {
+              if (withFreeText && searchValue) setSelectedOption(searchValue);
+              setSearchValue('');
+            }}
           />
         ) : (
           <button
