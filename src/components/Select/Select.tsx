@@ -78,7 +78,6 @@ const Select = ({
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
-    console.log('clear');
     setSelectedOption(null);
 
     if (resolvedProps) {
@@ -140,10 +139,20 @@ const Select = ({
         case 'Enter':
           e.preventDefault();
           break;
-        case ' ':
         case 'ArrowDown':
           e.preventDefault();
           openDropdownMenu();
+          break;
+        case ' ':
+          if (!searchValue) {
+            e.preventDefault();
+          }
+
+          if (!searchable) {
+            setFocusedIndex(0);
+          }
+
+          setShowMenu(true);
           break;
         case 'ArrowUp':
           e.preventDefault();
@@ -159,11 +168,10 @@ const Select = ({
           closeDropdownMenu();
           break;
         default:
-          console.log('what is this');
           break;
       }
     },
-    [openDropdownMenu, closeDropdownMenu, filteredOptions.length],
+    [openDropdownMenu, closeDropdownMenu, filteredOptions.length, searchable, searchValue],
   );
 
   // Handle menu keyboard events
@@ -171,7 +179,6 @@ const Select = ({
     (e: React.KeyboardEvent<HTMLUListElement>) => {
       switch (e.key) {
         case 'ArrowDown':
-          console.log('EL WITH FOCUS IS:', document.activeElement);
           e.preventDefault();
           setFocusedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
           break;
@@ -191,9 +198,7 @@ const Select = ({
         case ' ':
           e.preventDefault();
           if (focusedIndex >= 0) {
-            console.log('logging event: ', e);
             const selected = filteredOptions[focusedIndex];
-            console.log('selected', selected);
             handleSelectedOption(selected.label);
             closeDropdownMenu();
           }
@@ -214,7 +219,6 @@ const Select = ({
 
   const hasNoOptions = showMenu && filteredOptions.length === 0;
   const srMessage = hasNoOptions ? 'No options found' : '';
-  console.log('hasNoOptions', hasNoOptions, srMessage);
 
   return (
     <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
@@ -226,7 +230,6 @@ const Select = ({
       <div
         className={styles.valueContainer}
         onClick={() => {
-          console.log('CAUGHT');
           return showMenu ? setShowMenu(false) : setShowMenu(true);
         }}
       >
@@ -248,8 +251,10 @@ const Select = ({
             aria-controls={'dropdownId'}
             aria-autocomplete="list"
             onBlur={() => {
-              if (withFreeText && searchValue) setSelectedOption(searchValue);
-              setSearchValue('');
+              if (withFreeText && searchValue && focusedIndex < 0) {
+                setSelectedOption(searchValue);
+                setSearchValue('');
+              }
             }}
           />
         ) : (
