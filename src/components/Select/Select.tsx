@@ -246,7 +246,6 @@ const Select = ({
             placeholder={selectedDisplayValue ?? placeholder}
             className={selectedValue ? styles.displaySelectedOption : ''}
             disabled={disabled}
-            aria-disabled={disabled}
             ref={inputRef}
             onKeyDown={handleTriggerKeyDown}
             value={searchValue}
@@ -275,7 +274,6 @@ const Select = ({
             aria-haspopup="listbox"
             aria-controls={listboxId}
             aria-expanded={showMenu}
-            aria-disabled={disabled}
           >
             <span className={selectedValue ? styles.selectedOption : ''}>
               {selectedDisplayValue ?? placeholder}
