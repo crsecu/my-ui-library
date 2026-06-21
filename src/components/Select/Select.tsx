@@ -1,6 +1,6 @@
 import { type Option, SelectOption } from './SelectOption.tsx';
 import { Label } from '../Label/Label.tsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './Select.module.css';
 import { ChevronDown, X } from 'lucide-react';
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
@@ -53,12 +53,11 @@ const Select = ({
   const selectedDisplayValue = selectedOption?.label ?? selectedValue ?? null;
 
   //Filter Options based on Search Query
-  const filteredOptions = options.filter((option: Option) => {
-    const searchValueSafe = searchValue?.trim().toLowerCase();
-    const optionSafe = option.value.trim().toLowerCase();
+  const filteredOptions = useMemo(() => {
+    const searchQuery = searchValue?.trim().toLowerCase();
 
-    return optionSafe.includes(searchValueSafe);
-  });
+    return options.filter((option: Option) => option.label.toLowerCase().includes(searchQuery));
+  }, [options, searchValue]);
 
   const openDropdownMenu = useCallback(() => {
     setShowMenu(true);
