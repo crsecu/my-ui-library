@@ -50,6 +50,7 @@ const Select = ({
   console.log('resolvedProps ', resolvedProps);
 
   const selectedOption = options.find((option) => option.value === selectedValue);
+  const selectedDisplayValue = selectedOption?.label ?? selectedValue ?? null;
 
   //Filter Options based on Search Query
   const filteredOptions = options.filter((option: Option) => {
@@ -242,7 +243,7 @@ const Select = ({
           <input
             id={id}
             name={props.name}
-            placeholder={selectedOption?.label ?? placeholder}
+            placeholder={selectedDisplayValue ?? placeholder}
             className={selectedValue ? styles.displaySelectedOption : ''}
             disabled={disabled}
             aria-disabled={disabled}
@@ -277,7 +278,7 @@ const Select = ({
             aria-disabled={disabled}
           >
             <span className={selectedValue ? styles.selectedOption : ''}>
-              {selectedOption?.label ?? placeholder}
+              {selectedDisplayValue ?? placeholder}
             </span>
           </button>
         )}
