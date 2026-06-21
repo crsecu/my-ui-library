@@ -60,17 +60,17 @@ const Select = ({
     return optionSafe.includes(searchValueSafe);
   });
 
-  const openDropdownMenu = () => {
+  const openDropdownMenu = useCallback(() => {
     setShowMenu(true);
     setFocusedIndex(0);
-  };
+  }, []);
 
-  const closeDropdownMenu = () => {
+  const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
     setFocusedIndex(-1);
 
     triggerRef.current?.focus();
-  };
+  }, [triggerRef]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!showMenu) setShowMenu(true);
