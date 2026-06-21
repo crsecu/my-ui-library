@@ -31,7 +31,10 @@ const Select = ({
   ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<null | string>(null);
+
+  //Stores option.value
+  const [selectedValue, setSelectedValue] = useState<null | string>(null);
+
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
@@ -45,6 +48,8 @@ const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
   console.log('resolvedProps ', resolvedProps);
+
+  const selectedOption = options.find((option) => option.value === selectedValue);
 
   //Filter Options based on Search Query
   const filteredOptions = options.filter((option: Option) => {
@@ -78,7 +83,7 @@ const Select = ({
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
-    setSelectedOption(null);
+    setSelectedValue(null);
 
     if (resolvedProps) {
       resolvedProps?.setValue('');
@@ -98,7 +103,7 @@ const Select = ({
       resolvedProps?.setValue(optionValue);
     }
 
-    setSelectedOption(optionValue);
+    setSelectedValue(optionValue);
 
     setShowMenu(false);
   };
@@ -199,7 +204,7 @@ const Select = ({
           e.preventDefault();
           if (focusedIndex >= 0) {
             const selected = filteredOptions[focusedIndex];
-            handleSelectedOption(selected.label);
+            handleSelectedOption(selected.value);
             closeDropdownMenu();
           }
           break;
@@ -237,8 +242,8 @@ const Select = ({
           <input
             id={id}
             name={props.name}
-            placeholder={selectedOption ?? placeholder}
-            className={selectedOption ? styles.displaySelectedOption : ''}
+            placeholder={selectedOption?.label ?? placeholder}
+            className={selectedValue ? styles.displaySelectedOption : ''}
             disabled={disabled}
             aria-disabled={disabled}
             ref={inputRef}
@@ -252,14 +257,14 @@ const Select = ({
             aria-autocomplete="list"
             onBlur={() => {
               if (withFreeText && searchValue && focusedIndex < 0) {
-                setSelectedOption(searchValue);
+                setSelectedValue(searchValue);
                 setSearchValue('');
               }
             }}
           />
         ) : (
           <button
-            className={`${styles.dropdownButton} ${selectedOption ? styles.selectedOption : ''}`}
+            className={`${styles.dropdownButton} ${selectedValue ? styles.selectedOption : ''}`}
             type={'button'}
             ref={buttonRef}
             onKeyDown={handleTriggerKeyDown}
@@ -271,14 +276,14 @@ const Select = ({
             aria-expanded={showMenu}
             aria-disabled={disabled}
           >
-            <span className={selectedOption ? styles.selectedOption : ''}>
-              {selectedOption ?? placeholder}
+            <span className={selectedValue ? styles.selectedOption : ''}>
+              {selectedOption?.label ?? placeholder}
             </span>
           </button>
         )}
 
         <div className={styles.iconWrapper}>
-          {(searchValue || selectedOption) && (
+          {(searchValue || selectedValue) && (
             <button
               type="button"
               aria-label={'Clear input'}
@@ -312,8 +317,8 @@ const Select = ({
                   }}
                   value={option.value}
                   label={option.label}
-                  isSelected={selectedOption === option.label}
-                  onClick={() => handleSelectedOption(option.label)}
+                  isSelected={selectedValue === option.value}
+                  onClick={() => handleSelectedOption(option.value)}
                 />
               ))}
             </ul>
