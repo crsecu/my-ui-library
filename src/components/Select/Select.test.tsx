@@ -310,4 +310,32 @@ describe('Select Component (Combobox)', () => {
     await user.keyboard('leo');
     expect(screen.getByText('No options')).toBeInTheDocument();
   });
+
+  test('should set search query as selected option when input loses focus if withFreeText prop is true', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Formik initialValues={{ favorites: '' }} onSubmit={vi.fn()}>
+        <Form>
+          <Select
+            label={'Choose your favorite'}
+            placeholder={'Select...'}
+            options={selectOptions}
+            name={'favorites'}
+            id="combobox3"
+            searchable={true}
+            withFreeText={true}
+          />
+        </Form>
+      </Formik>,
+    );
+
+    const selectEl = screen.getByLabelText('Choose your favorite');
+    expect(selectEl).toHaveAttribute('placeholder', 'Select...');
+
+    await user.click(selectEl);
+    await user.keyboard('test value');
+    await user.click(document.body);
+    expect(selectEl).toHaveAttribute('placeholder', 'test value');
+  });
 });
