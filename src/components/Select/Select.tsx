@@ -225,6 +225,7 @@ const Select = ({
 
   const hasNoOptions = showMenu && filteredOptions.length === 0;
   const srMessage = hasNoOptions ? 'No options found' : '';
+  const listboxId = `${id}-listbox`;
 
   return (
     <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
@@ -254,7 +255,7 @@ const Select = ({
             role="combobox"
             aria-haspopup="listbox"
             aria-expanded={showMenu}
-            aria-controls={'dropdownId'}
+            aria-controls={listboxId}
             aria-autocomplete="list"
             onBlur={() => {
               if (withFreeText && searchValue && focusedIndex < 0) {
@@ -273,7 +274,7 @@ const Select = ({
             disabled={disabled}
             role="combobox"
             aria-haspopup="listbox"
-            aria-controls={'dropdownId'}
+            aria-controls={listboxId}
             aria-expanded={showMenu}
             aria-disabled={disabled}
           >
@@ -306,7 +307,7 @@ const Select = ({
           className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
           tabIndex={-1}
           ref={menuRef}
-          id={'dropdownId'}
+          id={listboxId}
         >
           {filteredOptions.length > 0 ? (
             <ul role="listbox" onKeyDown={handleMenuKeyDown}>
