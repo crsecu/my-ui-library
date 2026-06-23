@@ -227,7 +227,10 @@ const Select = ({
   const listboxId = `${id}-listbox`;
 
   return (
-    <div className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}>
+    <div
+      className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}
+      data-disabled={disabled}
+    >
       {label && <Label htmlFor={id}>{label}</Label>}
       <div role="status" aria-live="polite" className={styles.srOnly}>
         {srMessage}
@@ -286,7 +289,7 @@ const Select = ({
             <button
               type="button"
               aria-label={'Clear input'}
-              className={styles.clearBtn}
+              className={styles.clearButton}
               onClick={clearValue}
             >
               <X />

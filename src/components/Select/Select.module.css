@@ -1,7 +1,11 @@
 .selectContainer {
 }
 
-/*TEMPORARY*/
+.selectContainer[data-disabled='true'] {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .selectControl {
   display: flex;
   align-items: center;
@@ -36,21 +40,21 @@
   flex-shrink: 0;
 }
 
-.clearBtn {
+.clearButton {
   display: flex;
   position: relative;
 }
-.clearBtn:focus-visible {
+.clearButton:focus-visible {
   outline: none;
 }
-.clearBtn:focus-visible svg {
+.clearButton:focus-visible svg {
   background-color: var(--icon-focus);
   color: var(--sky-12);
   outline: 3px solid var(--icon-focus);
   border-radius: 9999px;
 }
 
-.clearBtn::after {
+.clearButton::after {
   content: '|';
   color: var(--slate-border);
   position: absolute;
@@ -99,10 +103,6 @@
   text-align: center;
   color: var(--neutral-darker);
   padding: 6px 8px;
-}
-.wrapperDisabled {
-  pointer-events: none;
-  opacity: 60%;
 }
 
 .selectContainer input {
