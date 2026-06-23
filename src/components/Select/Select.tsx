@@ -1,4 +1,4 @@
-import { type Option, SelectOption } from './SelectOption.tsx';
+import { type Option, SelectOption } from '../SelectOption/SelectOption.tsx';
 import { Label } from '../Label/Label.tsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './Select.module.css';
@@ -234,7 +234,7 @@ const Select = ({
       </div>
 
       <div
-        className={styles.valueContainer}
+        className={styles.selectControl}
         onClick={() => {
           return showMenu ? setShowMenu(false) : setShowMenu(true);
         }}
@@ -286,7 +286,7 @@ const Select = ({
             <button
               type="button"
               aria-label={'Clear input'}
-              className={styles.closeBtn}
+              className={styles.clearBtn}
               onClick={clearValue}
             >
               <X />
@@ -307,7 +307,7 @@ const Select = ({
           id={listboxId}
         >
           {filteredOptions.length > 0 ? (
-            <ul role="listbox" onKeyDown={handleMenuKeyDown}>
+            <ul className={styles.menuList} role="listbox" onKeyDown={handleMenuKeyDown}>
               {filteredOptions.map((option, index) => (
                 <SelectOption
                   key={index}
@@ -322,7 +322,7 @@ const Select = ({
               ))}
             </ul>
           ) : (
-            <span className={styles.noOptions} onMouseDown={(e) => e.preventDefault()}>
+            <span className={styles.noOptionsMessage} onMouseDown={(e) => e.preventDefault()}>
               No options
             </span>
           )}

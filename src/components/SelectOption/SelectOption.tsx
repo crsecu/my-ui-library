@@ -1,4 +1,4 @@
-import styles from './Select.module.css';
+import styles from '../SelectOption/SelectOption.module.css';
 import type { MouseEventHandler } from 'react';
 
 export interface Option {

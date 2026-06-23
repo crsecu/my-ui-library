@@ -2,7 +2,7 @@
 }
 
 /*TEMPORARY*/
-.valueContainer {
+.selectControl {
   display: flex;
   align-items: center;
   background-color: var(--pure-white);
@@ -11,9 +11,14 @@
   margin-bottom: 6px;
 }
 
-.valueContainer:hover {
+.selectControl:hover {
   border-color: var(--form-border-focus-color);
   box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+}
+
+.selectControl:focus-within {
+  border: 1px solid var(--input-focus);
+  box-shadow: var(--input-focus) 1px 1px 1px;
 }
 
 .valueDisplay {
@@ -31,21 +36,21 @@
   flex-shrink: 0;
 }
 
-.closeBtn {
+.clearBtn {
   display: flex;
   position: relative;
 }
-.closeBtn:focus-visible {
+.clearBtn:focus-visible {
   outline: none;
 }
-.closeBtn:focus-visible svg {
+.clearBtn:focus-visible svg {
   background-color: var(--icon-focus);
   color: var(--sky-12);
   outline: 3px solid var(--icon-focus);
   border-radius: 9999px;
 }
 
-.iconWrapper .closeBtn::after {
+.clearBtn::after {
   content: '|';
   color: var(--slate-border);
   position: absolute;
@@ -81,7 +86,7 @@
   padding: 3px 0;
 }
 
-.dropdownMenu ul {
+.menuList {
   padding: 0;
   overflow-y: scroll;
 }
@@ -90,7 +95,7 @@
   overflow-y: hidden;
 }
 
-.noOptions span {
+.noOptionsMessage {
   text-align: center;
   color: var(--neutral-darker);
   padding: 6px 8px;
@@ -98,21 +103,6 @@
 .wrapperDisabled {
   pointer-events: none;
   opacity: 60%;
-}
-
-/*STYLES for Option*/
-.option {
-  display: flex;
-  padding: 6px 12px;
-}
-
-.option:hover {
-  background-color: var(--sky-3);
-}
-
-.option:focus-visible {
-  background-color: var(--sky-3);
-  outline: none;
 }
 
 .selectContainer input {
@@ -128,11 +118,6 @@
 .selectContainer input:focus-visible {
   border: none;
   outline: none;
-}
-
-.valueContainer:focus-within {
-  border: 1px solid var(--input-focus);
-  box-shadow: var(--input-focus) 1px 1px 1px;
 }
 
 .dropdownButton {
@@ -168,13 +153,8 @@ input.displaySelectedOption::placeholder {
   color: var(--text-main);
 }
 
-.selected {
-  background-color: var(--sky-6);
-  font-weight: var(--weight-semibold);
-}
-
-.valueContainer > input,
-.valueContainer button {
+.selectControl > input,
+.selectControl button {
   min-height: 38px;
   padding-left: 12px;
 }
