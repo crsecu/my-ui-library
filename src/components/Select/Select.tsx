@@ -31,23 +31,20 @@ const Select = ({
   ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
-
-  //Stores option.value
   const [selectedValue, setSelectedValue] = useState<null | string>(null);
-
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  //Trigger refs
+  //REFS
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
   const triggerRef = searchable ? inputRef : buttonRef;
   const menuRef = useRef<HTMLDivElement>(null);
-  const optionRefs = useRef<HTMLLIElement[]>([]);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<Map<string, HTMLLIElement>>(null);
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
-  console.log('resolvedProps ', resolvedProps);
+  // console.log('resolvedProps ', resolvedProps);
 
   const selectedOption = options.find((option) => option.value === selectedValue);
   const selectedDisplayValue = selectedOption?.label ?? selectedValue ?? null;
@@ -55,6 +52,7 @@ const Select = ({
   //Filter Options based on Search Query
   const filteredOptions = useMemo(() => {
     const searchQuery = searchValue?.trim().toLowerCase();
+    if (!searchQuery) return options;
 
     return options.filter((option: Option) => option.label.toLowerCase().includes(searchQuery));
   }, [options, searchValue]);
@@ -67,13 +65,12 @@ const Select = ({
   const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
     setFocusedIndex(-1);
-
-    triggerRef.current?.focus();
-  }, [triggerRef]);
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!showMenu) setShowMenu(true);
 
+    setFocusedIndex(0);
     setSearchValue(e.currentTarget.value);
 
     if (withFreeText) {
@@ -96,73 +93,93 @@ const Select = ({
     triggerRef.current?.focus();
   };
 
-  const handleSelectedOption = (optionValue: string) => {
-    if (searchValue) setSearchValue('');
+  const handleSelectedOption = useCallback(
+    (optionValue: string) => {
+      if (searchValue) setSearchValue('');
 
-    if (resolvedProps) {
-      resolvedProps?.setValue(optionValue);
-    }
+      if (resolvedProps) {
+        resolvedProps?.setValue(optionValue);
+      }
 
-    setSelectedValue(optionValue);
+      setSelectedValue(optionValue);
 
-    setShowMenu(false);
-  };
+      closeDropdownMenu();
+    },
+    [closeDropdownMenu, resolvedProps, searchValue],
+  );
 
-  // Focus the option at the current index
+  //Scroll into view
   useEffect(() => {
-    if (showMenu && focusedIndex >= 0) {
-      optionRefs.current[focusedIndex]?.focus();
-    }
-  }, [showMenu, focusedIndex]);
+    if (!showMenu || focusedIndex < 0) return;
+
+    const option = filteredOptions[focusedIndex];
+    if (!option) return;
+
+    optionsRef.current?.get(option.value)?.scrollIntoView?.({
+      block: 'nearest',
+    });
+  }, [focusedIndex, showMenu, filteredOptions]);
 
   // Close menu when clicking outside
   useEffect(() => {
     if (!showMenu) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      const triggerContainer = triggerRef.current?.parentElement as HTMLDivElement;
-
-      if (
-        menuRef.current &&
-        !menuRef.current?.contains(e.target as Node) &&
-        !triggerContainer?.contains(e.target as Node)
-      ) {
-        console.log('handleClickOutside CLOSE MENU', e.target);
-
+      if (!rootRef.current?.contains(e.target as Node)) {
         closeDropdownMenu();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu, closeDropdownMenu, withFreeText, triggerRef]);
+  }, [showMenu, closeDropdownMenu]);
 
   // Handle trigger keyboard events
   const handleTriggerKeyDown = useCallback(
     (e: React.KeyboardEvent<TriggerType>) => {
       switch (e.key) {
-        case 'Enter':
-          e.preventDefault();
-          break;
         case 'ArrowDown':
           e.preventDefault();
-          openDropdownMenu();
-          break;
-        case ' ':
-          if (!searchValue) {
-            e.preventDefault();
+          if (!showMenu) {
+            openDropdownMenu();
+            break;
           }
 
-          if (!searchable) {
-            setFocusedIndex(0);
-          }
-
-          setShowMenu(true);
+          setFocusedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setShowMenu(true);
-          setFocusedIndex(filteredOptions.length - 1);
+          if (!showMenu) {
+            setShowMenu(true);
+            setFocusedIndex(filteredOptions.length - 1);
+            break;
+          }
+
+          setFocusedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (focusedIndex >= 0) {
+            const selected = filteredOptions[focusedIndex];
+
+            if (selected) {
+              handleSelectedOption(selected.value);
+            }
+          }
+          break;
+        case ' ':
+          if (!searchValue) {
+            if (focusedIndex >= 0) {
+              e.preventDefault();
+              const selected = filteredOptions[focusedIndex];
+              if (selected) handleSelectedOption(selected.value);
+              break;
+            }
+
+            e.preventDefault();
+            openDropdownMenu();
+          }
+
           break;
         case 'Escape':
           e.preventDefault();
@@ -176,72 +193,34 @@ const Select = ({
           break;
       }
     },
-    [openDropdownMenu, closeDropdownMenu, filteredOptions.length, searchable, searchValue],
-  );
-
-  // Handle menu keyboard events
-  const handleMenuKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLUListElement>) => {
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          setFocusedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          setFocusedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
-          break;
-        case 'Home':
-          e.preventDefault();
-          setFocusedIndex(0);
-          break;
-        case 'End':
-          e.preventDefault();
-          setFocusedIndex(filteredOptions.length - 1);
-          break;
-        case 'Enter':
-        case ' ':
-          e.preventDefault();
-          if (focusedIndex >= 0) {
-            const selected = filteredOptions[focusedIndex];
-            handleSelectedOption(selected.value);
-            closeDropdownMenu();
-          }
-          break;
-        case 'Escape':
-          e.preventDefault();
-          closeDropdownMenu();
-          break;
-        case 'Tab':
-          closeDropdownMenu();
-          break;
-        default:
-          break;
-      }
-    },
-    [filteredOptions, focusedIndex, handleSelectedOption, closeDropdownMenu],
+    [
+      showMenu,
+      focusedIndex,
+      searchValue,
+      closeDropdownMenu,
+      openDropdownMenu,
+      filteredOptions,
+      handleSelectedOption,
+    ],
   );
 
   const hasNoOptions = showMenu && filteredOptions.length === 0;
   const srMessage = hasNoOptions ? 'No options found' : '';
+  const activeOption = focusedIndex >= 0 ? filteredOptions[focusedIndex] : null;
   const listboxId = `${id}-listbox`;
 
   return (
     <div
       className={`${styles.selectContainer} ${disabled ? styles.wrapperDisabled : ''}`}
       data-disabled={disabled}
+      ref={rootRef}
     >
       {label && <Label htmlFor={id}>{label}</Label>}
       <div role="status" aria-live="polite" className={styles.srOnly}>
         {srMessage}
       </div>
 
-      <div
-        className={styles.selectControl}
-        onClick={() => {
-          return showMenu ? setShowMenu(false) : setShowMenu(true);
-        }}
-      >
+      <div className={styles.selectControl} onClick={() => setShowMenu((prev) => !prev)}>
         {searchable ? (
           <input
             id={id}
@@ -254,16 +233,17 @@ const Select = ({
             value={searchValue}
             onChange={handleSearch}
             role="combobox"
+            aria-activedescendant={activeOption ? `listoption-${activeOption.value}` : undefined}
             aria-haspopup="listbox"
             aria-expanded={showMenu}
             aria-controls={listboxId}
             aria-autocomplete="list"
-            onBlur={() => {
-              if (withFreeText && searchValue && focusedIndex < 0) {
-                setSelectedValue(searchValue);
-                setSearchValue('');
-              }
-            }}
+            // onBlur={() => {
+            //   if (withFreeText && searchValue && focusedIndex < 0) {
+            //     setSelectedValue(searchValue);
+            //     setSearchValue('');
+            //   }
+            // }}
           />
         ) : (
           <button
@@ -274,6 +254,7 @@ const Select = ({
             id={id}
             disabled={disabled}
             role="combobox"
+            aria-activedescendant={activeOption ? `listoption-${activeOption.value}` : undefined}
             aria-haspopup="listbox"
             aria-controls={listboxId}
             aria-expanded={showMenu}
@@ -310,17 +291,30 @@ const Select = ({
           id={listboxId}
         >
           {filteredOptions.length > 0 ? (
-            <ul className={styles.menuList} role="listbox" onKeyDown={handleMenuKeyDown}>
+            <ul className={styles.menuList} role="listbox">
               {filteredOptions.map((option, index) => (
                 <SelectOption
-                  key={index}
+                  key={option.value}
+                  id={`listoption-${option.value}`}
                   ref={(el: HTMLLIElement) => {
-                    optionRefs.current[index] = el;
+                    if (!el) return;
+
+                    if (!optionsRef.current) {
+                      optionsRef.current = new Map();
+                    }
+
+                    const map = optionsRef.current;
+                    map.set(option.value, el);
+
+                    return () => {
+                      map.delete(option.value);
+                    };
                   }}
                   value={option.value}
                   label={option.label}
                   isSelected={selectedValue === option.value}
                   onClick={() => handleSelectedOption(option.value)}
+                  isFocused={focusedIndex === index}
                 />
               ))}
             </ul>
