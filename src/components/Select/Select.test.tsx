@@ -309,7 +309,7 @@ describe('Select Component (Combobox)', () => {
     expect(screen.getByText('No options')).toBeInTheDocument();
   });
 
-  test('should set search query as selected option when input loses focus if withFreeText prop is true', async () => {
+  test('should persist search query when input loses focus if withFreeText prop is true', async () => {
     const user = userEvent.setup();
 
     render(
