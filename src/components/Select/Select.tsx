@@ -31,7 +31,6 @@ const Select = ({
   ...props
 }: SelectProps) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<null | string>(null);
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
@@ -44,12 +43,13 @@ const Select = ({
   const optionsRef = useRef<Map<string, HTMLLIElement>>(null);
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
-  // console.log('resolvedProps ', resolvedProps);
+  const resolvedValue = resolvedProps?.mergedProps.value;
+  console.log('resolvedProps ', resolvedProps);
 
-  const selectedOption = options.find((option) => option.value === selectedValue);
-  const selectedDisplayValue = selectedOption?.label ?? selectedValue ?? null;
+  const selectedOption = options.find((option) => option.value === resolvedValue);
+  const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;
 
-  //Filter Options based on Search Query
+  //Filter Options based on search query
   const filteredOptions = useMemo(() => {
     const searchQuery = searchValue?.trim().toLowerCase();
     if (!searchQuery) return options;
@@ -80,14 +80,12 @@ const Select = ({
 
   const clearValue = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
-    setSelectedValue(null);
+    if (searchValue) {
+      setSearchValue('');
+    }
 
     if (resolvedProps) {
       resolvedProps?.setValue('');
-    }
-
-    if (searchValue) {
-      setSearchValue('');
     }
 
     triggerRef.current?.focus();
@@ -98,10 +96,12 @@ const Select = ({
       if (searchValue) setSearchValue('');
 
       if (resolvedProps) {
-        resolvedProps?.setValue(optionValue);
-      }
+        resolvedProps.setValue(optionValue);
 
-      setSelectedValue(optionValue);
+        if ('setTouched' in resolvedProps) {
+          resolvedProps.setTouched(true);
+        }
+      }
 
       closeDropdownMenu();
     },
@@ -120,7 +120,7 @@ const Select = ({
     });
   }, [focusedIndex, showMenu, filteredOptions]);
 
-  // Close menu when clicking outside
+  //Close menu when clicking outside
   useEffect(() => {
     if (!showMenu) return;
 
@@ -183,11 +183,23 @@ const Select = ({
           break;
         case 'Escape':
           e.preventDefault();
+
+          if (searchValue) setSearchValue('');
+          if (withFreeText) resolvedProps?.setValue('');
           closeDropdownMenu();
-          setSearchValue('');
           break;
         case 'Tab':
-          closeDropdownMenu();
+          if (focusedIndex >= 0) {
+            if (filteredOptions.length === 0) {
+              closeDropdownMenu();
+              break;
+            }
+            e.preventDefault();
+            const selected = filteredOptions[focusedIndex];
+            if (selected) handleSelectedOption(selected.value);
+            break;
+          }
+          setShowMenu(false);
           break;
         default:
           break;
@@ -201,6 +213,8 @@ const Select = ({
       openDropdownMenu,
       filteredOptions,
       handleSelectedOption,
+      withFreeText,
+      resolvedProps,
     ],
   );
 
@@ -220,34 +234,39 @@ const Select = ({
         {srMessage}
       </div>
 
-      <div className={styles.selectControl} onClick={() => setShowMenu((prev) => !prev)}>
+      <div
+        className={styles.selectControl}
+        onClick={() => setShowMenu((prev) => !prev)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            if (withFreeText) return;
+            if (searchValue) setSearchValue('');
+          }
+        }}
+      >
         {searchable ? (
           <input
             id={id}
+            type="search"
             name={props.name}
             placeholder={selectedDisplayValue ?? placeholder}
-            className={selectedValue ? styles.displaySelectedOption : ''}
+            className={resolvedValue ? styles.displaySelectedOption : ''}
             disabled={disabled}
             ref={inputRef}
-            onKeyDown={handleTriggerKeyDown}
-            value={searchValue}
-            onChange={handleSearch}
             role="combobox"
             aria-activedescendant={activeOption ? `listoption-${activeOption.value}` : undefined}
             aria-haspopup="listbox"
             aria-expanded={showMenu}
             aria-controls={listboxId}
             aria-autocomplete="list"
-            // onBlur={() => {
-            //   if (withFreeText && searchValue && focusedIndex < 0) {
-            //     setSelectedValue(searchValue);
-            //     setSearchValue('');
-            //   }
-            // }}
+            value={searchValue}
+            onKeyDown={handleTriggerKeyDown}
+            onChange={handleSearch}
+            onBlur={resolvedProps?.mergedProps.onBlur}
           />
         ) : (
           <button
-            className={`${styles.dropdownButton} ${selectedValue ? styles.selectedOption : ''}`}
+            className={`${styles.dropdownButton} ${resolvedValue ? styles.selectedOption : ''}`}
             type={'button'}
             ref={buttonRef}
             onKeyDown={handleTriggerKeyDown}
@@ -259,14 +278,14 @@ const Select = ({
             aria-controls={listboxId}
             aria-expanded={showMenu}
           >
-            <span className={selectedValue ? styles.selectedOption : ''}>
+            <span className={resolvedValue ? styles.selectedOption : ''}>
               {selectedDisplayValue ?? placeholder}
             </span>
           </button>
         )}
 
         <div className={styles.iconWrapper}>
-          {(searchValue || selectedValue) && (
+          {(searchValue || resolvedValue) && (
             <button
               type="button"
               aria-label={'Clear input'}
@@ -312,7 +331,7 @@ const Select = ({
                   }}
                   value={option.value}
                   label={option.label}
-                  isSelected={selectedValue === option.value}
+                  isSelected={resolvedValue === option.value}
                   onClick={() => handleSelectedOption(option.value)}
                   isFocused={focusedIndex === index}
                 />
