@@ -1,4 +1,4 @@
-import type { Option } from './SelectOption.tsx';
+import type { Option } from '../SelectOption/SelectOption.tsx';
 
 export const selectOptions: Option[] = [
   { value: 'cat', label: 'Cat' },
