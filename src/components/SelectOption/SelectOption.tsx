@@ -26,7 +26,7 @@ export const SelectOption = ({
 }: SelectOptionProps) => {
   return (
     <li
-      className={`${styles.option} ${isSelected ? styles.selected : ''} ${isFocused ? styles.testFocus : ''}`}
+      className={`${styles.option} ${isSelected ? styles.selected : ''} ${isFocused ? styles.optionActive : ''}`}
       onClick={onClick}
       tabIndex={-1}
       ref={ref}
