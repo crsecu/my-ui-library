@@ -20,6 +20,23 @@ type SelectProps = {
 
 type TriggerType = HTMLInputElement | HTMLButtonElement;
 
+/**
+ * Flexible select component with optional search and free-text input support.
+ * Supports keyboard navigation, filtering, clearing values.
+ * Handles either Formik form state or custom externally controlled state automatically.
+ * @param id - Unique identifier for the select input.
+ * @param name - Field name used to identify the input value.
+ * @param label - Optional label displayed above the select input.
+ * @param placeholder - Placeholder text displayed when no option is selected.
+ * @param disabled - Disables the select input and prevents interaction.
+ * @param options - List of selectable options displayed in the dropdown.
+ * @param searchable - Enables searching/filtering options through text input.
+ * @param withFreeText - Allows users to enter and store values that are not part of the provided options.
+ * @param value - Controlled value of the selected option.
+ * @param onChange - Callback triggered when the selected value changes.
+ *
+ * @returns A dropdown select input.
+ */
 const Select = ({
   id,
   options,
@@ -44,7 +61,6 @@ const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
   const resolvedValue = resolvedProps?.mergedProps.value;
-  console.log('resolvedProps ', resolvedProps);
 
   const selectedOption = options.find((option) => option.value === resolvedValue);
   const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;
@@ -134,8 +150,8 @@ const Select = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showMenu, closeDropdownMenu]);
 
-  // Handle trigger keyboard events
-  const handleTriggerKeyDown = useCallback(
+  //Handle keyboard events
+  const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<TriggerType>) => {
       switch (e.key) {
         case 'ArrowDown':
@@ -260,7 +276,7 @@ const Select = ({
             aria-controls={listboxId}
             aria-autocomplete="list"
             value={searchValue}
-            onKeyDown={handleTriggerKeyDown}
+            onKeyDown={handleKeyDown}
             onChange={handleSearch}
             onBlur={resolvedProps?.mergedProps.onBlur}
           />
@@ -269,7 +285,7 @@ const Select = ({
             className={`${styles.dropdownButton} ${resolvedValue ? styles.selectedOption : ''}`}
             type={'button'}
             ref={buttonRef}
-            onKeyDown={handleTriggerKeyDown}
+            onKeyDown={handleKeyDown}
             id={id}
             disabled={disabled}
             role="combobox"
