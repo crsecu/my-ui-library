@@ -27,6 +27,7 @@ export type ExternalControlledReturn<T> = {
 export type FormikControlledReturn<T> = {
   mergedProps: Pick<FieldInputProps<T>, 'value' | 'onChange' | 'onBlur'> & { disabled: boolean };
   setValue: FieldHelperProps<T>['setValue'];
+  setTouched: FieldHelperProps<T>['setTouched'];
   metaProps?: Pick<FieldMetaProps<T>, 'error' | 'touched' | 'initialValue'>;
   setError: (errorText?: string) => void;
 };
@@ -104,6 +105,7 @@ export function useResolvedInputPropsRefactored<T>(
     return {
       mergedProps: { value, onChange, onBlur, disabled: props.disabled ?? false },
       setValue: helpers.setValue,
+      setTouched: helpers.setTouched,
       metaProps: { error, touched, initialValue },
       setError: (errorText?: string) => {
         helpers.setError(errorText || undefined);
