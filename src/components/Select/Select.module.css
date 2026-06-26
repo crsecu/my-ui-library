@@ -170,3 +170,8 @@ input.displaySelectedOption::placeholder {
   white-space: nowrap;
   border: 0;
 }
+
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
