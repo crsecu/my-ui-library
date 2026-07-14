@@ -37,7 +37,7 @@ type TriggerType = HTMLInputElement | HTMLButtonElement;
  *
  * @returns A dropdown select input.
  */
-const Select = ({
+export const Select = ({
   id,
   options,
   label,
@@ -363,4 +363,3 @@ const Select = ({
     </div>
   );
 };
-export default Select;
