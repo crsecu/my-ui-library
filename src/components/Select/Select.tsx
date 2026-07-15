@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './Select.module.css';
 import { ChevronDown, X } from 'lucide-react';
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
+import { createPortal } from 'react-dom';
 
 type SelectProps = {
   id: string;
@@ -19,6 +20,9 @@ type SelectProps = {
 };
 
 type TriggerType = HTMLInputElement | HTMLButtonElement;
+
+//the gap in pixels between the select control and the dropdown menu
+export const MENU_OFFSET = 6;
 
 /**
  * Flexible select component with optional search and free-text input support.
@@ -50,6 +54,11 @@ export const Select = ({
   const [showMenu, setShowMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [dropdownMenuPosition, setDropdownMenuPosition] = useState({
+    left: 0,
+    bottom: 0,
+    width: 0,
+  });
 
   //REFS
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +70,7 @@ export const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
   const resolvedValue = resolvedProps?.mergedProps.value;
+  console.log(resolvedProps);
 
   const selectedOption = options.find((option) => option.value === resolvedValue);
   const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;
@@ -74,9 +84,22 @@ export const Select = ({
   }, [options, searchValue]);
 
   const openDropdownMenu = useCallback(() => {
+    const selectControlRect = rootRef.current?.getBoundingClientRect();
+
+    if (!selectControlRect) return;
+
+    setDropdownMenuPosition({
+      left: selectControlRect.left,
+      bottom: selectControlRect.bottom + MENU_OFFSET,
+      width: selectControlRect.width,
+    });
+
     setShowMenu(true);
-    setFocusedIndex(0);
-  }, []);
+
+    // if (!resolvedProps?.mergedProps.value) {
+    //   setFocusedIndex(0);
+    // }
+  }, [resolvedProps?.mergedProps.value]);
 
   const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
@@ -141,7 +164,10 @@ export const Select = ({
     if (!showMenu) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) {
+      if (
+        !rootRef.current?.contains(e.target as Node) &&
+        !menuRef.current?.contains(e.target as Node)
+      ) {
         closeDropdownMenu();
       }
     };
@@ -252,7 +278,8 @@ export const Select = ({
 
       <div
         className={styles.selectControl}
-        onClick={() => setShowMenu((prev) => !prev)}
+        // onClick={() => setShowMenu((prev) => !prev)}
+        onClick={openDropdownMenu}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget)) {
             if (withFreeText) return;
@@ -318,48 +345,57 @@ export const Select = ({
         </div>
       </div>
 
-      {showMenu && (
-        <div
-          className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
-          tabIndex={-1}
-          ref={menuRef}
-          id={listboxId}
-        >
-          {filteredOptions.length > 0 ? (
-            <ul className={styles.menuList} role="listbox">
-              {filteredOptions.map((option, index) => (
-                <SelectOption
-                  key={option.value}
-                  id={`listoption-${option.value}`}
-                  ref={(el: HTMLLIElement) => {
-                    if (!el) return;
+      {showMenu &&
+        createPortal(
+          <div
+            className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
+            tabIndex={-1}
+            ref={menuRef}
+            id={listboxId}
+            style={{
+              position: 'absolute',
+              left: dropdownMenuPosition.left,
+              top: dropdownMenuPosition.bottom,
+              width: dropdownMenuPosition.width,
+              zIndex: 999,
+            }}
+          >
+            {filteredOptions.length > 0 ? (
+              <ul className={styles.menuList} role="listbox">
+                {filteredOptions.map((option, index) => (
+                  <SelectOption
+                    key={option.value}
+                    id={`listoption-${option.value}`}
+                    ref={(el: HTMLLIElement) => {
+                      if (!el) return;
 
-                    if (!optionsRef.current) {
-                      optionsRef.current = new Map();
-                    }
+                      if (!optionsRef.current) {
+                        optionsRef.current = new Map();
+                      }
 
-                    const map = optionsRef.current;
-                    map.set(option.value, el);
+                      const map = optionsRef.current;
+                      map.set(option.value, el);
 
-                    return () => {
-                      map.delete(option.value);
-                    };
-                  }}
-                  value={option.value}
-                  label={option.label}
-                  isSelected={resolvedValue === option.value}
-                  onClick={() => handleSelectedOption(option.value)}
-                  isFocused={focusedIndex === index}
-                />
-              ))}
-            </ul>
-          ) : (
-            <span className={styles.noOptionsMessage} onMouseDown={(e) => e.preventDefault()}>
-              No options
-            </span>
-          )}
-        </div>
-      )}
+                      return () => {
+                        map.delete(option.value);
+                      };
+                    }}
+                    value={option.value}
+                    label={option.label}
+                    isSelected={resolvedValue === option.value}
+                    onClick={() => handleSelectedOption(option.value)}
+                    isFocused={focusedIndex === index}
+                  />
+                ))}
+              </ul>
+            ) : (
+              <span className={styles.noOptionsMessage} onMouseDown={(e) => e.preventDefault()}>
+                No options
+              </span>
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };
