@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, type FormikValues } from 'formik';
+import { Form, Formik, type FormikValues } from 'formik';
 
 export type FormikFieldWrapperProps = {
   initialValues: FormikValues;
@@ -8,8 +8,11 @@ export type FormikFieldWrapperProps = {
 
 export const FormikFieldWrapper = ({ children, initialValues }: FormikFieldWrapperProps) => {
   return (
-    <Formik initialValues={initialValues} onSubmit={() => console.log('form submitted')}>
-      {children}
+    <Formik
+      initialValues={initialValues}
+      onSubmit={(values) => console.log('form submitted', values)}
+    >
+      <Form>{children}</Form>
     </Formik>
   );
 };
