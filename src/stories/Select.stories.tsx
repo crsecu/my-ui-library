@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/React';
 import { useState } from 'storybook/preview-api';
-import Select from '../components/Select/Select.tsx';
+import { Select } from '../components/Select/Select.tsx';
 import { selectOptions } from '../components/Select/selectTestData.ts';
 
 const meta = {
