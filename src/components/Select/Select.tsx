@@ -70,10 +70,19 @@ export const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
   const resolvedValue = resolvedProps?.mergedProps.value;
-  console.log(resolvedProps);
+  // console.log(resolvedProps);
 
   const selectedOption = options.find((option) => option.value === resolvedValue);
   const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;
+
+  const selectedOptionIndex = options.findIndex((option) => option.value === resolvedValue);
+  // console.log(
+  //   'selected INDEX',
+  //   options[selectedOptionIndex],
+  //   selectedOptionIndex,
+  //   'selectedOption',
+  //   selectedOption,
+  // );
 
   //Filter Options based on search query
   const filteredOptions = useMemo(() => {
@@ -94,12 +103,14 @@ export const Select = ({
       width: selectControlRect.width,
     });
 
-    setShowMenu(true);
+    if (selectedOptionIndex >= 1) {
+      setFocusedIndex(selectedOptionIndex);
+    } else {
+      setFocusedIndex(0);
+    }
 
-    // if (!resolvedProps?.mergedProps.value) {
-    //   setFocusedIndex(0);
-    // }
-  }, [resolvedProps?.mergedProps.value]);
+    setShowMenu(true);
+  }, [selectedOptionIndex]);
 
   const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
@@ -278,12 +289,14 @@ export const Select = ({
 
       <div
         className={styles.selectControl}
-        // onClick={() => setShowMenu((prev) => !prev)}
         onClick={openDropdownMenu}
         onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) {
+          if (
+            !e.currentTarget.contains(e.relatedTarget) &&
+            !menuRef.current?.contains(e.relatedTarget as Node)
+          ) {
             if (withFreeText) return;
-            if (searchValue) setSearchValue('');
+            if (filteredOptions.length === 0 && searchValue) setSearchValue('');
           }
         }}
       >

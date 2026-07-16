@@ -122,7 +122,6 @@ describe('Select Component (Regular Select)', () => {
     expect(screen.getByLabelText('Choose a value')).toHaveFocus();
 
     await user.keyboard('[Space]');
-    screen.debug();
 
     // expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
@@ -170,9 +169,11 @@ describe('Select Component (Regular Select)', () => {
     await user.click(selectEl);
     expect(selectEl).toHaveFocus();
     await user.keyboard('[ArrowDown]');
-    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-cat');
-    await user.keyboard('[ArrowDown]');
+    screen.debug();
     expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-dog');
+
+    await user.keyboard('[ArrowDown]');
+    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-bird');
   });
 
   test('should move focus to the previous option when pressing Up Arrow', async () => {
@@ -185,10 +186,11 @@ describe('Select Component (Regular Select)', () => {
     await user.keyboard('[ArrowDown]');
     await user.keyboard('[ArrowDown]');
     await user.keyboard('[ArrowDown]');
-    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-bird');
+    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-fish');
     await user.keyboard('[ArrowUp]');
-    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-dog');
+    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-bird');
   });
+
   test('should wrap focus to the first option when pressing Down Arrow on the last option', async () => {
     const user = userEvent.setup();
     renderControlledSelect({ id: 'select13' });
@@ -196,8 +198,9 @@ describe('Select Component (Regular Select)', () => {
     const selectEl = screen.getByLabelText('Choose a value');
     await user.click(selectEl);
     expect(selectEl).toHaveFocus();
+    expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-cat');
 
-    for (let i = 0; i < selectOptions.length; i++) {
+    for (let i = 0; i < selectOptions.length - 1; i++) {
       await user.keyboard('{ArrowDown}');
     }
 
@@ -213,10 +216,8 @@ describe('Select Component (Regular Select)', () => {
     const selectEl = screen.getByLabelText('Choose a value');
     await user.click(selectEl);
     expect(selectEl).toHaveFocus();
-    await user.keyboard('[ArrowDown]');
     expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-cat');
     await user.keyboard('[ArrowUp]');
-
     expect(selectEl).toHaveAttribute('aria-activedescendant', 'listoption-cute cat');
   });
 
