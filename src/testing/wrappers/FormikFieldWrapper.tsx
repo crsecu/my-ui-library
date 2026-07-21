@@ -1,18 +1,21 @@
-import React from 'react';
-import { Form, Formik, type FormikValues } from 'formik';
+import type { ReactNode } from 'react';
+import { Form, Formik, type FormikValues, type FormikProps } from 'formik';
 
-export type FormikFieldWrapperProps = {
-  initialValues: FormikValues;
-  children: React.ReactNode;
+export type FormikFieldWrapperProps<TValues extends FormikValues> = {
+  initialValues: TValues;
+  children: (formikProps: FormikProps<TValues>) => ReactNode;
 };
 
-export const FormikFieldWrapper = ({ children, initialValues }: FormikFieldWrapperProps) => {
+export const FormikFieldWrapper = <TValues extends FormikValues>({
+  children,
+  initialValues,
+}: FormikFieldWrapperProps<TValues>) => {
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => console.log('form submitted', values)}
     >
-      <Form>{children}</Form>
+      {(formikProps) => <Form>{children(formikProps)}</Form>}
     </Formik>
   );
 };
