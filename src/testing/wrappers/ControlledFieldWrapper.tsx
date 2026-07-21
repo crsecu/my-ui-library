@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 
 export type ControlledFieldWrapperProps<T> = {
   initialValue: T;
-  children: (props: { value: T; onChange: (value: T) => void }) => React.ReactNode;
+  children: (props: { value: T; onChange: (value: T) => void }) => ReactNode;
 };
 
 export const ControlledFieldWrapper = <T,>({
