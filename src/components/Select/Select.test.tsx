@@ -1,30 +1,29 @@
-import { useState } from 'react';
 import { Select } from './Select.tsx';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event/dist/cjs/index.js';
 import { selectOptions } from './selectTestData.ts';
-import { Form, Formik } from 'formik';
+
+import { ControlledFieldWrapper } from '../../testing/wrappers/ControlledFieldWrapper.tsx';
+import { FormikFieldWrapper } from '../../testing/wrappers/FormikFieldWrapper.tsx';
 
 describe('Select Component (Regular Select)', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderControlledSelect = (props: any) => {
-    const Wrapper = () => {
-      const [value, setValue] = useState(props.value ?? '');
-
-      return (
-        <Select
-          {...props}
-          value={value}
-          onChange={setValue}
-          label={'Choose a value'}
-          placeholder={'Select...'}
-          options={selectOptions}
-          name={'selectControl'}
-        />
-      );
-    };
-
-    render(<Wrapper />);
+    render(
+      <ControlledFieldWrapper initialValue={props.value ?? ''}>
+        {({ value, onChange }) => (
+          <Select
+            {...props}
+            value={value}
+            onChange={onChange}
+            label={'Choose a value'}
+            placeholder={'Select...'}
+            options={selectOptions}
+            name={'selectControl'}
+          />
+        )}
+      </ControlledFieldWrapper>,
+    );
   };
 
   test('should open the dropdown menu when the select trigger is clicked', async () => {
@@ -256,8 +255,8 @@ describe('Select Component (Combobox)', () => {
     const user = userEvent.setup();
 
     render(
-      <Formik initialValues={{ favorites: '' }} onSubmit={vi.fn()}>
-        <Form>
+      <FormikFieldWrapper initialValues={{ favorites: '' }}>
+        {() => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
@@ -266,8 +265,8 @@ describe('Select Component (Combobox)', () => {
             id="combobox1"
             searchable={true}
           />
-        </Form>
-      </Formik>,
+        )}
+      </FormikFieldWrapper>,
     );
 
     const selectEl = screen.getByLabelText('Choose your favorite');
@@ -286,8 +285,8 @@ describe('Select Component (Combobox)', () => {
     const user = userEvent.setup();
 
     render(
-      <Formik initialValues={{ favorites: '' }} onSubmit={vi.fn()}>
-        <Form>
+      <FormikFieldWrapper initialValues={{ favorites: '' }}>
+        {() => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
@@ -296,8 +295,8 @@ describe('Select Component (Combobox)', () => {
             id="combobox2"
             searchable={true}
           />
-        </Form>
-      </Formik>,
+        )}
+      </FormikFieldWrapper>,
     );
 
     const selectEl = screen.getByLabelText('Choose your favorite');
@@ -314,8 +313,8 @@ describe('Select Component (Combobox)', () => {
     const user = userEvent.setup();
 
     render(
-      <Formik initialValues={{ favorites: '' }} onSubmit={vi.fn()}>
-        <Form>
+      <FormikFieldWrapper initialValues={{ favorites: '' }}>
+        {() => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
@@ -325,8 +324,8 @@ describe('Select Component (Combobox)', () => {
             searchable={true}
             withFreeText={true}
           />
-        </Form>
-      </Formik>,
+        )}
+      </FormikFieldWrapper>,
     );
 
     const selectEl = screen.getByLabelText('Choose your favorite');
