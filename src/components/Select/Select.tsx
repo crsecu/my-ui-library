@@ -76,13 +76,6 @@ export const Select = ({
   const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;
 
   const selectedOptionIndex = options.findIndex((option) => option.value === resolvedValue);
-  // console.log(
-  //   'selected INDEX',
-  //   options[selectedOptionIndex],
-  //   selectedOptionIndex,
-  //   'selectedOption',
-  //   selectedOption,
-  // );
 
   //Filter Options based on search query
   const filteredOptions = useMemo(() => {
