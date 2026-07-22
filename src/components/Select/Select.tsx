@@ -70,7 +70,6 @@ export const Select = ({
 
   const resolvedProps = useResolvedInputPropsRefactored(props);
   const resolvedValue = resolvedProps?.mergedProps.value;
-  // console.log(resolvedProps);
 
   const selectedOption = options.find((option) => option.value === resolvedValue);
   const selectedDisplayValue = (selectedOption?.label ?? resolvedValue) || null;

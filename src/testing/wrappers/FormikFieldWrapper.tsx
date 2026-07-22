@@ -13,6 +13,7 @@ export const FormikFieldWrapper = <TValues extends FormikValues>({
   return (
     <Formik
       initialValues={initialValues}
+      // eslint-disable-next-line no-console
       onSubmit={(values) => console.log('form submitted', values)}
     >
       {(formikProps) => <Form>{children(formikProps)}</Form>}
