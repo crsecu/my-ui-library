@@ -100,8 +100,6 @@ export const Select = ({
   }, []);
 
   const openDropdownMenu = useCallback(() => {
-    updateDropdownCoords();
-
     if (selectedOptionIndex >= 1) {
       setFocusedIndex(selectedOptionIndex);
     } else {
@@ -109,7 +107,7 @@ export const Select = ({
     }
 
     setShowMenu(true);
-  }, [selectedOptionIndex, updateDropdownCoords]);
+  }, [selectedOptionIndex]);
 
   const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
@@ -189,6 +187,8 @@ export const Select = ({
   //update dropdown placement on scroll/resize
   useLayoutEffect(() => {
     if (!showMenu) return;
+
+    updateDropdownCoords();
 
     window.addEventListener('resize', updateDropdownCoords);
     window.addEventListener('scroll', updateDropdownCoords);
