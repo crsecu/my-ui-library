@@ -1,5 +1,6 @@
 .selectContainer {
   position: relative;
+  width: 260px;
 }
 
 .selectContainer[data-disabled='true'] {
@@ -107,6 +108,7 @@
 
 .selectContainer input {
   flex: 1;
+  min-width: 0;
   border: none;
   background-color: inherit;
   color: var(--text-main);

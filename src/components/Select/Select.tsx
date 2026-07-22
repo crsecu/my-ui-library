@@ -1,6 +1,6 @@
 import { type Option, SelectOption } from '../SelectOption/SelectOption.tsx';
 import { Label } from '../Label/Label.tsx';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styles from './Select.module.css';
 import { ChevronDown, X } from 'lucide-react';
 import { useResolvedInputPropsRefactored } from '../../hooks/useResolvedInputPropsRefactored.ts';
@@ -56,7 +56,7 @@ export const Select = ({
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [dropdownMenuPosition, setDropdownMenuPosition] = useState({
     left: 0,
-    bottom: 0,
+    top: 0,
     width: 0,
   });
 
@@ -85,16 +85,22 @@ export const Select = ({
     return options.filter((option: Option) => option.label.toLowerCase().includes(searchQuery));
   }, [options, searchValue]);
 
-  const openDropdownMenu = useCallback(() => {
-    const selectControlRect = rootRef.current?.getBoundingClientRect();
+  const updateDropdownCoords = useCallback(() => {
+    if (!rootRef?.current) return;
+
+    const selectControlRect = rootRef.current.getBoundingClientRect();
 
     if (!selectControlRect) return;
 
     setDropdownMenuPosition({
-      left: selectControlRect.left,
-      bottom: selectControlRect.bottom + MENU_OFFSET,
+      left: selectControlRect.left + window.scrollX,
+      top: selectControlRect.bottom + window.scrollY + MENU_OFFSET,
       width: selectControlRect.width,
     });
+  }, []);
+
+  const openDropdownMenu = useCallback(() => {
+    updateDropdownCoords();
 
     if (selectedOptionIndex >= 1) {
       setFocusedIndex(selectedOptionIndex);
@@ -103,7 +109,7 @@ export const Select = ({
     }
 
     setShowMenu(true);
-  }, [selectedOptionIndex]);
+  }, [selectedOptionIndex, updateDropdownCoords]);
 
   const closeDropdownMenu = useCallback(() => {
     setShowMenu(false);
@@ -179,6 +185,19 @@ export const Select = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showMenu, closeDropdownMenu]);
+
+  //update dropdown placement on scroll/resize
+  useLayoutEffect(() => {
+    if (!showMenu) return;
+
+    window.addEventListener('resize', updateDropdownCoords);
+    window.addEventListener('scroll', updateDropdownCoords);
+
+    return () => {
+      window.removeEventListener('resize', updateDropdownCoords);
+      window.removeEventListener('scroll', updateDropdownCoords);
+    };
+  }, [showMenu, updateDropdownCoords]);
 
   //Handle keyboard events
   const handleKeyDown = useCallback(
@@ -361,7 +380,7 @@ export const Select = ({
             style={{
               position: 'absolute',
               left: dropdownMenuPosition.left,
-              top: dropdownMenuPosition.bottom,
+              top: dropdownMenuPosition.top,
               width: dropdownMenuPosition.width,
               zIndex: 999,
             }}
