@@ -282,6 +282,7 @@ export const Select = ({
     ],
   );
 
+  const isMenuVisible = showMenu && (!withFreeText || filteredOptions.length > 0);
   const hasNoOptions = showMenu && filteredOptions.length === 0;
   const srMessage = hasNoOptions ? 'No options found' : '';
   const activeOption = focusedIndex >= 0 ? filteredOptions[focusedIndex] : null;
@@ -323,7 +324,7 @@ export const Select = ({
             role="combobox"
             aria-activedescendant={activeOption ? `listoption-${activeOption.value}` : undefined}
             aria-haspopup="listbox"
-            aria-expanded={showMenu}
+            aria-expanded={isMenuVisible}
             aria-controls={listboxId}
             aria-autocomplete="list"
             value={searchValue}
@@ -343,7 +344,7 @@ export const Select = ({
             aria-activedescendant={activeOption ? `listoption-${activeOption.value}` : undefined}
             aria-haspopup="listbox"
             aria-controls={listboxId}
-            aria-expanded={showMenu}
+            aria-expanded={isMenuVisible}
           >
             <span className={resolvedValue ? styles.selectedOption : ''}>
               {selectedDisplayValue ?? placeholder}
@@ -374,7 +375,7 @@ export const Select = ({
         </div>
       </div>
 
-      {showMenu &&
+      {isMenuVisible &&
         createPortal(
           <div
             className={`${styles.dropdownMenu} ${filteredOptions.length < 1 ? styles.noOptions : ''} `}
