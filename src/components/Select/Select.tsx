@@ -363,7 +363,12 @@ export const Select = ({
             </button>
           )}
 
-          <span>
+          <span
+            onMouseDown={(e) => {
+              e.preventDefault();
+              inputRef.current?.focus();
+            }}
+          >
             <ChevronDown />
           </span>
         </div>
