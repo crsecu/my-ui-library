@@ -59,12 +59,6 @@ export const Select = ({
   const [showMenu, setShowMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  // const [dropdownMenuPosition, setDropdownMenuPosition] = useState({
-  //   left: 0,
-  //   top: 0,
-  //   width: 0,
-  // });
-
   const [dropdownMenuPosition, setDropdownMenuPosition] = useState<DropdownCoordsType | null>(null);
 
   //REFS
@@ -169,7 +163,7 @@ export const Select = ({
     if (!option) return;
 
     optionsRef.current?.get(option.value)?.scrollIntoView?.({
-      block: 'nearest',
+      block: 'center',
       behavior: 'smooth',
     });
   }, [focusedIndex, showMenu, filteredOptions]);
