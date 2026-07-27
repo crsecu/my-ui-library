@@ -20,6 +20,11 @@ type SelectProps = {
 };
 
 type TriggerType = HTMLInputElement | HTMLButtonElement;
+type DropdownCoordsType = {
+  left: number;
+  top: number;
+  width: number;
+};
 
 //the gap in pixels between the select control and the dropdown menu
 export const MENU_OFFSET = 6;
@@ -54,11 +59,13 @@ export const Select = ({
   const [showMenu, setShowMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [dropdownMenuPosition, setDropdownMenuPosition] = useState({
-    left: 0,
-    top: 0,
-    width: 0,
-  });
+  // const [dropdownMenuPosition, setDropdownMenuPosition] = useState({
+  //   left: 0,
+  //   top: 0,
+  //   width: 0,
+  // });
+
+  const [dropdownMenuPosition, setDropdownMenuPosition] = useState<DropdownCoordsType | null>(null);
 
   //REFS
   const inputRef = useRef<HTMLInputElement>(null);
@@ -163,6 +170,7 @@ export const Select = ({
 
     optionsRef.current?.get(option.value)?.scrollIntoView?.({
       block: 'nearest',
+      behavior: 'smooth',
     });
   }, [focusedIndex, showMenu, filteredOptions]);
 
@@ -282,7 +290,8 @@ export const Select = ({
     ],
   );
 
-  const isMenuVisible = showMenu && (!withFreeText || filteredOptions.length > 0);
+  const isMenuVisible =
+    showMenu && dropdownMenuPosition !== null && (!withFreeText || filteredOptions.length > 0);
   const hasNoOptions = showMenu && filteredOptions.length === 0;
   const srMessage = hasNoOptions ? 'No options found' : '';
   const activeOption = focusedIndex >= 0 ? filteredOptions[focusedIndex] : null;
@@ -382,13 +391,16 @@ export const Select = ({
             tabIndex={-1}
             ref={menuRef}
             id={listboxId}
-            style={{
-              position: 'absolute',
-              left: dropdownMenuPosition.left,
-              top: dropdownMenuPosition.top,
-              width: dropdownMenuPosition.width,
-              zIndex: 999,
-            }}
+            style={
+              dropdownMenuPosition
+                ? {
+                    left: dropdownMenuPosition.left,
+                    top: dropdownMenuPosition.top,
+                    width: dropdownMenuPosition.width,
+                    zIndex: 999,
+                  }
+                : undefined
+            }
           >
             {filteredOptions.length > 0 ? (
               <ul className={styles.menuList} role="listbox">
