@@ -85,10 +85,11 @@ export const WithFormik: Story = {
     name: 'favorite',
     placeholder: 'Placeholder text...',
     options: selectOptions,
+    searchable: true,
   },
   render: (args) => (
-    <FormikFieldWrapper initialValues={{ favorite: '' }}>
-      {({ values }) => (
+    <FormikFieldWrapper name={'favorite'} initialValue={''}>
+      {(_, { values }) => (
         <>
           <p style={{ marginBottom: '30px', fontStyle: 'italic', color: 'red', fontSize: '14px' }}>
             The selected option is: {values.favorite || 'None'}
