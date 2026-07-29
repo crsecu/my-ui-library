@@ -7,7 +7,7 @@ import { ControlledFieldWrapper } from '../../testing/wrappers/ControlledFieldWr
 import { FormikFieldWrapper } from '../../testing/wrappers/FormikFieldWrapper.tsx';
 import { Button } from '../Button/Button.tsx';
 
-describe.skip('Select Component (Regular Select)', () => {
+describe('Select Component (Regular Select)', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderControlledSelect = (props: any) => {
     render(
@@ -251,18 +251,18 @@ describe.skip('Select Component (Regular Select)', () => {
   });
 });
 
-describe.skip('Select Component (Combobox)', () => {
+describe('Select Component (Combobox)', () => {
   test('should filter the visible options based on the search input text', async () => {
     const user = userEvent.setup();
 
     render(
-      <FormikFieldWrapper initialValues={{ favorites: '' }}>
-        {() => (
+      <FormikFieldWrapper name={'favorites'} initialValue={''}>
+        {(name) => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
             options={selectOptions}
-            name={'favorites'}
+            name={name}
             id="combobox1"
             searchable={true}
           />
@@ -286,13 +286,13 @@ describe.skip('Select Component (Combobox)', () => {
     const user = userEvent.setup();
 
     render(
-      <FormikFieldWrapper initialValues={{ favorites: '' }}>
-        {() => (
+      <FormikFieldWrapper name={'favorites'} initialValue={''}>
+        {(name) => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
             options={selectOptions}
-            name={'favorites'}
+            name={name}
             id="combobox2"
             searchable={true}
           />
@@ -314,13 +314,13 @@ describe.skip('Select Component (Combobox)', () => {
     const user = userEvent.setup();
 
     render(
-      <FormikFieldWrapper initialValues={{ favorites: '' }}>
-        {() => (
+      <FormikFieldWrapper name={'favorites'} initialValue={''}>
+        {(name) => (
           <Select
             label={'Choose your favorite'}
             placeholder={'Select...'}
             options={selectOptions}
-            name={'favorites'}
+            name={name}
             id="combobox3"
             searchable={true}
             withFreeText={true}
@@ -444,8 +444,8 @@ describe('Select Component - value updated by parent component (Formik)', () => 
   test('should display a value set by the parent using setFieldValue', async () => {
     const user = userEvent.setup();
     render(
-      <FormikFieldWrapper initialValues={{ firstName: '' }}>
-        {(formikProps) => {
+      <FormikFieldWrapper name={'firstName'} initialValue={''}>
+        {(name, formikProps) => {
           return (
             <>
               <Button onClick={() => formikProps.setFieldValue('firstName', 'UPDATED BY PARENT')}>
@@ -454,7 +454,7 @@ describe('Select Component - value updated by parent component (Formik)', () => 
               <br />
               <Select
                 id={'parentUpdateFormik1'}
-                name={'firstName'}
+                name={name}
                 label={'Choose a value'}
                 placeholder={'Select a value'}
                 options={selectOptions}
@@ -476,15 +476,15 @@ describe('Select Component - value updated by parent component (Formik)', () => 
   test('should restore the initial value when the parent resets the Formik form', async () => {
     const user = userEvent.setup();
     render(
-      <FormikFieldWrapper initialValues={{ firstName: 'Jane Doe' }}>
-        {(formikProps) => {
+      <FormikFieldWrapper name={'firstName'} initialValue={'Jane Doe'}>
+        {(name, formikProps) => {
           return (
             <>
               <Button onClick={() => formikProps.resetForm()}>Formik</Button>
               <br />
               <Select
                 id={'parentUpdateFormik2'}
-                name={'firstName'}
+                name={name}
                 label={'Choose a value'}
                 placeholder={'Select a value'}
                 options={selectOptions}
@@ -513,17 +513,17 @@ describe('Select Component - value updated by parent component (Formik)', () => 
   test('should clear the displayed value when the parent resets Formik to an empty initial value', async () => {
     const user = userEvent.setup();
     render(
-      <FormikFieldWrapper initialValues={{ firstName: 'Jane Doe' }}>
-        {(formikProps) => {
+      <FormikFieldWrapper name={'firstName'} initialValue={'Jane Doe'}>
+        {(name, formikProps) => {
           return (
             <>
-              <Button onClick={() => formikProps.resetForm({ values: { firstName: '' } })}>
+              <Button onClick={() => formikProps.resetForm({ values: { [name]: '' } })}>
                 Formik
               </Button>
               <br />
               <Select
                 id={'parentUpdateFormik3'}
-                name={'firstName'}
+                name={name}
                 label={'Choose a value'}
                 placeholder={'Select a value'}
                 options={selectOptions}
