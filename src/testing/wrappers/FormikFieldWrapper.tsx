@@ -1,22 +1,24 @@
 import type { ReactNode } from 'react';
-import { Form, Formik, type FormikValues, type FormikProps } from 'formik';
+import { Form, Formik, type FormikProps } from 'formik';
+import type { FormikControlled } from '../../hooks/useResolvedInputProps.tsx';
 
-export type FormikFieldWrapperProps<TValues extends FormikValues> = {
-  initialValues: TValues;
-  children: (formikProps: FormikProps<TValues>) => ReactNode;
+export type FormikFieldWrapperProps<TValue> = FormikControlled & {
+  initialValue: TValue;
+  children: (name: string, formikProps: FormikProps<Record<string, TValue>>) => ReactNode;
 };
 
-export const FormikFieldWrapper = <TValues extends FormikValues>({
+export const FormikFieldWrapper = <TValue,>({
   children,
-  initialValues,
-}: FormikFieldWrapperProps<TValues>) => {
+  name,
+  initialValue,
+}: FormikFieldWrapperProps<TValue>) => {
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{ [name]: initialValue }}
       // eslint-disable-next-line no-console
       onSubmit={(values) => console.log('form submitted', values)}
     >
-      {(formikProps) => <Form>{children(formikProps)}</Form>}
+      {(formikProps) => <Form>{children(name, formikProps)}</Form>}
     </Formik>
   );
 };
