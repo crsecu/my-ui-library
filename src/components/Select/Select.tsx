@@ -178,12 +178,13 @@ export const Select = ({
         !menuRef.current?.contains(e.target as Node)
       ) {
         closeDropdownMenu();
+        if (searchValue) setSearchValue('');
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu, closeDropdownMenu]);
+  }, [showMenu, closeDropdownMenu, searchValue]);
 
   //update dropdown placement on scroll/resize
   useLayoutEffect(() => {
@@ -255,6 +256,7 @@ export const Select = ({
           closeDropdownMenu();
           break;
         case 'Tab':
+          if (searchValue) setSearchValue('');
           if (focusedIndex >= 0) {
             if (filteredOptions.length === 0) {
               closeDropdownMenu();
@@ -266,6 +268,7 @@ export const Select = ({
             break;
           }
           setShowMenu(false);
+
           break;
         default:
           break;
@@ -331,6 +334,7 @@ export const Select = ({
             aria-controls={listboxId}
             aria-autocomplete="list"
             value={searchValue}
+            //value={resolvedValue}
             onKeyDown={handleKeyDown}
             onChange={handleSearch}
             onBlur={resolvedProps?.mergedProps.onBlur}
