@@ -95,7 +95,6 @@ describe('generateAlignmentCoordinates helper', () => {
 describe('determinePosition helper', () => {
   const tooltipHeight = 154.38;
   const tooltipWidth = 349.99;
-  const tooltipOffset = 6;
 
   test("tooltip position is 'right'", () => {
     const preferredPosition = 'top';
@@ -111,7 +110,6 @@ describe('determinePosition helper', () => {
       availableSpaceAroundAnchor,
       tooltipHeight,
       tooltipWidth,
-      tooltipOffset,
     );
     expect(position).toBe('right');
   });
@@ -130,7 +128,6 @@ describe('determinePosition helper', () => {
       availableSpaceAroundAnchor,
       tooltipHeight,
       tooltipWidth,
-      tooltipOffset,
     );
     expect(position).toBe('right');
   });
@@ -149,7 +146,6 @@ describe('determinePosition helper', () => {
       availableSpaceAroundAnchor,
       tooltipHeight,
       tooltipWidth,
-      tooltipOffset,
     );
     expect(position).toBe('top');
   });
@@ -159,7 +155,7 @@ describe('determinePosition helper', () => {
   describe('determineAlignment helper', () => {
     test("tooltip validated alignment is 'start'", () => {
       const preferredAlignment = 'start';
-      const availabeSpaceAroundTheAnchor = {
+      const availableSpaceAroundTheAnchor = {
         top: 99.99,
         bottom: 288.88,
         right: 642.22,
@@ -173,7 +169,7 @@ describe('determinePosition helper', () => {
       const result = determineAlignment(
         preferredAlignment,
         true,
-        availabeSpaceAroundTheAnchor,
+        availableSpaceAroundTheAnchor,
         tooltipHeight,
         tooltipWidth,
         anchorHeight,

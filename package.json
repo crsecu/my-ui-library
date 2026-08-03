@@ -37,6 +37,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-storybook": "^10.2.0",
+    "formik": "^2.4.9",
     "globals": "^16.5.0",
     "jsdoc": "^4.0.5",
     "jsdom": "^28.0.0",
@@ -47,5 +48,8 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
     "vitest": "^4.0.17"
+  },
+  "peerDependencies": {
+    "formik": "^2.4.9"
   }
 }
