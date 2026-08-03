@@ -13,6 +13,10 @@
   --sky-12: hsl(205, 50%, 23%);
   --sky-contrast: hsl(210, 12.5%, 12.55%);
 
+
+
+  --pure-white: #ffffff;
+
   /* PRIMARY (Brand) */
   --primary-base: var(--sky-9);
   --primary-text-light: #00a2c7;
@@ -27,13 +31,17 @@
   --text-main: var(--sky-12);
   --text-muted: var(--sky-11);
   --text-placeholder: var(--sky-8);
-  --text-light: white;
+  --text-light: var(--pure-white);
 
   /***** SEMANTIC COLORS *****/
   --success: #2a7e3b;
   --success-soft: #daf1db;
   --danger: #ce2c31;
-  --danger-soft: #ffdbdc;
+  --danger-soft: #FFF7F8;
+
+  --danger-border: #E592A3;
+  --danger-hover: #FFDCE1;
+
   --warning: #ffc53d;
   --warning-soft: #fff7c2;
   --warning-darker: #ab6400;
@@ -83,4 +91,29 @@
   --radius-sm: 2px;
   --radius-md: 4px;
   --radius-lg: 8px;
+
+ /* Form Elements*/
+  --slate-border: hsl(240, 10%, 86%);
+  --slate-border-focus: hsl(231, 10%, 75%);
+
+  --form-border-color: var(--slate-border);
+  --form-border-focus-color: var(--slate-border-focus);
+  --input-focus: #00a2c7;
+  --input-disabled: hsl(240, 10%, 92%);
 }
+
+
+/*const slate = {*/
+/*  slate1: "hsl(240, 20%, 99%)",*/
+/*  slate2: "hsl(240, 20%, 98%)",*/
+/*  slate3: "hsl(240, 11%, 95%)",*/
+/*  slate4: "hsl(240, 10%, 92%)",*/
+/*  slate5: "hsl(230, 11%, 89%)",*/
+/*  slate6: "hsl(240, 10%, 86%)",*/
+/*  slate7: "hsl(233, 10%, 82%)",*/
+/*  slate8: "hsl(231, 10%, 75%)",*/
+/*  slate9: "hsl(231, 6%, 57%)",*/
+/*  slate10: "hsl(226, 5%, 53%)",*/
+/*  slate11: "hsl(220, 6%, 40%)",*/
+/*  slate12: "hsl(210, 13%, 13%)",*/
+/*}*/
