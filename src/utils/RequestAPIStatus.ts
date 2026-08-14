@@ -1,6 +1,7 @@
-class RequestStatus {
+export class RequestStatus<TResponseType = unknown, TErrorType = unknown> {
   constructor() {}
 
+  //factory methods
   static noRequest(): NoRequest {
     return new NoRequest();
   }
@@ -9,38 +10,59 @@ class RequestStatus {
     return new PendingRequest();
   }
 
-  static errorRequest(): ErrorRequest {
-    return new ErrorRequest();
+  static errorRequest<T>(error: T): ErrorRequest<T> {
+    return new ErrorRequest(error);
   }
 
-  static completeRequest(): CompleteRequest {
-    return new CompleteRequest();
+  static completeRequest<T>(payload: T): CompleteRequest<T> {
+    return new CompleteRequest(payload);
+  }
+
+  //type guards
+  isNoRequest(): this is NoRequest {
+    return this instanceof NoRequest;
+  }
+
+  isPendingRequest(): this is PendingRequest {
+    return this instanceof PendingRequest;
+  }
+
+  isErrorRequest(): this is ErrorRequest<TErrorType> {
+    return this instanceof ErrorRequest;
+  }
+
+  isCompleteRequest(): this is CompleteRequest<TResponseType> {
+    return this instanceof CompleteRequest;
   }
 }
 
-//factory methods
-class NoRequest extends RequestStatus {
+//subclasses
+class NoRequest extends RequestStatus<never, never> {
   constructor() {
     super();
   }
 }
 
-class PendingRequest extends RequestStatus {
+class PendingRequest extends RequestStatus<never, never> {
   constructor() {
     super();
   }
 }
 
-class ErrorRequest extends RequestStatus {
-  constructor() {
+class ErrorRequest<TErrorType> extends RequestStatus<never, TErrorType> {
+  error: TErrorType;
+
+  constructor(error: TErrorType) {
     super();
+    this.error = error;
   }
 }
 
-class CompleteRequest extends RequestStatus {
-  constructor() {
-    super();
-  }
+class CompleteRequest<TResponseType> extends RequestStatus<TResponseType, never> {
+  payload: TResponseType;
 
-  //instance type guard methods
+  constructor(payload: TResponseType) {
+    super();
+    this.payload = payload;
+  }
 }
