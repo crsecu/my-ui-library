@@ -37,19 +37,19 @@ export class RequestStatus<TResponseType = unknown, TErrorType = unknown> {
 }
 
 //subclasses
-class NoRequest extends RequestStatus<never, never> {
+export class NoRequest extends RequestStatus<never, never> {
   constructor() {
     super();
   }
 }
 
-class PendingRequest extends RequestStatus<never, never> {
+export class PendingRequest extends RequestStatus<never, never> {
   constructor() {
     super();
   }
 }
 
-class ErrorRequest<TErrorType> extends RequestStatus<never, TErrorType> {
+export class ErrorRequest<TErrorType> extends RequestStatus<never, TErrorType> {
   error: TErrorType;
 
   constructor(error: TErrorType) {
@@ -58,7 +58,7 @@ class ErrorRequest<TErrorType> extends RequestStatus<never, TErrorType> {
   }
 }
 
-class CompleteRequest<TResponseType> extends RequestStatus<TResponseType, never> {
+export class CompleteRequest<TResponseType> extends RequestStatus<TResponseType, never> {
   payload: TResponseType;
 
   constructor(payload: TResponseType) {
