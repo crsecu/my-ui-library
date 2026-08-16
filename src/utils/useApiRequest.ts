@@ -1,5 +1,6 @@
 import { RequestStatus } from './RequestAPIStatus.ts';
 import { useState } from 'react';
+import { normalizeError } from './normalizeError.ts';
 
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
@@ -17,7 +18,8 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
         setStatus(RequestStatus.completeRequest(res));
       })
       .catch((err) => {
-        setStatus(RequestStatus.errorRequest(err));
+        const error = normalizeError(err);
+        setStatus(RequestStatus.errorRequest(error));
       });
 
     return response;
