@@ -1,12 +1,13 @@
 import { useApiRequest } from './useApiRequest.ts';
 import { renderHook } from '@testing-library/react';
 import { act } from 'react';
-import { RequestStatus } from './RequestAPIStatus.ts';
+import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 
 describe('useApiRequest', () => {
   const mockApiData = { id: 1, name: 'Jane Doe' };
 
   //@ts-expect-error: unused parameter
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockApiRequest = vi.fn(async (id: number = 1) => mockApiData);
 
   beforeEach(() => {
@@ -32,6 +33,7 @@ describe('useApiRequest', () => {
 
   test("should have 'pendingRequest' status while network call is in progress", async () => {
     //@ts-expect-error: unused var
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let mockPromise: (val: typeof mockApiData) => void;
 
     const pendingApiRequest = vi.fn(

@@ -1,6 +1,6 @@
-import { RequestStatus } from './RequestAPIStatus.ts';
+import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 import { useCallback, useState } from 'react';
-import { normalizeError } from './normalizeError.ts';
+import { normalizeError } from '../utils/normalizeError.ts';
 
 /**
  * Hook that models the lifecycle of an asynchronous API request.
