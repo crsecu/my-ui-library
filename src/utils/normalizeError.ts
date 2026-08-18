@@ -5,6 +5,12 @@ export interface AppError {
   details?: unknown;
 }
 
+/**
+ * Converts an unknown caught error into a standardized AppError object.
+ *
+ * @param error - The raw error value of unknown type caught in a try/catch or promise rejection.
+ * @returns A structured {@link AppError} containing a descriptive message along with any available error metadata (status, code, details)
+ */
 export function normalizeError(error: unknown): AppError {
   if (error instanceof Error) {
     return {
