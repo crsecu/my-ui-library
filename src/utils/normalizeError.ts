@@ -1,9 +1,4 @@
-export interface AppError {
-  message: string;
-  status?: number;
-  code?: string;
-  details?: unknown;
-}
+import { AppError } from './AppError.ts';
 
 /**
  * Converts an unknown caught error into a standardized AppError object.
@@ -12,16 +7,22 @@ export interface AppError {
  * @returns A structured {@link AppError} containing a descriptive message along with any available error metadata (status, code, details)
  */
 export function normalizeError(error: unknown): AppError {
+  if (error instanceof AppError) {
+    return error;
+  }
+
   if (error instanceof Error) {
-    return {
-      message: error.message,
-      status: 'status' in error ? (error as { status: number }).status : undefined,
-    };
+    const status =
+      'status' in error && (typeof error.status === 'number' || typeof error.status === 'string')
+        ? error.status
+        : undefined;
+
+    return new AppError(error.message, status);
   }
 
   if (typeof error === 'string') {
-    return { message: error };
+    return new AppError(error);
   }
 
-  return { message: 'An unexpected error occurred' };
+  return new AppError('An unexpected error occurred');
 }
