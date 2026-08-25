@@ -28,7 +28,7 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
     (args: TRequestArgsType) => {
       setStatus(RequestStatus.pendingRequest());
 
-      const response = apiRequest(args)
+      return apiRequest(args)
         .then((res: TResponseType) => {
           setStatus(RequestStatus.completeRequest(res));
         })
@@ -36,8 +36,6 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
           const error = normalizeError(err);
           setStatus(RequestStatus.errorRequest(error));
         });
-
-      return response;
     },
     [apiRequest],
   );
