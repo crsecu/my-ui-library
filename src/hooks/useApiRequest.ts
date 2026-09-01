@@ -18,19 +18,22 @@ import { normalizeError } from '../utils/normalizeError.ts';
  */
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
-) {
-  const [status, setStatus] = useState<RequestStatus<TResponseType>>(() =>
-    RequestStatus.noRequest(),
-  );
-  const latestData = status.isCompleteRequest() ? status.payload : null;
+): [
+  [RequestStatus, TResponseType | null],
+  (args: TRequestArgsType) => Promise<void>,
+  (status?: RequestStatus) => void,
+] {
+  const [status, setStatus] = useState<RequestStatus>(() => RequestStatus.noRequest());
+  const [data, setData] = useState<TResponseType | null>(null);
 
   const initiateRequest = useCallback(
     (args: TRequestArgsType) => {
       setStatus(RequestStatus.pendingRequest());
 
       return apiRequest(args)
-        .then((res: TResponseType) => {
-          setStatus(RequestStatus.completeRequest(res));
+        .then((res) => {
+          setStatus(RequestStatus.completeRequest());
+          setData(res);
         })
         .catch((err) => {
           const error = normalizeError(err);
@@ -40,7 +43,7 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
     [apiRequest],
   );
 
-  const setNetworkStatus = useCallback((status?: RequestStatus<TResponseType>) => {
+  const setNetworkStatus = useCallback((status?: RequestStatus) => {
     if (!status) {
       setStatus(RequestStatus.noRequest());
       return;
@@ -49,12 +52,7 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
     setStatus(status);
   }, []);
 
-  const returnValue: [
-    RequestStatus<TResponseType>,
-    TResponseType | null,
-    (args: TRequestArgsType) => Promise<void>,
-    (status?: RequestStatus<TResponseType>) => void,
-  ] = [status, latestData, initiateRequest, setNetworkStatus];
+  const statusData: [RequestStatus, TResponseType | null] = [status, data];
 
-  return returnValue;
+  return [statusData, initiateRequest, setNetworkStatus];
 }
