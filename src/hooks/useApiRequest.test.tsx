@@ -16,7 +16,7 @@ describe('useApiRequest', () => {
 
   test("should have 'noRequest' status on initial render", () => {
     const { result } = renderHook(() => useApiRequest(mockApiRequest));
-    const [status, data] = result.current;
+    const [[status, data]] = result.current;
 
     expect(status.isNoRequest()).toBe(true);
     expect(data).toBeNull();
@@ -25,7 +25,7 @@ describe('useApiRequest', () => {
 
   test('should have no data on initial render', () => {
     const { result } = renderHook(() => useApiRequest(mockApiRequest));
-    const [, data] = result.current;
+    const [[, data]] = result.current;
 
     expect(data).toBeNull();
     expect(mockApiRequest).not.toHaveBeenCalled();
@@ -44,13 +44,13 @@ describe('useApiRequest', () => {
     );
 
     const { result } = renderHook(() => useApiRequest(pendingApiRequest));
-    const [, , initiateRequest] = result.current;
+    const [, initiateRequest] = result.current;
 
     act(() => {
       initiateRequest(1);
     });
 
-    const [status, data] = result.current;
+    const [[status, data]] = result.current;
 
     expect(status.isPendingRequest()).toBe(true);
     expect(data).toBeNull();
@@ -58,13 +58,13 @@ describe('useApiRequest', () => {
 
   test('should transition to completeRequest and update data after a successful request', async () => {
     const { result } = renderHook(() => useApiRequest(mockApiRequest));
-    const [, , initiateRequest] = result.current;
+    const [, initiateRequest] = result.current;
 
     await act(async () => {
       await initiateRequest(1);
     });
 
-    const [status, data] = result.current;
+    const [[status, data]] = result.current;
 
     expect(mockApiRequest).toHaveBeenCalledWith(1);
     expect(status.isCompleteRequest()).toBe(true);
@@ -74,13 +74,13 @@ describe('useApiRequest', () => {
   test('should transition to errorRequest and preserve error message on rejection', async () => {
     const mockApi = vi.fn().mockRejectedValue(new Error('Network failure'));
     const { result } = renderHook(() => useApiRequest(mockApi));
-    const [, , initiateRequest] = result.current;
+    const [, initiateRequest] = result.current;
 
     await act(async () => {
       await initiateRequest(1);
     });
 
-    const [status, data] = result.current;
+    const [[status, data]] = result.current;
 
     expect(status.isErrorRequest()).toBe(true);
 
@@ -93,34 +93,32 @@ describe('useApiRequest', () => {
   test('should reset state back to NoRequest when setNetworkStatus is called without arguments', async () => {
     const mockApi = vi.fn().mockResolvedValue(mockApiData);
     const { result } = renderHook(() => useApiRequest(mockApi));
-    const [, , initiateRequest, setNetworkStatus] = result.current;
+    const [, initiateRequest, setNetworkStatus] = result.current;
 
     await act(async () => {
       await initiateRequest(1);
     });
-    expect(result.current[0].isCompleteRequest()).toBe(true);
+
+    expect(result.current[0][0].isCompleteRequest()).toBe(true);
 
     act(() => {
       setNetworkStatus();
     });
 
-    expect(result.current[0].isNoRequest()).toBe(true);
+    expect(result.current[0][0].isNoRequest()).toBe(true);
   });
 
   test('should allow manually overriding the status state', () => {
     const { result } = renderHook(() => useApiRequest(mockApiRequest));
-    const [, , , setNetworkStatus] = result.current;
+    const [, , setNetworkStatus] = result.current;
 
-    const customStatus = RequestStatus.completeRequest({
-      id: 99,
-      name: 'John Doe',
-    });
+    const customStatus = RequestStatus.completeRequest();
 
     act(() => {
       setNetworkStatus(customStatus);
     });
 
-    expect(result.current[0].isCompleteRequest()).toBe(true);
+    expect(result.current[0][0].isCompleteRequest()).toBe(true);
     expect(mockApiRequest).not.toHaveBeenCalled();
   });
 });
