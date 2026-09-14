@@ -19,7 +19,7 @@ export interface APIRequestState<T> {
  * - `status`: The current {@link RequestStatus} instance.
  * - `data`: The resolved payload data, or `null` if not completed.
  * - `initiateRequest`: Callback to execute the API call with arguments.
- * - `setNetworkStatus`: Callback to manually override or reset the status.
+ * - `manualSetRequestState`: Callback to manually override or reset the request status/request data.
  */
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
@@ -53,7 +53,7 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
     [apiRequest],
   );
 
-  const setNetworkStatus = useCallback(
+  const manualSetRequestState = useCallback(
     (status: RequestStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
       setRequestState({ status, data });
     },
@@ -65,5 +65,5 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
     requestState.data,
   ];
 
-  return [statusAndData, initiateRequest, setNetworkStatus];
+  return [statusAndData, initiateRequest, manualSetRequestState];
 }
