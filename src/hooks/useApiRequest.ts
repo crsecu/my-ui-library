@@ -2,6 +2,10 @@ import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 import { useCallback, useState } from 'react';
 import { normalizeError } from '../utils/normalizeError.ts';
 
+export interface APIStatusData<T> {
+  status: RequestStatus;
+  data: T | null;
+}
 /**
  * Hook that models the lifecycle of an asynchronous API request.
  *
@@ -21,38 +25,44 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
 ): [
   [RequestStatus, TResponseType | null],
   (args: TRequestArgsType) => Promise<void>,
-  (status?: RequestStatus) => void,
+  (status?: RequestStatus, data?: TResponseType | null) => void,
 ] {
-  const [status, setStatus] = useState<RequestStatus>(() => RequestStatus.noRequest());
-  const [data, setData] = useState<TResponseType | null>(null);
+  const [statusAndData, setStatusAndData] = useState<APIStatusData<TResponseType>>({
+    status: RequestStatus.noRequest(),
+    data: null,
+  });
 
   const initiateRequest = useCallback(
     (args: TRequestArgsType) => {
-      setStatus(RequestStatus.pendingRequest());
+      setStatusAndData((prevState) => {
+        return { ...prevState, status: RequestStatus.pendingRequest() };
+      });
 
       return apiRequest(args)
         .then((res) => {
-          setStatus(RequestStatus.completeRequest());
-          setData(res);
+          setStatusAndData({ status: RequestStatus.completeRequest(), data: res });
         })
         .catch((err) => {
           const error = normalizeError(err);
-          setStatus(RequestStatus.errorRequest(error));
+          setStatusAndData((prevState) => {
+            return { ...prevState, status: RequestStatus.errorRequest(error) };
+          });
         });
     },
     [apiRequest],
   );
 
-  const setNetworkStatus = useCallback((status?: RequestStatus) => {
-    if (!status) {
-      setStatus(RequestStatus.noRequest());
-      return;
-    }
+  const setNetworkStatus = useCallback(
+    (status: RequestStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
+      setStatusAndData({ status, data });
+    },
+    [],
+  );
 
-    setStatus(status);
-  }, []);
-
-  const statusData: [RequestStatus, TResponseType | null] = [status, data];
+  const statusData: [RequestStatus, TResponseType | null] = [
+    statusAndData.status,
+    statusAndData.data,
+  ];
 
   return [statusData, initiateRequest, setNetworkStatus];
 }
