@@ -2,10 +2,11 @@ import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 import { useCallback, useState } from 'react';
 import { normalizeError } from '../utils/normalizeError.ts';
 
-export interface APIStatusData<T> {
+export interface APIRequestState<T> {
   status: RequestStatus;
   data: T | null;
 }
+
 /**
  * Hook that models the lifecycle of an asynchronous API request.
  *
@@ -27,24 +28,24 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
   (args: TRequestArgsType) => Promise<void>,
   (status?: RequestStatus, data?: TResponseType | null) => void,
 ] {
-  const [statusAndData, setStatusAndData] = useState<APIStatusData<TResponseType>>({
+  const [requestState, setRequestState] = useState<APIRequestState<TResponseType>>({
     status: RequestStatus.noRequest(),
     data: null,
   });
 
   const initiateRequest = useCallback(
     (args: TRequestArgsType) => {
-      setStatusAndData((prevState) => {
+      setRequestState((prevState) => {
         return { ...prevState, status: RequestStatus.pendingRequest() };
       });
 
       return apiRequest(args)
         .then((res) => {
-          setStatusAndData({ status: RequestStatus.completeRequest(), data: res });
+          setRequestState({ status: RequestStatus.completeRequest(), data: res });
         })
         .catch((err) => {
           const error = normalizeError(err);
-          setStatusAndData((prevState) => {
+          setRequestState((prevState) => {
             return { ...prevState, status: RequestStatus.errorRequest(error) };
           });
         });
@@ -54,15 +55,15 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
 
   const setNetworkStatus = useCallback(
     (status: RequestStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
-      setStatusAndData({ status, data });
+      setRequestState({ status, data });
     },
     [],
   );
 
-  const statusData: [RequestStatus, TResponseType | null] = [
-    statusAndData.status,
-    statusAndData.data,
+  const statusAndData: [RequestStatus, TResponseType | null] = [
+    requestState.status,
+    requestState.data,
   ];
 
-  return [statusData, initiateRequest, setNetworkStatus];
+  return [statusAndData, initiateRequest, setNetworkStatus];
 }
