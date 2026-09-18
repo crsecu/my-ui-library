@@ -21,10 +21,10 @@ export type APIRequestState<T> = [status: RequestStatus, data: T | null];
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
 ): [
-  RequestStatus,
-  TResponseType | null,
-  (args: TRequestArgsType) => Promise<void>,
-  (status?: RequestStatus, data?: TResponseType | null) => void,
+  status: RequestStatus,
+  data: TResponseType | null,
+  initiateRequest: (args: TRequestArgsType) => Promise<void>,
+  manualSetRequestState: (status?: RequestStatus, data?: TResponseType | null) => void,
 ] {
   const [requestState, setRequestState] = useState<APIRequestState<TResponseType>>([
     RequestStatus.noRequest(),
