@@ -2,10 +2,7 @@ import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 import { useCallback, useState } from 'react';
 import { normalizeError } from '../utils/normalizeError.ts';
 
-export interface APIRequestState<T> {
-  status: RequestStatus;
-  data: T | null;
-}
+export type APIRequestState<T> = [status: RequestStatus, data: T | null];
 
 /**
  * Hook that models the lifecycle of an asynchronous API request.
@@ -24,30 +21,27 @@ export interface APIRequestState<T> {
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
 ): [
-  [RequestStatus, TResponseType | null],
+  RequestStatus,
+  TResponseType | null,
   (args: TRequestArgsType) => Promise<void>,
   (status?: RequestStatus, data?: TResponseType | null) => void,
 ] {
-  const [requestState, setRequestState] = useState<APIRequestState<TResponseType>>({
-    status: RequestStatus.noRequest(),
-    data: null,
-  });
+  const [requestState, setRequestState] = useState<APIRequestState<TResponseType>>([
+    RequestStatus.noRequest(),
+    null,
+  ]);
 
   const initiateRequest = useCallback(
     (args: TRequestArgsType) => {
-      setRequestState((prevState) => {
-        return { ...prevState, status: RequestStatus.pendingRequest() };
-      });
+      setRequestState((prevState) => [RequestStatus.pendingRequest(), prevState[1]]);
 
       return apiRequest(args)
         .then((res) => {
-          setRequestState({ status: RequestStatus.completeRequest(), data: res });
+          setRequestState([RequestStatus.completeRequest(), res]);
         })
         .catch((err) => {
           const error = normalizeError(err);
-          setRequestState((prevState) => {
-            return { ...prevState, status: RequestStatus.errorRequest(error) };
-          });
+          setRequestState((prevState) => [RequestStatus.errorRequest(error), prevState[1]]);
         });
     },
     [apiRequest],
@@ -55,15 +49,10 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
 
   const manualSetRequestState = useCallback(
     (status: RequestStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
-      setRequestState({ status, data });
+      setRequestState([status, data]);
     },
     [],
   );
 
-  const statusAndData: [RequestStatus, TResponseType | null] = [
-    requestState.status,
-    requestState.data,
-  ];
-
-  return [statusAndData, initiateRequest, manualSetRequestState];
+  return [...requestState, initiateRequest, manualSetRequestState];
 }
