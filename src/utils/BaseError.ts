@@ -1,21 +1,20 @@
-export class BaseError extends Error {
+type BaseErrorOptions = {
   statusCode?: number | string;
   subCode?: number | string;
-  errorType?: string;
+  description?: string;
+};
+
+export class BaseError extends Error {
+  errorType: string;
+  statusCode?: number | string;
+  subCode?: number | string;
   description?: string;
 
-  constructor(
-    message: string,
-    statusCode?: number | string,
-    subCode?: number | string,
-    errorType?: string,
-    description?: string,
-  ) {
+  constructor(message: string, errorType: string, options: BaseErrorOptions = {}) {
     super(message);
-
-    this.statusCode = statusCode;
-    this.subCode = subCode;
     this.errorType = errorType;
-    this.description = description;
+    this.statusCode = options.statusCode;
+    this.subCode = options.subCode;
+    this.description = options.description;
   }
 }
