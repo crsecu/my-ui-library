@@ -39,7 +39,6 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  width: 50%;
   border: 1px solid var(--slate-border);
   border-radius: 12px;
   background-color: var(--bg-surface);
