@@ -2,20 +2,24 @@ import { BaseError } from '../../utils/BaseError.ts';
 import { type ReactNode, useState } from 'react';
 import styles from './ErrorDisplay.module.css';
 import { Button } from '../Button/Button.tsx';
+import { ChevronDown } from 'lucide-react';
 
 type OwnErrorKeys<T> = Exclude<keyof T, keyof Omit<Error, 'message'>>;
 
 interface ErrorDisplayProps {
   error: BaseError;
   icon?: ReactNode;
+  iconBgColor?: string;
 }
 
-export const ErrorDisplay = ({ error, icon }: ErrorDisplayProps) => {
+export const ErrorDisplay = ({ error, icon, iconBgColor }: ErrorDisplayProps) => {
   const [showErrorLog, setShowErrorLog] = useState(false);
 
   return (
     <div className={styles.errorDisplay}>
-      <span>icon placeholder</span>
+      <span className={styles.errorIcon} style={{ backgroundColor: `${iconBgColor}` }}>
+        {icon}
+      </span>
       <div className={styles.contentWrapper}>
         <span className={styles.title}>{error.message}</span>
         <span className={styles.description}>{error?.description || 'Unknown'}</span>
@@ -25,19 +29,25 @@ export const ErrorDisplay = ({ error, icon }: ErrorDisplayProps) => {
           variant={'outlined'}
           intent={'neutral'}
           onClick={() => setShowErrorLog((prev) => !prev)}
+          icon={<ChevronDown style={{ marginLeft: '8px' }} />}
         >
           View Error Log
         </Button>
         <Button>Reload</Button>
       </div>
+
       {showErrorLog && (
-        <div>
-          {(Object.keys(error) as Array<OwnErrorKeys<typeof error>>).map((key) => (
-            <span>
-              {key}: {error[key]}
-            </span>
-          ))}
-        </div>
+        <>
+          <span className={styles.horizontalLine}></span>
+          <ul className={styles.errorLogWrapper}>
+            {(Object.keys(error) as Array<OwnErrorKeys<typeof error>>).map((key) => (
+              <li key={key}>
+                <span className={styles.errorLabel}>{key}</span>
+                <span className={styles.errorValue}>{error[key]}</span>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
