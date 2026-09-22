@@ -2,7 +2,7 @@ import { BaseError } from '../../utils/BaseError.ts';
 import { type ReactNode, useState } from 'react';
 import styles from './ErrorDisplay.module.css';
 import { Button } from '../Button/Button.tsx';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 type OwnErrorKeys<T> = Exclude<keyof T, keyof Omit<Error, 'message'>>;
 
@@ -29,7 +29,7 @@ export const ErrorDisplay = ({ error, icon, iconBgColor }: ErrorDisplayProps) =>
           variant={'outlined'}
           intent={'neutral'}
           onClick={() => setShowErrorLog((prev) => !prev)}
-          icon={<ChevronDown style={{ marginLeft: '8px' }} />}
+          icon={showErrorLog ? <ChevronDown /> : <ChevronUp />}
         >
           View Error Log
         </Button>
