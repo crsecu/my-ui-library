@@ -1,12 +1,15 @@
-import type { BaseError } from '../../utils/BaseError.ts';
+import { BaseError } from '../../utils/BaseError.ts';
 import { type ReactNode, useState } from 'react';
 import styles from './ErrorDisplay.module.css';
 import { Button } from '../Button/Button.tsx';
+
+type OwnErrorKeys<T> = Exclude<keyof T, keyof Omit<Error, 'message'>>;
 
 interface ErrorDisplayProps {
   error: BaseError;
   icon?: ReactNode;
 }
+
 export const ErrorDisplay = ({ error, icon }: ErrorDisplayProps) => {
   const [showErrorLog, setShowErrorLog] = useState(false);
 
@@ -29,7 +32,11 @@ export const ErrorDisplay = ({ error, icon }: ErrorDisplayProps) => {
       </div>
       {showErrorLog && (
         <div>
-          <span>Error Log placeholder</span>
+          {(Object.keys(error) as Array<OwnErrorKeys<typeof error>>).map((key) => (
+            <span>
+              {key}: {error[key]}
+            </span>
+          ))}
         </div>
       )}
     </div>
