@@ -3,8 +3,7 @@ import { type ReactNode, useState } from 'react';
 import styles from './ErrorDisplay.module.css';
 import { Button } from '../Button/Button.tsx';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
-type OwnErrorKeys<T> = Exclude<keyof T, keyof Omit<Error, 'message'>>;
+import { ErrorLog } from '../ErrorLog/ErrorLog.tsx';
 
 interface ErrorDisplayProps {
   error: BaseError;
@@ -39,14 +38,7 @@ export const ErrorDisplay = ({ error, icon, iconBgColor }: ErrorDisplayProps) =>
       {showErrorLog && (
         <>
           <span className={styles.horizontalLine}></span>
-          <ul className={styles.errorLogWrapper}>
-            {(Object.keys(error) as Array<OwnErrorKeys<typeof error>>).map((key) => (
-              <li key={key}>
-                <span className={styles.errorLabel}>{key}</span>
-                <span className={styles.errorValue}>{error[key]}</span>
-              </li>
-            ))}
-          </ul>
+          <ErrorLog error={error} />
         </>
       )}
     </div>
