@@ -1,5 +1,6 @@
 import { BaseError } from '../../utils/BaseError.ts';
-import styles from '../ErrorDisplay/ErrorDisplay.module.css';
+import styles from '../ErrorLog/ErrorLog.module.css';
+
 type OwnErrorKeys<T> = Exclude<keyof T, keyof Omit<Error, 'message'>>;
 
 interface ErrorLogProps {

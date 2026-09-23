@@ -34,37 +34,9 @@
   gap: 12px;
 }
 
-.errorLogWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--slate-border);
-  border-radius: 12px;
-  background-color: var(--bg-surface);
-  font-size: var(--text-sm);
-
-  li {
-    list-style-type: none;
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--slate-border);
-    gap: 60px;
-  }
-}
-
 .horizontalLine {
   display: block;
   width: 50%;
   border-top: 1px solid var(--slate-border);
   margin: 4px 0;
-}
-
-.errorLabel {
-  font-weight: var(--weight-med);
-  color: var(--neutral-darker);
-}
-
-.errorValue {
 }
