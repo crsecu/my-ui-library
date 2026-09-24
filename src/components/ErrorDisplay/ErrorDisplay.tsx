@@ -2,7 +2,7 @@ import { BaseError } from '../../utils/BaseError.ts';
 import { type ReactNode, useState } from 'react';
 import styles from './ErrorDisplay.module.css';
 import { Button } from '../Button/Button.tsx';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, CircleAlert } from 'lucide-react';
 import { ErrorLog } from '../ErrorLog/ErrorLog.tsx';
 
 interface ErrorDisplayProps {
@@ -14,8 +14,8 @@ interface ErrorDisplayProps {
 
 export const ErrorDisplay = ({
   error,
-  icon,
-  iconBgColor,
+  icon = <CircleAlert color={'#ce2c31'} />,
+  iconBgColor = '#FFDCE1',
   showReloadButton = false,
 }: ErrorDisplayProps) => {
   const [showErrorLog, setShowErrorLog] = useState(false);
