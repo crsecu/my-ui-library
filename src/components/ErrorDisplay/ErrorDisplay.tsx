@@ -9,10 +9,20 @@ interface ErrorDisplayProps {
   error: BaseError;
   icon?: ReactNode;
   iconBgColor?: string;
+  showReloadButton?: boolean;
 }
 
-export const ErrorDisplay = ({ error, icon, iconBgColor }: ErrorDisplayProps) => {
+export const ErrorDisplay = ({
+  error,
+  icon,
+  iconBgColor,
+  showReloadButton = false,
+}: ErrorDisplayProps) => {
   const [showErrorLog, setShowErrorLog] = useState(false);
+
+  const handlePageReload = () => {
+    window.location.reload();
+  };
 
   return (
     <div className={styles.errorDisplay}>
@@ -32,7 +42,7 @@ export const ErrorDisplay = ({ error, icon, iconBgColor }: ErrorDisplayProps) =>
         >
           View Error Log
         </Button>
-        <Button>Reload</Button>
+        {showReloadButton && <Button onClick={handlePageReload}>Reload</Button>}
       </div>
 
       {showErrorLog && (
