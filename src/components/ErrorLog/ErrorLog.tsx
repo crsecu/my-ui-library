@@ -8,6 +8,12 @@ interface ErrorLogProps {
   error: BaseError;
 }
 
+/**
+ * Renders every own field on a `BaseError` (or subclass) as a labeled
+ * row, e.g. `statusCode` → "Status Code". Fields inherited from the
+ * built-in `Error` are excluded since they aren't meant for display.
+ * `message` is also excluded, since `ErrorDisplay` renders it separately as the title.
+ */
 export const ErrorLog = ({ error }: ErrorLogProps) => {
   return (
     <>
