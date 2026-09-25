@@ -1,17 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import { BaseError } from '../../utils/BaseError.ts';
 import { ErrorLog } from './ErrorLog.tsx';
+import { serverError } from '../../testing/errors.ts';
 
 describe('ErrorLog component', () => {
-  const testError = new BaseError('Failed to fetch dashboard data', 'server', {
-    statusCode: 500,
-    subCode: 'ERR_INTERNAL_SERVER',
-    description:
-      'Something went wrong on our end while loading your dashboard. This is usually temporary — try reloading in a moment.',
-  });
-
   test('should render a humanized label for each field', () => {
-    render(<ErrorLog error={testError} />);
+    render(<ErrorLog error={serverError} />);
 
     expect(screen.getByText('Error Type')).toBeInTheDocument();
     expect(screen.getByText('Status Code')).toBeInTheDocument();
@@ -20,7 +13,7 @@ describe('ErrorLog component', () => {
   });
 
   test('should render the error field value next to each label', () => {
-    render(<ErrorLog error={testError} />);
+    render(<ErrorLog error={serverError} />);
 
     expect(screen.getByText('server')).toBeInTheDocument();
     expect(screen.getByText('500')).toBeInTheDocument();
@@ -28,7 +21,7 @@ describe('ErrorLog component', () => {
   });
 
   test('should not render inherited Error fields like message or stack', () => {
-    render(<ErrorLog error={testError} />);
+    render(<ErrorLog error={serverError} />);
 
     expect(screen.queryByText('Message')).not.toBeInTheDocument();
     expect(screen.queryByText('Stack')).not.toBeInTheDocument();
