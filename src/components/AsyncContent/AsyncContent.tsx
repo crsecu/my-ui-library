@@ -1,7 +1,7 @@
-import { JSX, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { ErrorRequest, type RequestStatus } from '../../utils/RequestAPIStatus.ts';
 
-interface ErrorBoundaryProps<T> {
+interface AsyncContentProps<T> {
   children: ReactNode;
   status: RequestStatus;
   data: T;
@@ -9,12 +9,12 @@ interface ErrorBoundaryProps<T> {
   renderErrorComponent?: (error: ErrorRequest<T>) => ReactNode;
 }
 
-export const ErrorBoundary = ({
+export const AsyncContent = ({
   children,
   status,
   data,
   renderErrorComponent,
   renderSuccessComponent,
-}: ErrorBoundaryProps) => {
+}: AsyncContentProps) => {
   return <div></div>;
 };
