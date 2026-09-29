@@ -1,13 +1,13 @@
-import { AppError } from './AppError.ts';
+import { BaseError } from './BaseError.ts';
 
 /**
- * Converts an unknown caught error into a standardized AppError object.
+ * Converts an unknown caught error into a standardized BaseError object.
  *
  * @param error - The raw error value of unknown type caught in a try/catch or promise rejection.
- * @returns A structured {@link AppError} containing a descriptive message along with any available error metadata (status, code, details)
+ * @returns A structured {@link BaseError} containing a descriptive message along with any available error metadata (statusCode, subCode, description)
  */
-export function normalizeError(error: unknown): AppError {
-  if (error instanceof AppError) {
+export function normalizeError(error: unknown): BaseError {
+  if (error instanceof BaseError) {
     return error;
   }
 
@@ -17,12 +17,12 @@ export function normalizeError(error: unknown): AppError {
         ? error.status
         : undefined;
 
-    return new AppError(error.message, status);
+    return new BaseError(error.message, 'unknown', { statusCode: status });
   }
 
   if (typeof error === 'string') {
-    return new AppError(error);
+    return new BaseError(error, 'unknown');
   }
 
-  return new AppError('An unexpected error occurred');
+  return new BaseError('An unexpected error occurred', 'unknown');
 }
