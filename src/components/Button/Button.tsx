@@ -70,7 +70,7 @@ export const Button = ({
           {isLoading && <Loader testId="miniLoader" />}
 
           {children}
-          {icon}
+          {icon && <span className={styles.icon}>{icon}</span>}
         </>
       </button>
       {tooltipText && (

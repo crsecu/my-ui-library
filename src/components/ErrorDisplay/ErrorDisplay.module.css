@@ -1,0 +1,42 @@
+.errorDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+}
+
+.errorIcon {
+  padding: 14px;
+  background-color: pink;
+  border-radius: 50%;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 70%;
+  text-align: center;
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.description {
+  color: var(--neutral-darker);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.horizontalLine {
+  display: block;
+  width: 50%;
+  border-top: 1px solid var(--slate-border);
+  margin: 4px 0;
+}
