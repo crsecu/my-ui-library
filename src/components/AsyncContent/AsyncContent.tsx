@@ -1,29 +1,36 @@
 import { type ReactNode } from 'react';
 import { Loader } from '../Loader/Loader.tsx';
 import { ErrorDisplay } from '../ErrorDisplay/ErrorDisplay.tsx';
-import type { BaseError } from '../../utils/BaseError.ts';
 import type { APIStatus } from '../../hooks/useApiRequest.ts';
+import type { BaseError } from '../../utils/BaseError.ts';
 
 interface AsyncContentProps<T> {
-  children: (data: T) => ReactNode;
+  children?: (data: T) => ReactNode;
   status: APIStatus;
-  data: T;
-  renderSuccessComponent?: (data: T) => ReactNode;
-  renderErrorComponent?: (error: BaseError) => ReactNode;
+  data: T | null;
+  SuccessComponent?: (props: { data: T }) => ReactNode;
+  ErrorComponent?: (props: { error: BaseError }) => ReactNode;
 }
 
 export const AsyncContent = <T,>({
   children,
   status,
   data,
-  renderErrorComponent,
-  renderSuccessComponent,
+  ErrorComponent,
+  SuccessComponent,
 }: AsyncContentProps<T>) => {
   console.log('check:', status, data);
 
   if (status.isPendingRequest()) return <Loader />;
-  if (status.isErrorRequest()) return <ErrorDisplay error={status.error} />;
-  if (status.isCompleteRequest()) return <p>Complete UI</p>;
+  if (status.isErrorRequest()) {
+    if (ErrorComponent) return <ErrorComponent error={status.error} />;
+    return <ErrorDisplay error={status.error} />;
+  }
+
+  if (status.isCompleteRequest() && data !== null) {
+    if (SuccessComponent) return <SuccessComponent data={data} />;
+    return children?.(data);
+  }
 
   return (
     <div>
