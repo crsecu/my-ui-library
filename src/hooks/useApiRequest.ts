@@ -1,8 +1,10 @@
 import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 import { useCallback, useState } from 'react';
 import { normalizeError } from '../utils/normalizeError.ts';
+import type { BaseError } from '../utils/BaseError.ts';
 
-export type APIRequestState<T> = [status: RequestStatus, data: T | null];
+export type APIStatus = RequestStatus<BaseError>;
+export type APIRequestState<T> = [status: APIStatus, data: T | null];
 
 /**
  * Hook that models the lifecycle of an asynchronous API request.
@@ -21,10 +23,10 @@ export type APIRequestState<T> = [status: RequestStatus, data: T | null];
 export function useApiRequest<TRequestArgsType, TResponseType>(
   apiRequest: (args: TRequestArgsType) => Promise<TResponseType>,
 ): [
-  status: RequestStatus,
+  status: APIStatus,
   data: TResponseType | null,
   initiateRequest: (args: TRequestArgsType) => Promise<void>,
-  manualSetRequestState: (status?: RequestStatus, data?: TResponseType | null) => void,
+  manualSetRequestState: (status?: APIStatus, data?: TResponseType | null) => void,
 ] {
   const [requestState, setRequestState] = useState<APIRequestState<TResponseType>>([
     RequestStatus.noRequest(),
@@ -48,7 +50,7 @@ export function useApiRequest<TRequestArgsType, TResponseType>(
   );
 
   const manualSetRequestState = useCallback(
-    (status: RequestStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
+    (status: APIStatus = RequestStatus.noRequest(), data: TResponseType | null = null) => {
       setRequestState([status, data]);
     },
     [],
