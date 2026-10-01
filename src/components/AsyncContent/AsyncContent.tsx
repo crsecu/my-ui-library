@@ -5,11 +5,12 @@ import type { APIStatus } from '../../hooks/useApiRequest.ts';
 import type { BaseError } from '../../utils/BaseError.ts';
 
 interface AsyncContentProps<T> {
-  children?: (data: T, status: APIStatus) => ReactNode;
+  children?: (status: APIStatus, data: T) => ReactNode;
   status: APIStatus;
   data: T | null;
-  SuccessComponent?: (props: { data: T; status: APIStatus }) => ReactNode;
+  SuccessComponent?: (props: { status: APIStatus; data: T }) => ReactNode;
   ErrorComponent?: (props: { error: BaseError }) => ReactNode;
+  initialStateUI?: ReactNode;
 }
 
 export const AsyncContent = <T,>({
@@ -18,9 +19,11 @@ export const AsyncContent = <T,>({
   data,
   ErrorComponent,
   SuccessComponent,
+  initialStateUI = <Loader />,
 }: AsyncContentProps<T>) => {
   console.log('check:', status, data);
 
+  if (status.isNoRequest()) return initialStateUI;
   if (status.isPendingRequest()) return <Loader />;
   if (status.isErrorRequest()) {
     if (ErrorComponent) return <ErrorComponent error={status.error} />;
@@ -29,12 +32,8 @@ export const AsyncContent = <T,>({
 
   if (status.isCompleteRequest() && data !== null) {
     if (SuccessComponent) return <SuccessComponent data={data} status={status} />;
-    return children?.(data, status);
+    return children?.(status, data);
   }
 
-  return (
-    <div>
-      <p>INITIAL UI</p>
-    </div>
-  );
+  return null;
 };
