@@ -12,5 +12,7 @@ interface LoaderProps {
  * @param testId - A unique string used to target the loader in automated tests.
  */
 export const Loader = ({ testId }: LoaderProps) => {
-  return <div className={styles.loader} data-testid={testId}></div>;
+  return (
+    <div className={styles.loader} data-testid={testId} role="status" aria-label="Loading"></div>
+  );
 };
