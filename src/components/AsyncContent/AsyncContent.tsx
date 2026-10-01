@@ -5,10 +5,10 @@ import type { APIStatus } from '../../hooks/useApiRequest.ts';
 import type { BaseError } from '../../utils/BaseError.ts';
 
 interface AsyncContentProps<T> {
-  children?: (data: T) => ReactNode;
+  children?: (data: T, status: APIStatus) => ReactNode;
   status: APIStatus;
   data: T | null;
-  SuccessComponent?: (props: { data: T }) => ReactNode;
+  SuccessComponent?: (props: { data: T; status: APIStatus }) => ReactNode;
   ErrorComponent?: (props: { error: BaseError }) => ReactNode;
 }
 
@@ -28,8 +28,8 @@ export const AsyncContent = <T,>({
   }
 
   if (status.isCompleteRequest() && data !== null) {
-    if (SuccessComponent) return <SuccessComponent data={data} />;
-    return children?.(data);
+    if (SuccessComponent) return <SuccessComponent data={data} status={status} />;
+    return children?.(data, status);
   }
 
   return (
