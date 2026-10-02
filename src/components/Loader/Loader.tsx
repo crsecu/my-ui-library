@@ -15,10 +15,12 @@ const variantStyles: Record<LoaderVariant, string> = {
 };
 
 /**
- * A visual loading spinner designed specifically for use within button components.
- * Indicates an active background process or pending action.
- ** Note: While currently scoped to buttons, this component is intended to be
- * expanded for general-purpose loading states in future updates.
+ * A loading spinner that indicates an active background process or pending action.
+ * @param variant - Where the loader is placed:
+ *   - `inline` (default): sits inside its parent, e.g. a button.
+ *   - `container`: centered in the nearest positioned ancestor (the parent needs `position: relative`).
+ *   - `global`: centered in the viewport
+ * @param ariaLabel - Accessible name announced by screen readers. Defaults to "Loading".
  * @param testId - A unique string used to target the loader in automated tests.
  */
 export const Loader = ({ variant = 'inline', ariaLabel = 'Loading', testId }: LoaderProps) => {
