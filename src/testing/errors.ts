@@ -1,4 +1,5 @@
 import { BaseError } from '../utils/BaseError.ts';
+import { RequestStatus } from '../utils/RequestAPIStatus.ts';
 
 export const serverError = new BaseError('Failed to fetch dashboard data', 'server', {
   statusCode: 500,
@@ -12,3 +13,6 @@ export const connectivityError = new BaseError('Connection lost', 'network', {
   subCode: 'ERR_NETWORK_UNREACHABLE',
   description: "We couldn't reach the server. Check your internet connection and try again.",
 });
+
+//Mock Error Request State (used by AsyncContent component)
+export const errorRequestState = RequestStatus.errorRequest(serverError);

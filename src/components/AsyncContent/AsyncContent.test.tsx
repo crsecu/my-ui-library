@@ -1,7 +1,7 @@
 import { AsyncContent } from './AsyncContent.tsx';
 import { render, screen } from '@testing-library/react';
 import { RequestStatus } from '../../utils/RequestAPIStatus.ts';
-import { serverError } from '../../testing/errors.ts';
+import { errorRequestState, serverError } from '../../testing/errors.ts';
 import type { BaseError } from '../../utils/BaseError.ts';
 import type { APIStatus } from '../../hooks/useApiRequest.ts';
 
@@ -123,8 +123,6 @@ describe('AsyncContent component - success state', () => {
 });
 
 describe('AsyncContent component - error state', () => {
-  const errorState = RequestStatus.errorRequest(serverError);
-
   const ErrorComp = ({ error }: { error: BaseError }) => {
     return (
       <div>
@@ -136,21 +134,21 @@ describe('AsyncContent component - error state', () => {
   };
 
   test('should render a default error component when request fails', () => {
-    render(<AsyncContent status={errorState} data={null} />);
+    render(<AsyncContent status={errorRequestState} data={null} />);
 
     expect(screen.getByText(serverError.message)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'View Error Log' })).toBeInTheDocument();
   });
 
   test('should render custom error component instead of default error component', () => {
-    render(<AsyncContent status={errorState} data={null} ErrorComponent={ErrorComp} />);
+    render(<AsyncContent status={errorRequestState} data={null} ErrorComponent={ErrorComp} />);
     expect(screen.queryByRole('button', { name: 'View Error Log' })).not.toBeInTheDocument();
     expect(screen.getByText('CUSTOM ERROR COMPONENT')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument();
   });
 
   test('should pass request error to ErrorComponent', () => {
-    render(<AsyncContent status={errorState} data={null} ErrorComponent={ErrorComp} />);
+    render(<AsyncContent status={errorRequestState} data={null} ErrorComponent={ErrorComp} />);
 
     expect(screen.getByText('CUSTOM ERROR COMPONENT')).toBeInTheDocument();
     expect(screen.getByText(serverError.message)).toBeInTheDocument();
