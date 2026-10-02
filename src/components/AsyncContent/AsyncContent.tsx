@@ -4,7 +4,21 @@ import { ErrorDisplay } from '../ErrorDisplay/ErrorDisplay.tsx';
 import type { APIStatus } from '../../hooks/useApiRequest.ts';
 import type { BaseError } from '../../utils/BaseError.ts';
 
-interface AsyncContentProps<T> {
+/**
+ * A UI boundary that renders the appropriate view for each stage of an async
+ * request — initial, loading, error, or success , based on `status`and `data`
+ * from `useApiRequest`. Error and success rendering can be overridden via
+ * `ErrorComponent`/`SuccessComponent` props.
+ *
+ * @template T - Shape of the successful response data.
+ * @param status - Current request status; determines which branch renders.
+ * @param data - Response data once complete; `null` otherwise
+ * @param children - Render prop `(status, data) => ReactNode` for success, used if `SuccessComponent` is omitted.
+ * @param SuccessComponent - Optional override for success UI; receives `status` and `data`.
+ * @param ErrorComponent - Optional override for error UI; receives `error`.
+ * @param initialStateUI - UI shown before a request starts. Defaults to a `Loader`.
+ */
+export interface AsyncContentProps<T> {
   children?: (status: APIStatus, data: T) => ReactNode;
   status: APIStatus;
   data: T | null;
@@ -19,12 +33,10 @@ export const AsyncContent = <T,>({
   data,
   ErrorComponent,
   SuccessComponent,
-  initialStateUI = <Loader />,
+  initialStateUI = <Loader variant={'container'} />,
 }: AsyncContentProps<T>) => {
-  console.log('check:', status, data);
-
   if (status.isNoRequest()) return initialStateUI;
-  if (status.isPendingRequest()) return <Loader />;
+  if (status.isPendingRequest()) return <Loader variant={'container'} />;
   if (status.isErrorRequest()) {
     if (ErrorComponent) return <ErrorComponent error={status.error} />;
     return <ErrorDisplay error={status.error} />;
