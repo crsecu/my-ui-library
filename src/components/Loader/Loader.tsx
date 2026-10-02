@@ -1,8 +1,18 @@
 import styles from './Loader.module.css';
 
+type LoaderVariant = 'inline' | 'container' | 'global';
+
 interface LoaderProps {
+  variant?: LoaderVariant;
+  ariaLabel?: string;
   testId?: string;
 }
+
+const variantStyles: Record<LoaderVariant, string> = {
+  inline: '',
+  container: styles.loaderContainer,
+  global: styles.loaderGlobal,
+};
 
 /**
  * A visual loading spinner designed specifically for use within button components.
@@ -11,8 +21,13 @@ interface LoaderProps {
  * expanded for general-purpose loading states in future updates.
  * @param testId - A unique string used to target the loader in automated tests.
  */
-export const Loader = ({ testId }: LoaderProps) => {
+export const Loader = ({ variant = 'inline', ariaLabel = 'Loading', testId }: LoaderProps) => {
   return (
-    <div className={styles.loader} data-testid={testId} role="status" aria-label="Loading"></div>
+    <span
+      className={`${styles.loader} ${variantStyles[variant]}`}
+      data-testid={testId}
+      role="status"
+      aria-label={ariaLabel}
+    ></span>
   );
 };
