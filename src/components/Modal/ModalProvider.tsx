@@ -12,7 +12,7 @@ export function ModalProvider({ children }: { children: ReactNode; defaultOpen?:
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
-      {content && createPortal(<Modal>{content}</Modal>, document.body)}
+      {content && createPortal(<Modal closeModal={closeModal}>{content}</Modal>, document.body)}
     </ModalContext.Provider>
   );
 }
