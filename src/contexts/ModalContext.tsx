@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
 type ModalContextValue = {
   isOpen: boolean;
@@ -23,7 +23,8 @@ export function ModalProvider({
 }
 
 export function useModal() {
-  const ctx = useContext(ModalContext);
-  if (!ctx) throw new Error('useModal must be used within a ModalProvider');
-  return ctx;
+  const contextValue = useContext(ModalContext);
+  if (!contextValue) throw new Error('useModal must be used within a ModalProvider');
+
+  return contextValue;
 }
