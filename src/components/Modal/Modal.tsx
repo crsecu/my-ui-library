@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import styles from './Modal.module.css';
 
 interface ModalProps {
@@ -7,6 +7,8 @@ interface ModalProps {
 }
 
 export const Modal = ({ children, closeModal }: ModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
@@ -26,8 +28,10 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
   }, []);
 
   return (
-    <div className={styles.backdrop}>
-      <div className={styles.modal}>{children}</div>
+    <div className={styles.backdrop} ref={modalRef}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
     </div>
   );
 };
