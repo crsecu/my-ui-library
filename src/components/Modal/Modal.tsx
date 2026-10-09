@@ -1,4 +1,13 @@
-interface ModalProps {}
-export const Modal = ({}: ModalProps) => {
-  return <div>Modal</div>;
+import type { ReactNode } from 'react';
+
+interface ModalProps {
+  children?: ReactNode;
+}
+export const Modal = ({ children }: ModalProps) => {
+  return (
+    <div style={{ backgroundColor: 'lightgray' }}>
+      <p>Modal</p>
+      {children}
+    </div>
+  );
 };
