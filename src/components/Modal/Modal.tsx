@@ -16,6 +16,15 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [closeModal]);
 
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   return (
     <div className={styles.backdrop}>
       <div className={styles.modal}>{children}</div>
