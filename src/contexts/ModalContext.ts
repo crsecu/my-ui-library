@@ -1,7 +1,14 @@
 import { createContext, type ReactNode } from 'react';
 
+export type ModalOptions = {
+  content: ReactNode;
+  onClose?: () => void;
+  backdropClassName?: string;
+  debugName?: string;
+};
+
 type ModalContextValue = {
-  openModal: (content: ReactNode) => void;
+  openModal: (args: ModalOptions) => void;
   closeModal: () => void;
 };
 
