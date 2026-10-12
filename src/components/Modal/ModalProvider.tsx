@@ -1,18 +1,20 @@
-import { ModalContext } from '../../contexts/ModalContext';
+import { ModalContext, type ModalOptions } from '../../contexts/ModalContext.ts';
 import { type ReactNode, useCallback, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { Modal } from './Modal.tsx';
 
-export function ModalProvider({ children }: { children: ReactNode; defaultOpen?: boolean }) {
-  const [content, setContent] = useState<ReactNode>(null);
+export function ModalProvider({ children }: { children: ReactNode }) {
+  const [modal, setModal] = useState<ModalOptions | null>(null);
 
-  const openModal = useCallback((content: ReactNode) => setContent(content), []);
-  const closeModal = useCallback(() => setContent(null), []);
+  const openModal = useCallback((args: ModalOptions) => {
+    setModal(args);
+  }, []);
+
+  const closeModal = useCallback(() => setModal(null), []);
 
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
-      {content && createPortal(<Modal closeModal={closeModal}>{content}</Modal>, document.body)}
+      {modal && <Modal closeModal={closeModal}>{modal?.content}</Modal>}
     </ModalContext.Provider>
   );
 }

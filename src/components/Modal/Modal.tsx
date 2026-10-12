@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 import styles from './Modal.module.css';
+import { createPortal } from 'react-dom';
 
 interface ModalProps {
   children?: ReactNode;
@@ -62,7 +63,7 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
     };
   }, []);
 
-  return (
+  return createPortal(
     <div className={styles.backdrop}>
       <div
         className={styles.modal}
@@ -72,6 +73,7 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
