@@ -25,12 +25,13 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
-      {modals.map((modal) => (
+      {modals.map((modal, index) => (
         <Modal
           {...modal}
           onClose={() => closeModal(modal.id)}
           key={modal.id}
           debugName={modal.debugName ?? modal.id}
+          isTopMost={index === modals.length - 1}
         >
           {modal.content}
         </Modal>

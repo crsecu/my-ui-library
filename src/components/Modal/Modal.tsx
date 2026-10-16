@@ -10,9 +10,17 @@ export interface ModalProps {
   backdropClassName?: string;
   debugName?: string;
   closeButton?: boolean;
+  id: string;
+  isTopMost: boolean;
 }
 
-export const Modal = ({ children, onClose, closeButton = true }: ModalProps) => {
+export const Modal = ({
+  children,
+  onClose,
+  closeButton = true,
+  debugName,
+  isTopMost = true,
+}: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,6 +31,8 @@ export const Modal = ({ children, onClose, closeButton = true }: ModalProps) => 
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isTopMost) return;
+
       if (e.key === 'Escape') {
         onClose();
         return;
@@ -57,7 +67,7 @@ export const Modal = ({ children, onClose, closeButton = true }: ModalProps) => 
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [isTopMost, onClose]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -75,6 +85,7 @@ export const Modal = ({ children, onClose, closeButton = true }: ModalProps) => 
         onClick={(e) => e.stopPropagation()}
         ref={modalRef}
         tabIndex={-1}
+        data-modalid={debugName}
       >
         {closeButton && (
           <Button
