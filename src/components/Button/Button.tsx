@@ -61,7 +61,7 @@ export const Button = ({
       <button
         type={type}
         disabled={disabled || isLoading}
-        className={`${styles.button} ${styles[variant]} ${styles[intent]}${className}`}
+        className={`${styles.button} ${styles[variant]} ${styles[intent]} ${className}`}
         ref={activeButtonRef}
         data-testid={testId}
         {...props}
