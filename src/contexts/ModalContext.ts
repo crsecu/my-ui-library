@@ -1,10 +1,9 @@
 import { createContext, type ReactNode } from 'react';
+import type { ModalProps } from '../components/Modal/Modal.tsx';
 
-export type ModalOptions = {
+export type ModalOptions = Omit<ModalProps, 'children' | 'onClose'> & {
   content: ReactNode;
   onClose?: () => void;
-  backdropClassName?: string;
-  debugName?: string;
 };
 
 type ModalContextValue = {

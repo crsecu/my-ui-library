@@ -1,13 +1,18 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 import styles from './Modal.module.css';
 import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
+import { Button } from '../Button/Button.tsx';
 
-interface ModalProps {
-  children?: ReactNode;
-  closeModal: () => void;
+export interface ModalProps {
+  children: ReactNode;
+  onClose: () => void;
+  backdropClassName?: string;
+  debugName?: string;
+  closeButton?: boolean;
 }
 
-export const Modal = ({ children, closeModal }: ModalProps) => {
+export const Modal = ({ children, onClose, closeButton = true }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,7 +24,7 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        closeModal();
+        onClose();
         return;
       }
 
@@ -52,7 +57,7 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [closeModal]);
+  }, [onClose]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -71,7 +76,17 @@ export const Modal = ({ children, closeModal }: ModalProps) => {
         ref={modalRef}
         tabIndex={-1}
       >
-        {children}
+        {closeButton && (
+          <Button
+            variant={'text'}
+            intent={'neutral'}
+            className={styles.closeButton}
+            onClick={onClose}
+          >
+            <X />
+          </Button>
+        )}
+        <div className={styles.modelContent}>{children}</div>
       </div>
     </div>,
     document.body,

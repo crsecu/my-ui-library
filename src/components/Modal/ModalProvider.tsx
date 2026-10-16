@@ -14,7 +14,11 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
-      {modal && <Modal closeModal={closeModal}>{modal?.content}</Modal>}
+      {modal && (
+        <Modal onClose={closeModal} closeButton={modal?.closeButton}>
+          {modal?.content}
+        </Modal>
+      )}
     </ModalContext.Provider>
   );
 }
