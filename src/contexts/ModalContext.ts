@@ -12,7 +12,7 @@ export type ModalData = ModalOptions & {
 
 type ModalContextValue = {
   openModal: (args: ModalOptions) => void;
-  closeModal: (modalId: string) => void;
+  closeModal: (modalId?: string) => void;
 };
 
 export const ModalContext = createContext<ModalContextValue | null>(null);
