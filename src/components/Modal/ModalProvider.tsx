@@ -28,7 +28,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
       {modals.map((modal, index) => (
         <Modal
           {...modal}
-          onClose={() => closeModal(modal.id)}
+          onRequestClose={() => closeModal(modal.id)}
           key={modal.id}
           debugName={modal.debugName ?? modal.id}
           isTopMost={index === modals.length - 1}

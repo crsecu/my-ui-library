@@ -1,7 +1,7 @@
 import { createContext, type ReactNode } from 'react';
 import type { ModalProps } from '../components/Modal/Modal.tsx';
 
-export type ModalOptions = Omit<ModalProps, 'children' | 'onClose' | 'id'> & {
+export type ModalOptions = Omit<ModalProps, 'children' | 'onRequestClose' | 'id' | 'isTopMost'> & {
   content: ReactNode;
   onClose?: () => void;
 };

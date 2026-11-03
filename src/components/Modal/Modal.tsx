@@ -6,7 +6,7 @@ import { Button } from '../Button/Button.tsx';
 
 export interface ModalProps {
   children: ReactNode;
-  onClose: () => void;
+  onRequestClose: () => void;
   backdropClassName?: string;
   debugName?: string;
   closeButton?: boolean;
@@ -16,7 +16,7 @@ export interface ModalProps {
 
 export const Modal = ({
   children,
-  onClose,
+  onRequestClose,
   closeButton = true,
   debugName,
   isTopMost = true,
@@ -34,7 +34,7 @@ export const Modal = ({
       if (!isTopMost) return;
 
       if (e.key === 'Escape') {
-        onClose();
+        onRequestClose();
         return;
       }
 
@@ -67,7 +67,7 @@ export const Modal = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isTopMost, onClose]);
+  }, [isTopMost, onRequestClose]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -92,7 +92,7 @@ export const Modal = ({
             variant={'text'}
             intent={'neutral'}
             className={styles.closeButton}
-            onClick={onClose}
+            onClick={onRequestClose}
           >
             <X />
           </Button>
