@@ -1,5 +1,5 @@
 import { ModalContext, type ModalData, type ModalOptions } from '../../contexts/ModalContext.ts';
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { Modal } from './Modal.tsx';
 
 export function ModalProvider({ children }: { children: ReactNode }) {
@@ -22,20 +22,27 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     console.log('MODAL TO CLOSE', modalId);
   }, []);
 
+  const contextValue = useMemo(() => ({ openModal, closeModal }), [openModal, closeModal]);
+
   return (
-    <ModalContext.Provider value={{ openModal, closeModal }}>
+    <ModalContext.Provider value={contextValue}>
       {children}
-      {modals.map((modal, index) => (
-        <Modal
-          {...modal}
-          onRequestClose={() => closeModal(modal.id)}
-          key={modal.id}
-          debugName={modal.debugName ?? modal.id}
-          isTopMost={index === modals.length - 1}
-        >
-          {modal.content}
-        </Modal>
-      ))}
+      {modals.map((modal, index) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { content, onClose, ...modalProps } = modal;
+
+        return (
+          <Modal
+            {...modalProps}
+            onRequestClose={() => closeModal(modal.id)}
+            key={modal.id}
+            debugName={modal.debugName ?? modal.id}
+            isTopMost={index === modals.length - 1}
+          >
+            {content}
+          </Modal>
+        );
+      })}
     </ModalContext.Provider>
   );
 }
