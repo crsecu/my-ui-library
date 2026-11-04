@@ -11,7 +11,7 @@ export type ModalData = ModalOptions & {
 };
 
 type ModalContextValue = {
-  openModal: (args: ModalOptions) => void;
+  openModal: (args: ModalOptions) => string;
   closeModal: (modalId?: string) => void;
 };
 
