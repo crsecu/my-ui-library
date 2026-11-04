@@ -1,25 +1,32 @@
 import { ModalContext, type ModalData, type ModalOptions } from '../../contexts/ModalContext.ts';
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { Modal } from './Modal.tsx';
 
 export function ModalProvider({ children }: { children: ReactNode }) {
+  const modalsRef = useRef<ModalData[]>([]);
   const [modals, setModals] = useState<ModalData[]>([]);
+  const nextModalId = useRef(1);
 
   const openModal = useCallback((args: ModalOptions) => {
-    setModals((prevState) => {
-      const modalId = prevState.length > 0 ? `modal-${prevState.length + 1}` : `modal-1`;
-      return [...prevState, { ...args, id: modalId }];
-    });
+    const modal = { ...args, id: `modal-${nextModalId.current++}` };
+    modalsRef.current = [...modalsRef.current, modal];
+    setModals(modalsRef.current);
+
+    return modal.id;
   }, []);
 
   const closeModal = useCallback((modalId?: string) => {
-    if (modalId) {
-      setModals((prevState) => prevState.filter((modal) => modal.id !== modalId));
-      return;
-    }
-    setModals((prevState) => prevState.slice(0, -1));
+    const modalArr = modalsRef.current;
 
-    console.log('MODAL TO CLOSE', modalId);
+    const targetModal = modalId
+      ? modalArr.find((modal) => modal.id === modalId)
+      : modalArr[modalArr.length - 1];
+
+    if (!targetModal) return;
+
+    modalsRef.current = modalArr.filter((modal) => modal.id !== targetModal.id);
+    setModals(modalsRef.current);
+    targetModal.onClose?.();
   }, []);
 
   const contextValue = useMemo(() => ({ openModal, closeModal }), [openModal, closeModal]);
