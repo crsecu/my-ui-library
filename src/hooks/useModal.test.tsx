@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import { useModal } from './useModal.tsx';
-import { ModalProvider } from '../components/Modal/ModalProvider.tsx';
+import { useModal } from './useModal.ts';
+import { ModalProvider } from '../contexts/ModalProvider.tsx';
 import type { ReactNode } from 'react';
 
 describe('useModal hook', () => {
