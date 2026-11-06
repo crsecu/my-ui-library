@@ -1,6 +1,6 @@
-import { ModalContext, type ModalData, type ModalOptions } from '../../contexts/ModalContext.ts';
+import { ModalContext, type ModalData, type ModalOptions } from './ModalContext.ts';
 import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Modal } from './Modal.tsx';
+import { Modal } from '../components/Modal/Modal.tsx';
 
 export function ModalProvider({ children }: { children: ReactNode }) {
   const modalsRef = useRef<ModalData[]>([]);
