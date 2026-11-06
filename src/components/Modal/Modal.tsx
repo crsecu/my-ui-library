@@ -86,6 +86,8 @@ export const Modal = ({
         ref={modalRef}
         tabIndex={-1}
         data-modalid={debugName}
+        role={'dialog'}
+        aria-modal={'true'}
       >
         {closeButton && (
           <Button
