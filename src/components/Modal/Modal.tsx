@@ -20,6 +20,7 @@ export const Modal = ({
   closeButton = true,
   debugName,
   isTopMost = true,
+  backdropClassName,
 }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +80,7 @@ export const Modal = ({
   }, []);
 
   return createPortal(
-    <div className={styles.backdrop}>
+    <div className={`${styles.backdrop} ${backdropClassName ?? ''}`}>
       <div
         className={styles.modal}
         onClick={(e) => e.stopPropagation()}
