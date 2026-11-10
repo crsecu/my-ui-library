@@ -95,6 +95,7 @@ export const Modal = ({
             intent={'neutral'}
             className={styles.closeButton}
             onClick={onRequestClose}
+            aria-label={'Close dialog'}
           >
             <X />
           </Button>
