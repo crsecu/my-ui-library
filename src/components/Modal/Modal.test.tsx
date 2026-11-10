@@ -63,4 +63,15 @@ describe('Modal Component', () => {
 
     expect(screen.getByRole('dialog')).toHaveAttribute('data-modalid', 'settings-modal');
   });
+
+  test('it should apply backdropClassName to the backdrop', () => {
+    render(
+      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()} backdropClassName="custom-backdrop">
+        <p>Modal content</p>
+      </Modal>,
+    );
+
+    const backdrop = screen.getByRole('dialog').parentElement;
+    expect(backdrop).toHaveClass('custom-backdrop');
+  });
 });
