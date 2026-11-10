@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { Modal, type ModalProps } from './Modal.tsx';
 import type { ReactNode } from 'react';
+import userEvent from '@testing-library/user-event';
 
 type RenderModalOptions = Partial<Omit<ModalProps, 'onRequestClose'>> & {
   children?: ReactNode;
@@ -56,5 +57,42 @@ describe('Modal Component', () => {
     renderModal({ debugName: 'settings-modal' });
 
     expect(screen.getByRole('dialog')).toHaveAttribute('data-modalid', 'settings-modal');
+  });
+
+  test('it should request closing when Escape is pressed', async () => {
+    const user = userEvent.setup();
+    const { onRequestClose } = renderModal();
+
+    await user.keyboard('{Escape}');
+
+    expect(onRequestClose).toHaveBeenCalledTimes(1);
+  });
+
+  test('it should request closing when the close button is clicked', async () => {
+    const user = userEvent.setup();
+    const { onRequestClose } = renderModal();
+
+    await user.click(screen.getByRole('button', { name: /close/i }));
+
+    expect(onRequestClose).toHaveBeenCalledTimes(1);
+  });
+
+  test('it should not request closing when the backdrop is clicked', async () => {
+    const user = userEvent.setup();
+    const { onRequestClose } = renderModal();
+
+    const backdrop = screen.getByRole('dialog').parentElement!;
+    await user.click(backdrop);
+
+    expect(onRequestClose).not.toHaveBeenCalled();
+  });
+
+  test('it should not request closing on Escape when it is not the top-most modal', async () => {
+    const user = userEvent.setup();
+    const { onRequestClose } = renderModal({ isTopMost: false });
+
+    await user.keyboard('{Escape}');
+
+    expect(onRequestClose).not.toHaveBeenCalled();
   });
 });
