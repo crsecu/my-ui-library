@@ -39,10 +39,11 @@ export const Modal = ({
         return;
       }
 
+      if (e.key !== 'Tab') return;
       if (!modalRef.current) return;
 
       const focusableEls = modalRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
 
       // no elements to tab to, keep focus on the modal
