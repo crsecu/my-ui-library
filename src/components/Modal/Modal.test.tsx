@@ -1,77 +1,60 @@
 import { render, screen } from '@testing-library/react';
-import { Modal } from './Modal.tsx';
+import { Modal, type ModalProps } from './Modal.tsx';
+import type { ReactNode } from 'react';
+
+type RenderModalOptions = Partial<Omit<ModalProps, 'onRequestClose'>> & {
+  children?: ReactNode;
+};
+
+function renderModal({ children = <p>Modal content</p>, ...props }: RenderModalOptions = {}) {
+  const onRequestClose = vi.fn();
+
+  const utils = render(
+    <Modal id="modal-1" isTopMost onRequestClose={onRequestClose} {...props}>
+      {children}
+    </Modal>,
+  );
+
+  return { ...utils, onRequestClose };
+}
 
 describe('Modal Component', () => {
   test('it should render its content inside a dialog', () => {
-    render(
-      <Modal onRequestClose={vi.fn()} id={'modal1'} isTopMost={true}>
-        <p>Modal content</p>
-      </Modal>,
-    );
+    renderModal();
+
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveTextContent('Modal content');
   });
 
   test('it should render into document.body through a portal', () => {
-    const { container } = render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()}>
-        <p>Modal content</p>
-      </Modal>,
-    );
+    const { container } = renderModal();
 
     expect(container).not.toContainElement(screen.getByRole('dialog'));
     expect(document.body).toContainElement(screen.getByRole('dialog'));
   });
 
   test('it should render a close button by default', () => {
-    render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()}>
-        <p>Modal content</p>
-      </Modal>,
-    );
+    renderModal();
 
     expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
   });
 
   test('it should not render a close button when closeButton is false', () => {
-    render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()} closeButton={false}>
-        <p>Modal content</p>
-      </Modal>,
-    );
+    renderModal({ closeButton: false });
 
     expect(screen.queryByRole('button', { name: /close/i })).not.toBeInTheDocument();
   });
 
-  test.skip('it should apply backdropClassName to the backdrop', () => {
-    render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()} backdropClassName="custom-backdrop">
-        <p>Modal content</p>
-      </Modal>,
-    );
+  test('it should apply backdropClassName to the backdrop', () => {
+    renderModal({ backdropClassName: 'custom-backdrop' });
 
     const backdrop = screen.getByRole('dialog').parentElement;
     expect(backdrop).toHaveClass('custom-backdrop');
   });
 
   test('it should expose debugName as data-modalid', () => {
-    render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()} debugName="settings-modal">
-        <p>Modal content</p>
-      </Modal>,
-    );
+    renderModal({ debugName: 'settings-modal' });
 
     expect(screen.getByRole('dialog')).toHaveAttribute('data-modalid', 'settings-modal');
-  });
-
-  test('it should apply backdropClassName to the backdrop', () => {
-    render(
-      <Modal id="modal-1" isTopMost onRequestClose={vi.fn()} backdropClassName="custom-backdrop">
-        <p>Modal content</p>
-      </Modal>,
-    );
-
-    const backdrop = screen.getByRole('dialog').parentElement;
-    expect(backdrop).toHaveClass('custom-backdrop');
   });
 });
