@@ -56,8 +56,6 @@ export const Modal = ({
       const lastEl = focusableEls[focusableEls.length - 1];
       const activeEl = document.activeElement;
 
-      console.log('focusableElements', focusableEls);
-
       if (e.shiftKey && (activeEl === firstEl || activeEl === modalRef.current)) {
         e.preventDefault();
         lastEl.focus();
