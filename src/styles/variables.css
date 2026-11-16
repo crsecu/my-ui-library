@@ -17,7 +17,6 @@
 
   --pure-white: #ffffff;
 
-
   /* PRIMARY (Brand) */
   --primary-base: var(--sky-9);
   --primary-text-light: #00a2c7;
@@ -103,7 +102,15 @@
   --input-disabled: hsl(240, 10%, 92%);
   --icon-focus: hsl(205, 50%, 23%, 0.2);
 
+
+  /* Modal */
+  --modal-bg: var(--bg-surface);
+  --modal-backdrop: rgb(0 0 0 / 0.5);
+  --modal-shadow: 0 20px 50px rgb(0 0 0 / 0.25);
+
 }
+
+
 
 
 /*const slate = {*/
