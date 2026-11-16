@@ -197,6 +197,24 @@ describe('Modal Component', () => {
       expect(screen.getByRole('button', { name: 'First' })).toHaveFocus();
     });
 
+    test('it should include textareas when trapping focus', async () => {
+      const user = userEvent.setup();
+      renderModal({
+        closeButton: false,
+        children: (
+          <>
+            <button>First</button>
+            <textarea aria-label="Notes" />
+          </>
+        ),
+      });
+
+      screen.getByRole('textbox', { name: 'Notes' }).focus();
+      await user.tab();
+
+      expect(screen.getByRole('button', { name: 'First' })).toHaveFocus();
+    });
+
     test('it should keep focus on the dialog when it has no focusable elements', async () => {
       const user = userEvent.setup();
       renderModal({ closeButton: false });

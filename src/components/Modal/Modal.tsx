@@ -40,26 +40,44 @@ export const Modal = ({
       }
 
       if (e.key !== 'Tab') return;
-      if (!modalRef.current) return;
+      const modal = modalRef.current;
+      if (!modal) return;
 
-      const focusableEls = modalRef.current.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
+      const focusableEls = Array.from(
+        modal.querySelectorAll<HTMLElement>(
+          'a[href], area[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), iframe, object, embed, [contenteditable="true"], [tabindex]',
+        ),
+      ).filter((element) => {
+        if (element.tabIndex < 0 || element.closest('[hidden], [inert], [aria-hidden="true"]')) {
+          return false;
+        }
+
+        for (let ancestor: HTMLElement | null = element; ancestor && ancestor !== modal; ancestor = ancestor.parentElement) {
+          const { display, visibility } = window.getComputedStyle(ancestor);
+          if (display === 'none' || visibility === 'hidden' || visibility === 'collapse') {
+            return false;
+          }
+        }
+
+        return true;
+      });
 
       // no elements to tab to, keep focus on the modal
       if (focusableEls.length === 0) {
         e.preventDefault();
+        modal.focus();
         return;
       }
 
       const firstEl = focusableEls[0];
       const lastEl = focusableEls[focusableEls.length - 1];
       const activeEl = document.activeElement;
+      const focusIsOutsideModal = !modal.contains(activeEl);
 
-      if (e.shiftKey && (activeEl === firstEl || activeEl === modalRef.current)) {
+      if (e.shiftKey && (activeEl === firstEl || activeEl === modal || focusIsOutsideModal)) {
         e.preventDefault();
         lastEl.focus();
-      } else if (!e.shiftKey && activeEl === lastEl) {
+      } else if (!e.shiftKey && (activeEl === lastEl || focusIsOutsideModal)) {
         e.preventDefault();
         firstEl.focus();
       }
